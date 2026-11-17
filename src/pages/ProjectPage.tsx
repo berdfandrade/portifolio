@@ -23,12 +23,14 @@ function ProjectView({ slug }: { slug: string }) {
   usePageTitle(p.title);
   const [open, setOpen] = useState<number | null>(null);
 
-  // A vitrine (quando é imagem) e a galeria abrem no mesmo visualizador.
+  // A vitrine (quando é imagem), a galeria e as telas de celular abrem no mesmo visualizador.
   const shots: Shot[] = [
     ...(d.showcase?.src ? [{ src: d.showcase.src, alt: d.showcase.alt, caption: d.showcase.caption }] : []),
     ...(d.gallery ?? []),
+    ...(d.phones ?? []),
   ];
   const galleryOffset = d.showcase?.src ? 1 : 0;
+  const phonesOffset = galleryOffset + (d.gallery?.length ?? 0);
 
   const vars = {
     '--project-bg': p.bg,
@@ -129,7 +131,21 @@ function ProjectView({ slug }: { slug: string }) {
           </section>
         )}
 
-        {d.gallery ? (
+        {d.phones && (
+          <section aria-labelledby="phones-title">
+            <h2 className="section-title" id="phones-title">Telas</h2>
+            <div className="phones" tabIndex={0} aria-label="Telas do aplicativo (role para os lados)">
+              {d.phones.map((s, i) => (
+                <figure key={s.src} className="phone">
+                  <ShotButton shot={s} onOpen={() => setOpen(phonesOffset + i)} />
+                  <figcaption>{s.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {d.gallery && (
           <section aria-labelledby="gallery-title">
             <h2 className="section-title" id="gallery-title">Telas</h2>
             <div className="gallery">
@@ -141,17 +157,6 @@ function ProjectView({ slug }: { slug: string }) {
               ))}
             </div>
           </section>
-        ) : (
-          d.phones && (
-            <section aria-labelledby="phones-title">
-              <h2 className="section-title" id="phones-title">Telas</h2>
-              <div className="screens" tabIndex={0} aria-label="Telas do aplicativo (role para os lados)">
-                {d.phones.map((t) => (
-                  <div key={t} className="screen">{t}</div>
-                ))}
-              </div>
-            </section>
-          )
         )}
 
         <section aria-labelledby="more-title">

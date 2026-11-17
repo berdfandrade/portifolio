@@ -13,6 +13,7 @@ The site content is in Brazilian Portuguese.
 | `/` | **Library**: projects you can filter by category (Apps, Desktop, Systems, Web, Automation), search, a featured project and the "All tracks" list |
 | `/projeto/:slug` | **Project page**: cover, summary, links, showcase (screenshot or video), fact sheet, highlights, a code excerpt, a screenshot gallery with a full-screen viewer, and "More in the library" |
 | `/sobre` | **Character sheet**: pixel-art avatar, sense of humor, birth chart, skill inventory and active quests. On phones it becomes a tabbed screen (Sheet, Astral and Humor) |
+| `/skill-tree` | **Skill Tree**: three branches (Front-end, Automation, Design) with mastered, training and locked skills, overall progress, and a side drawer with each skill's details |
 
 Projects with a page today: Verdant, PixelForge, Ironclad, printa, Owlio, Aplicador de Vagas, Event Hub and mac. Texts and images come from the READMEs of the repositories on [GitHub](https://github.com/berdfandrade).
 
@@ -51,6 +52,7 @@ src/
   main.tsx                routes and entry point
   styles.css              all the CSS (color tokens, components, responsive rules)
   data/projects.ts        project content and categories
+  data/skills.ts          Skill Tree branches and skills
   components/
     Layout.tsx            scrolls to the top on navigation and sets the tab title
     TopBar.tsx            header for inner pages
@@ -61,6 +63,7 @@ src/
     Library.tsx           Library
     ProjectPage.tsx       project page
     About.tsx             About
+    SkillTree.tsx         Skill Tree
     NotFound.tsx          not found page
 ```
 
@@ -107,5 +110,5 @@ The theme starts by following the system (light or dark). Once a visitor clicks 
 ## To do
 
 - Bracketed placeholders such as `[ANO]` and `[ALTURA]` still need to be filled in.
-- The Instagram, Contact, Figma and Skill Tree links still point to `#`.
-- Skill Tree and Link na Bio don't have a page yet.
+- The Instagram and Contact links still point to `#`.
+- The Skill Tree and Link na Bio projects don't have a project page yet.

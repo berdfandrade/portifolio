@@ -11,6 +11,7 @@ Meu portfólio pessoal, organizado como uma **biblioteca de música**: cada proj
 | `/` | **Biblioteca**: projetos filtráveis por categoria (Apps, Desktop, Sistemas, Web, Automação), busca, projeto em destaque e a lista "Todas as faixas" |
 | `/projeto/:slug` | **Página do projeto**: capa, resumo, links, vitrine (print ou vídeo), ficha técnica, destaques, trecho de código, galeria de telas com visualizador em tela cheia e "Mais na biblioteca" |
 | `/sobre` | **Ficha de personagem**: avatar em pixel art, estilo de humor, mapa astral, inventário de habilidades e missões ativas. No celular vira uma tela com abas (Ficha, Astral e Humor) |
+| `/skill-tree` | **Skill Tree**: três ramos (Front-end, Automação, Design) com habilidades dominadas, em treino e bloqueadas, o progresso geral e uma gaveta lateral com os detalhes de cada habilidade |
 
 Projetos com página hoje: Verdant, PixelForge, Ironclad, printa, Owlio, Aplicador de Vagas, Event Hub e mac. Os textos e as imagens vêm dos READMEs dos repositórios no [GitHub](https://github.com/berdfandrade).
 
@@ -49,6 +50,7 @@ src/
   main.tsx                rotas e ponto de entrada
   styles.css              todo o CSS (tokens de cor, componentes, responsivo)
   data/projects.ts        conteúdo dos projetos e categorias
+  data/skills.ts          ramos e habilidades da Skill Tree
   components/
     Layout.tsx            volta ao topo ao trocar de página e define o título da aba
     TopBar.tsx            cabeçalho das páginas internas
@@ -59,6 +61,7 @@ src/
     Library.tsx           Biblioteca
     ProjectPage.tsx       página de projeto
     About.tsx             Sobre
+    SkillTree.tsx         Skill Tree
     NotFound.tsx          página não encontrada
 ```
 
@@ -105,5 +108,5 @@ O tema começa seguindo o sistema (claro ou escuro). Quando a pessoa clica no bo
 ## Pendências
 
 - Textos entre colchetes, como `[ANO]` e `[ALTURA]`, ainda precisam ser preenchidos.
-- Os links de Instagram, Contato, Figma e Skill Tree ainda apontam para `#`.
-- Skill Tree e Link na Bio ainda não têm página.
+- Os links de Instagram e Contato ainda apontam para `#`.
+- Os projetos Skill Tree e Link na Bio ainda não têm página de projeto.

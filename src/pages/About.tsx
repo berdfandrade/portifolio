@@ -88,7 +88,7 @@ export default function About() {
               Classe <strong>Desenvolvedor</strong>. Otimista por padrão, irônico por esporte. Constrói apps, automações e páginas — e coleciona tudo nesta biblioteca.
             </p>
             <dl className="facts">
-              {[['Altura', '[ALTURA]'], ['Peso', '[PESO]'], ['Signo', 'Capricórnio'], ['Elemento', 'Terra']].map(([k, v]) => (
+              {[['Altura', '1.73m'], ['Peso', '82Kg'], ['Signo', 'Capricórnio'], ['Elemento', 'Terra']].map(([k, v]) => (
                 <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
               ))}
             </dl>
@@ -178,7 +178,7 @@ export default function About() {
             <div className="chips">
               {SKILLS.map((s) => <span key={s} className="chip">{s}</span>)}
             </div>
-            <a href="#">Ver Skill Tree completa ›</a>
+            <Link to="/skill-tree">Ver Skill Tree completa ›</Link>
           </div>
           <div className="card">
             <h2>Missões ativas</h2>

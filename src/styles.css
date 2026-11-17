@@ -3,13 +3,13 @@
   --bg: #F5F5F7; --card: #FFFFFF; --text: #1D1D1F; --text2: #424245; --text3: #6E6E73;
   --sep: #D2D2D7; --sep2: #F0F0F2; --fill: #E8E8ED; --dash: #C7C7CC;
   --bar: rgba(245,245,247,0.82); --link: #0066CC; --link-hover: #004C99; --accent: #0071E3;
-  --sand: #E8C9A0; --sand-ink: #3A2A18;
+  --sand: #E8C9A0; --sand-ink: #3A2A18; --bezel: #1D1D1F;
   color-scheme: light;
 }
 :root[data-theme="dark"] {
   --bg: #000000; --card: #1C1C1E; --text: #F5F5F7; --text2: #D1D1D6; --text3: #98989D;
   --sep: #38383A; --sep2: #2C2C2E; --fill: #2C2C2E; --dash: #48484A;
-  --bar: rgba(22,22,23,0.8); --link: #2997FF; --link-hover: #66B5FF;
+  --bar: rgba(22,22,23,0.8); --link: #2997FF; --link-hover: #66B5FF; --bezel: #48484A;
   color-scheme: dark;
 }
 
@@ -182,11 +182,19 @@ img { display: block; max-width: 100%; }
 .chapter[open] .sign::before { content: "−"; }
 .chapter p { padding: 0 20px 20px 64px; font-size: 15px; line-height: 1.55; color: var(--text2); }
 
-.screens { display: flex; gap: 24px; overflow-x: auto; padding-bottom: 8px; }
-.screen {
-  flex: 0 0 220px; height: 440px; border-radius: 32px; background: var(--card); border: 1px solid var(--sep);
-  display: flex; align-items: center; justify-content: center; color: var(--text3); font-size: 13px; text-align: center; padding: 20px;
+/* Telas de celular: uma fileira de aparelhos que rola para os lados */
+.phones {
+  display: flex; gap: 28px; overflow-x: auto; scroll-snap-type: x mandatory;
+  margin: 0 -24px; padding: 8px 24px 20px; scroll-padding: 0 24px;
 }
+.phone { margin: 0; flex: 0 0 220px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 14px; }
+.phone .shot-btn {
+  /* o raio esconde os cantos da moldura capturada; a borda escura faz o papel do aparelho */
+  border-radius: 14% / 6.5%; overflow: hidden;
+  box-shadow: 0 0 0 5px var(--bezel), 0 22px 44px rgba(0,0,0,0.18);
+}
+.phone img { width: 100%; aspect-ratio: 390 / 844; object-fit: cover; }
+.phone figcaption { font-size: 14px; font-weight: 500; color: var(--text2); text-align: center; }
 /* Vitrine: o print principal, numa moldura de janela */
 .showcase { margin: -16px 0 0; display: flex; flex-direction: column; gap: 14px; }
 .showcase-frame {
@@ -373,4 +381,122 @@ img { display: block; max-width: 100%; }
   .pair { gap: 14px; }
   .pair .card { flex-basis: 100%; }
   .placements > div { min-height: 48px; font-size: 16px; }
+}
+
+/* ---------- Skill Tree ---------- */
+.skills-page { max-width: 1280px; margin: 0 auto; padding: 48px 24px 96px; display: flex; flex-direction: column; gap: 32px; }
+.skills-hero { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-end; justify-content: space-between; }
+.skills-intro { flex: 1 1 420px; display: flex; flex-direction: column; gap: 12px; }
+.skills-intro h1 { font-size: 64px; line-height: 1; font-weight: 800; letter-spacing: -2px; }
+.skills-intro .lede { font-size: 19px; line-height: 1.45; color: var(--text2); }
+.skills-progress { flex: 1 1 340px; max-width: 460px; display: flex; flex-direction: column; gap: 12px; background: var(--card); border-radius: 20px; padding: 20px; }
+.skills-progress .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.skills-progress .title { font-size: 15px; font-weight: 600; }
+.skills-progress .summary { font-size: 13px; color: var(--text3); }
+.skills-progress .bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--fill); }
+.skills-progress .bar .done { background: #30D158; }
+.skills-progress .bar .wip { background: #0A84FF; }
+.skills-progress .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--text2); }
+.skills-progress .legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.dot.done { background: #30D158; }
+.dot.wip { background: #0A84FF; }
+.dot.locked { background: var(--dash); }
+
+.tree { background: var(--card); border-radius: 28px; padding: 40px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px 24px; }
+.branch { display: flex; flex-direction: column; align-items: center; }
+.branch-head { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 24px; text-align: center; }
+.branch-head .tag { font-size: 12px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--tone-label); }
+.branch-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; }
+.branch-head .count { font-size: 13px; color: var(--text3); }
+.branch-skills { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+.skill-node { display: flex; flex-direction: column; align-items: center; }
+.skill-node .link { width: 2px; height: 28px; border-radius: 2px; background: var(--tone); margin-bottom: 8px; }
+.skill-node.locked .link { background: var(--sep); }
+.skill-node:first-child .skill-tile { margin-top: 8px; }
+.skill-label { margin-top: 12px; font-size: 14px; font-weight: 600; text-align: center; }
+.skill-status { font-size: 12px; }
+.skill-status.done { color: #248A3D; }
+.skill-status.wip { color: var(--link); }
+.skill-status.locked { color: var(--text3); }
+:root[data-theme="dark"] .skill-status.done { color: #30D158; }
+
+.skill-tile {
+  position: relative; width: 68px; height: 68px; border: 0; border-radius: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--tone); color: #FFFFFF;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--tone) 25%, transparent), inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: transform .25s cubic-bezier(.32,.72,0,1), box-shadow .25s;
+}
+.skill-tile.locked { background: var(--fill); color: var(--text3); box-shadow: inset 0 0 0 1px var(--sep); }
+button.skill-tile:hover { transform: translateY(-4px) scale(1.04); }
+button.skill-tile:active { transform: scale(.96); }
+button.skill-tile:focus-visible { outline: 3px solid var(--link); outline-offset: 4px; }
+.skill-tile.big { width: 96px; height: 96px; border-radius: 24px; cursor: default; }
+.skill-badge {
+  position: absolute; right: -6px; bottom: -6px; width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; border: 3px solid var(--card); color: #FFFFFF;
+}
+.skill-badge.done { background: #30D158; }
+.skill-badge.wip { background: #0A84FF; }
+.skill-badge.locked { background: var(--dash); color: var(--card); }
+
+/* Gaveta de detalhes: <dialog> que desliza da direita */
+.skill-drawer {
+  position: fixed; inset: 12px 12px 12px auto; margin: 0; padding: 0; border: 0;
+  width: 440px; max-width: calc(100% - 24px); height: auto; max-height: none;
+  background: var(--card); color: var(--text); border-radius: 28px; box-shadow: 0 30px 80px rgba(0,0,0,0.28);
+  overflow: hidden; transform: translateX(calc(100% + 24px));
+  transition: transform .45s cubic-bezier(.32,.72,0,1), overlay .45s allow-discrete, display .45s allow-discrete;
+}
+.skill-drawer[open] { display: flex; flex-direction: column; transform: translateX(0); transition-duration: .55s; }
+@starting-style { .skill-drawer[open] { transform: translateX(calc(100% + 24px)); } }
+.skill-drawer::backdrop { background: rgba(0,0,0,0); backdrop-filter: blur(0); transition: background .45s, backdrop-filter .45s, overlay .45s allow-discrete, display .45s allow-discrete; }
+.skill-drawer[open]::backdrop { background: rgba(0,0,0,0.32); backdrop-filter: blur(6px); }
+@starting-style { .skill-drawer[open]::backdrop { background: rgba(0,0,0,0); backdrop-filter: blur(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .skill-drawer, .skill-drawer::backdrop, .skill-tile { transition: none; }
+}
+.drawer-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 14px 0 24px; }
+.drawer-branch { font-size: 13px; font-weight: 600; color: var(--tone-label); text-transform: uppercase; letter-spacing: 0.6px; }
+.drawer-close, .drawer-nav .prev {
+  border: 0; background: var(--sep2); color: var(--text); cursor: pointer; transition: background-color .2s;
+}
+.drawer-close { width: 44px; height: 44px; border-radius: 50%; color: var(--text2); display: flex; align-items: center; justify-content: center; }
+.drawer-close:hover, .drawer-nav .prev:hover, .drawer-path button:hover { background: var(--fill); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 12px 24px 24px; display: flex; flex-direction: column; gap: 22px; }
+.drawer-hero { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.drawer-hero h2 { font-size: 34px; line-height: 1.05; font-weight: 800; letter-spacing: -1px; }
+.drawer-hero p { font-size: 17px; line-height: 1.5; color: var(--text2); }
+.skill-pill { font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 999px; }
+.skill-pill.done { background: rgba(48,209,88,0.16); color: #1F7A35; }
+.skill-pill.wip { background: rgba(10,132,255,0.14); color: var(--link); }
+.skill-pill.locked { background: var(--fill); color: var(--text2); }
+:root[data-theme="dark"] .skill-pill.done { color: #30D158; }
+.drawer-facts { margin: 0; background: var(--bg); border-radius: 16px; padding: 4px 16px; }
+.drawer-facts > div { display: flex; justify-content: space-between; gap: 12px; min-height: 48px; align-items: center; border-bottom: 1px solid var(--sep); font-size: 15px; }
+.drawer-facts > div:last-child { border-bottom: 0; }
+.drawer-facts dt { color: var(--text3); }
+.drawer-facts dd { margin: 0; font-weight: 600; text-align: right; }
+.drawer-path { display: flex; flex-direction: column; gap: 8px; }
+.drawer-path ol { list-style: none; margin: 0; padding: 0; }
+.drawer-path button {
+  width: 100%; display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 10px;
+  border: 0; border-radius: 12px; background: transparent; color: var(--text); text-align: left; cursor: pointer;
+}
+.drawer-path button.current { background: var(--bg); }
+.drawer-path .dot { width: 10px; height: 10px; }
+.drawer-path .name { flex: 1; font-size: 15px; font-weight: 500; }
+.drawer-path .current .name { font-weight: 700; }
+.drawer-path .state { font-size: 12px; color: var(--text3); }
+.drawer-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 14px 24px 24px; border-top: 1px solid var(--sep2); }
+.drawer-nav button { min-height: 48px; border-radius: 14px; font-size: 15px; font-weight: 600; }
+.drawer-nav .next { border: 0; background: var(--accent); color: #FFFFFF; cursor: pointer; }
+.drawer-nav .next:hover { filter: brightness(1.08); }
+
+@media (max-width: 720px) {
+  .skills-page { padding-top: 32px; }
+  .skills-intro h1 { font-size: 44px; letter-spacing: -1.2px; }
+  .skills-progress { max-width: none; }
+  .tree { padding: 32px 16px; }
 }

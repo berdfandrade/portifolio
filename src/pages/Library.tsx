@@ -30,7 +30,7 @@ export default function Library() {
           <Link to="/" className="brand">Bernardo</Link>
           <nav className="lib-nav" aria-label="Principal">
             <Link to="/" aria-current="page">Biblioteca</Link>
-            <a href="#">Skill Tree</a>
+            <Link to="/skill-tree">Skill Tree</Link>
             <Link to="/sobre">Sobre</Link>
             <a href="#">Contato</a>
           </nav>
