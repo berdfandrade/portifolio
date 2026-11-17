@@ -421,43 +421,89 @@ img { display: block; max-width: 100%; }
 .dot.wip { background: #0A84FF; }
 .dot.locked { background: var(--dash); }
 
-.tree { background: var(--card); border-radius: 28px; padding: 40px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px 24px; }
-.branch { display: flex; flex-direction: column; align-items: center; }
-.branch-head { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 24px; text-align: center; }
-.branch-head .tag { font-size: 12px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--tone-label); }
-.branch-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; }
-.branch-head .count { font-size: 13px; color: var(--text3); }
-.branch-skills { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
-.skill-node { display: flex; flex-direction: column; align-items: center; }
-.skill-node .link { width: 2px; height: 28px; border-radius: 2px; background: var(--tone); margin-bottom: 8px; }
-.skill-node.locked .link { background: var(--sep); }
-.skill-node:first-child .skill-tile { margin-top: 8px; }
-.skill-label { margin-top: 12px; font-size: 14px; font-weight: 600; text-align: center; }
-.skill-status { font-size: 12px; }
-.skill-status.done { color: #248A3D; }
-.skill-status.wip { color: var(--link); }
-.skill-status.locked { color: var(--text3); }
-:root[data-theme="dark"] .skill-status.done { color: #30D158; }
+/* Mapa de habilidades: painel com grade, como nas árvores de habilidade de jogos.
+   Claro no tema claro e escuro no tema escuro; os blocos coloridos são iguais nos dois. */
+.skill-map-scroll {
+  --map-bg: #FBFBFD; --map-grid: rgba(0,0,0,0.045); --map-border: var(--sep); --map-inset: #FFFFFF;
+  --map-line: rgba(0,0,0,0.1); --map-line-on: rgba(0,0,0,0.32); --map-muted: var(--text3);
+  --tile-edge: rgba(0,0,0,0.55); --tile-drop: rgba(0,0,0,0.35); --tile-glow: rgba(0,0,0,0.14);
+  --locked-bg: linear-gradient(150deg, #EDEDF0 0%, #E1E1E6 50%, #D4D4D9 100%); --locked-ink: #A1A1A6;
+  --tip-bg: #FFFFFF; --tip-border: var(--sep); --tip-ink: var(--text); --tip-shadow: rgba(0,0,0,0.14);
+  overflow-x: auto; border-radius: 18px; background: var(--map-bg);
+  background-image:
+    linear-gradient(var(--map-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--map-grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+  border: 1px solid var(--map-border); box-shadow: inset 0 0 0 1px var(--map-inset), 0 20px 50px rgba(0,0,0,0.06);
+}
+:root[data-theme="dark"] .skill-map-scroll {
+  --map-bg: #252527; --map-grid: rgba(255,255,255,0.025); --map-border: #3A3A3C; --map-inset: #141416;
+  --map-line: rgba(255,255,255,0.13); --map-line-on: rgba(255,255,255,0.42); --map-muted: #98989D;
+  --tile-edge: #111113; --tile-drop: #0B0B0C; --tile-glow: rgba(0,0,0,0.45);
+  --locked-bg: linear-gradient(150deg, #4A4A4E 0%, #3A3A3D 50%, #2E2E31 100%); --locked-ink: #707075;
+  --tip-bg: #0E0E10; --tip-border: #3A3A3C; --tip-ink: #F5F5F7; --tip-shadow: rgba(0,0,0,0.4);
+  box-shadow: inset 0 0 0 1px var(--map-inset), 0 20px 50px rgba(0,0,0,0.18);
+}
+.skill-map { position: relative; margin: 0 auto; }
+.skill-map-lines { position: absolute; inset: 0; }
+.skill-map-lines path { fill: none; stroke: var(--map-line); stroke-width: 4; stroke-linejoin: miter; }
+.skill-map-lines path.active { stroke: var(--map-line-on); }
+.map-branch {
+  position: absolute; top: 18px; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center;
+  font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.2px;
+}
+.map-branch .tag { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--tone-label); }
+:root[data-theme="dark"] .map-branch .tag { color: color-mix(in srgb, var(--tone) 55%, white); }
+.map-branch .count { font-size: 11px; font-weight: 500; color: var(--map-muted); }
 
+.map-tile {
+  position: absolute; width: 52px; height: 52px; padding: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: #FFFFFF;
+  border: 2px solid var(--tile-edge); border-radius: 7px;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--tone) 70%, white) 0%, var(--tone) 45%, color-mix(in srgb, var(--tone) 60%, black) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -3px 0 rgba(0,0,0,0.3), 0 3px 0 var(--tile-drop), 0 6px 14px var(--tile-glow);
+  transition: transform .15s ease, filter .15s ease;
+}
+.map-tile svg { filter: drop-shadow(0 1px 1px rgba(0,0,0,0.55)); }
+.map-tile.locked {
+  color: var(--locked-ink); background: var(--locked-bg);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -3px 0 rgba(0,0,0,0.12), 0 3px 0 var(--tile-drop);
+}
+.map-tile.locked svg { filter: none; }
+.map-tile:hover, .map-tile:focus-visible { transform: translateY(-2px); filter: brightness(1.15); z-index: 2; }
+.map-tile:active { transform: translateY(1px); }
+.map-tile:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+:root[data-theme="dark"] .map-tile:focus-visible { outline-color: #64B5FF; }
+/* Marca no canto inferior esquerdo, com contorno escuro para ler sobre qualquer cor */
+.map-mark { position: absolute; left: 3px; bottom: 2px; display: flex; filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000); }
+.map-mark.done { color: #4CE07A; }
+.map-mark.wip { color: #7CC4FF; }
+.map-mark.locked { color: #A1A1A6; }
+/* Nome da habilidade ao passar o mouse ou focar com o teclado */
+.map-tip {
+  position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translate(-50%, 4px);
+  display: flex; flex-direction: column; align-items: center; gap: 1px; white-space: nowrap;
+  padding: 6px 10px; border-radius: 8px; background: var(--tip-bg); border: 1px solid var(--tip-border);
+  font-size: 13px; color: var(--tip-ink); box-shadow: 0 8px 20px var(--tip-shadow);
+  opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s;
+}
+.map-tip .skill-status { font-size: 11px; }
+.map-tip .skill-status.done { color: #1F8A3E; }
+.map-tip .skill-status.wip { color: #0066CC; }
+.map-tip .skill-status.locked { color: var(--text3); }
+:root[data-theme="dark"] .map-tip .skill-status.done { color: #4CE07A; }
+:root[data-theme="dark"] .map-tip .skill-status.wip { color: #7CC4FF; }
+:root[data-theme="dark"] .map-tip .skill-status.locked { color: #A1A1A6; }
+.map-tile:hover .map-tip, .map-tile:focus-visible .map-tip { opacity: 1; transform: translate(-50%, 0); }
+
+/* Bloco grande na gaveta de detalhes */
 .skill-tile {
-  position: relative; width: 68px; height: 68px; border: 0; border-radius: 18px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  width: 68px; height: 68px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
   background: var(--tone); color: #FFFFFF;
   box-shadow: 0 8px 20px color-mix(in srgb, var(--tone) 25%, transparent), inset 0 1px 0 rgba(255,255,255,0.25);
-  transition: transform .25s cubic-bezier(.32,.72,0,1), box-shadow .25s;
 }
 .skill-tile.locked { background: var(--fill); color: var(--text3); box-shadow: inset 0 0 0 1px var(--sep); }
-button.skill-tile:hover { transform: translateY(-4px) scale(1.04); }
-button.skill-tile:active { transform: scale(.96); }
-button.skill-tile:focus-visible { outline: 3px solid var(--link); outline-offset: 4px; }
-.skill-tile.big { width: 96px; height: 96px; border-radius: 24px; cursor: default; }
-.skill-badge {
-  position: absolute; right: -6px; bottom: -6px; width: 24px; height: 24px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; border: 3px solid var(--card); color: #FFFFFF;
-}
-.skill-badge.done { background: #30D158; }
-.skill-badge.wip { background: #0A84FF; }
-.skill-badge.locked { background: var(--dash); color: var(--card); }
+.skill-tile.big { width: 96px; height: 96px; border-radius: 24px; }
 
 /* Gaveta de detalhes: <dialog> que desliza da direita */
 .skill-drawer {
@@ -473,7 +519,7 @@ button.skill-tile:focus-visible { outline: 3px solid var(--link); outline-offset
 .skill-drawer[open]::backdrop { background: rgba(0,0,0,0.32); backdrop-filter: blur(6px); }
 @starting-style { .skill-drawer[open]::backdrop { background: rgba(0,0,0,0); backdrop-filter: blur(0); } }
 @media (prefers-reduced-motion: reduce) {
-  .skill-drawer, .skill-drawer::backdrop, .skill-tile { transition: none; }
+  .skill-drawer, .skill-drawer::backdrop, .map-tile, .map-tip { transition: none; }
 }
 .drawer-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 14px 0 24px; }
 .drawer-branch { font-size: 13px; font-weight: 600; color: var(--tone-label); text-transform: uppercase; letter-spacing: 0.6px; }
@@ -516,5 +562,4 @@ button.skill-tile:focus-visible { outline: 3px solid var(--link); outline-offset
   .skills-page { padding-top: 32px; }
   .skills-intro h1 { font-size: 44px; letter-spacing: -1.2px; }
   .skills-progress { max-width: none; }
-  .tree { padding: 32px 16px; }
 }
