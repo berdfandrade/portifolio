@@ -259,7 +259,7 @@ img { display: block; max-width: 100%; }
 .tabs { display: none; }
 .about-hero { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; }
 .avatar-card { flex: 1 1 320px; max-width: 400px; margin: 0; background: var(--sand); border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-.avatar-card img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; }
+.avatar-card img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; image-rendering: pixelated; }
 /* Status do personagem: nível (idade), HP e experiência até o próximo aniversário */
 .stats { display: flex; flex-direction: column; gap: 8px; padding: 16px 20px 18px; background: rgba(58,42,24,0.08); color: var(--sand-ink); }
 .stats-title { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }

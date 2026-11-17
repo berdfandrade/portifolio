@@ -61,7 +61,7 @@ const pt = {
   about: {
     title: "Sobre",
     heroLabel: "Apresentação",
-    avatarAlt: "Retrato em pixel art do Bernardo: cabelo castanho cacheado, barba, fones no pescoço e camiseta preta com um alienígena de fliperama",
+    avatarAlt: "Avatar em pixel art do Bernardo: cabelo preto bagunçado e camiseta azul",
     statsTitle: "Status do Bernardo",
     classWord: "Classe:",
     className: "Programador",
@@ -193,7 +193,7 @@ const en: Strings = {
   about: {
     title: "About",
     heroLabel: "Introduction",
-    avatarAlt: "Pixel-art portrait of Bernardo: curly brown hair, a beard, headphones around his neck and a black T-shirt with an arcade alien",
+    avatarAlt: "Pixel-art avatar of Bernardo: messy black hair and a blue T-shirt",
     statsTitle: "Bernardo's stats",
     classWord: "Class:",
     className: "Programmer",

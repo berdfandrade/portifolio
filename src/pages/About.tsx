@@ -6,7 +6,7 @@ import BirthChart from '../components/BirthChart';
 import { useI18n } from '../i18n';
 import { CHART, PLACEMENT_ORDER, formatDegrees } from '../data/astro';
 
-const AVATAR = `${import.meta.env.BASE_URL}assets/avatar.webp`;
+const AVATAR = `${import.meta.env.BASE_URL}assets/avatar.png`;
 
 // Nível = idade; a experiência é quanto do ano já passou desde o último aniversário (15 de janeiro de 1996).
 const BIRTH = { year: 1996, month: 0, day: 15 };
@@ -58,7 +58,7 @@ export default function About() {
       <main className="about">
         <section className="about-hero" aria-label={a.heroLabel}>
           <figure className="avatar-card">
-            <img src={AVATAR} width={800} height={800} alt={a.avatarAlt} />
+            <img src={AVATAR} width={400} height={400} alt={a.avatarAlt} />
             <figcaption className="stats">
               <span className="stats-title">{a.statsTitle}</span>
               <span className="stats-head">
