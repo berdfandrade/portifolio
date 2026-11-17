@@ -17,7 +17,6 @@ export default function Library() {
   const [query, setQuery] = useState('');
 
   const normalize = (s: string) => s.toLocaleLowerCase(t.locale);
-  const countOf = (id: Category) => (id === 'Tudo' ? projects.length : projects.filter((p) => p.kind === id).length);
   const q = normalize(query.trim());
   const shown = projects.filter(
     (p) =>
@@ -56,7 +55,6 @@ export default function Library() {
             {CATEGORIES.map((c) => (
               <button key={c} type="button" className="cat" aria-pressed={filter === c} onClick={() => setFilter(c)}>
                 <span>{t.categories[c].label}</span>
-                <span className="count">{countOf(c)}</span>
               </button>
             ))}
           </div>
@@ -105,13 +103,6 @@ export default function Library() {
               {shown.map((p) => (
                 <Tile key={p.slug} project={p} />
               ))}
-              <div className="tile placeholder">
-                <div className="cover" aria-hidden="true">+</div>
-                <div className="tile-meta">
-                  <span className="tile-title">{l.nextProject}</span>
-                  <span className="tile-sub">{l.comingSoon}</span>
-                </div>
-              </div>
             </div>
           </section>
 

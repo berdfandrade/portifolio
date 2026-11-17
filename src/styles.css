@@ -87,8 +87,6 @@ img { display: block; max-width: 100%; }
 .tile-meta { display: flex; flex-direction: column; gap: 2px; }
 .tile-title { font-size: 15px; font-weight: 600; }
 .tile-sub { font-size: 13px; color: var(--text3); }
-.tile.placeholder .cover { border: 2px dashed var(--dash); box-shadow: none; align-items: center; justify-content: center; color: var(--text3); font-size: 40px; font-weight: 300; }
-.tile.placeholder .tile-title { color: var(--text3); }
 
 /* ---------- Biblioteca ---------- */
 /* Navegação no estilo da barra do apple.com: texto simples, sem sublinhado; a página atual fica em destaque */
@@ -123,9 +121,7 @@ img { display: block; max-width: 100%; }
   text-align: left; cursor: pointer;
 }
 .cat:hover { background: var(--fill); }
-.cat .count { font-size: 12px; color: var(--text3); }
 .cat[aria-pressed="true"] { background: var(--accent); color: #FFFFFF; }
-.cat[aria-pressed="true"] .count { color: #FFFFFF; opacity: 0.85; }
 .profile { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: var(--card); border-radius: 14px; }
 .profile-badge { width: 48px; height: 48px; border-radius: 50%; background: var(--text); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
 .profile-name { font-size: 15px; font-weight: 600; }
