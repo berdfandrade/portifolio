@@ -1,5 +1,6 @@
 // Skill Tree: três ramos, cada um uma sequência de habilidades.
 // Cada habilidade "requer" a anterior do ramo e "desbloqueia" a seguinte.
+// Os nomes dos status ficam em src/i18n/strings.ts e a versão em inglês em skills.en.ts.
 
 export type SkillStatus = "done" | "wip" | "locked";
 
@@ -22,12 +23,6 @@ export interface Branch {
   label: string;
   skills: Skill[];
 }
-
-export const STATUS: Record<SkillStatus, { text: string }> = {
-  done: { text: "Dominada" },
-  wip: { text: "Treinando" },
-  locked: { text: "Bloqueada" },
-};
 
 export const TREE: Branch[] = [
   {
@@ -75,4 +70,5 @@ export const TREE: Branch[] = [
 ];
 
 /** Todas as habilidades em ordem (para "Anterior" e "Próxima"), com o ramo e a posição nele. */
-export const ALL_SKILLS = TREE.flatMap((branch) => branch.skills.map((skill, index) => ({ skill, branch, index })));
+export const flattenTree = (tree: Branch[]) =>
+  tree.flatMap((branch) => branch.skills.map((skill, index) => ({ skill, branch, index })));

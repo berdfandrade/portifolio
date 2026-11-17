@@ -1,15 +1,19 @@
 import { Link } from 'react-router';
 import ThemeToggle from './ThemeToggle';
+import LangSwitch from './LangSwitch';
+import { useI18n } from '../i18n';
 
-/** Cabeçalho das páginas internas: voltar, título e tema. */
+/** Cabeçalho das páginas internas: voltar, título, idioma e tema. */
 export default function TopBar({ title, contact = false }: { title: string; contact?: boolean }) {
+  const { t, to } = useI18n();
   return (
     <header className="topbar">
       <div className="topbar-inner">
-        <Link to="/" className="back">‹ Biblioteca</Link>
+        <Link to={to('library')} className="back">{t.common.back}</Link>
         <span className="brand">{title}</span>
         <div className="topbar-actions">
-          {contact && <a href="#" className="topbar-link">Contato</a>}
+          {contact && <a href="#" className="topbar-link">{t.common.contact}</a>}
+          <LangSwitch />
           <ThemeToggle />
         </div>
       </div>

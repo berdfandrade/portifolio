@@ -4,13 +4,15 @@ import TopBar from '../components/TopBar';
 import Tile from '../components/Tile';
 import Lightbox from '../components/Lightbox';
 import { usePageTitle } from '../components/Layout';
-import { PROJECTS, findProject, type Shot } from '../data/projects';
+import type { Shot } from '../data/projects';
+import { useI18n } from '../i18n';
 import NotFound from './NotFound';
 
 const isExternal = (href: string) => /^https?:/.test(href);
 
 export default function ProjectPage() {
   const { slug } = useParams();
+  const { findProject } = useI18n();
   const project = findProject(slug);
   if (!project?.page) return <NotFound />;
   // `key` reinicia o estado (visualizador aberto) ao trocar de projeto pelo "Mais na biblioteca".
@@ -18,6 +20,7 @@ export default function ProjectPage() {
 }
 
 function ProjectView({ slug }: { slug: string }) {
+  const { t, to, projects, findProject } = useI18n();
   const p = findProject(slug)!;
   const d = p.page!;
   usePageTitle(p.title);
@@ -38,7 +41,7 @@ function ProjectView({ slug }: { slug: string }) {
     '--project-accent': p.accent ?? p.fg,
   } as CSSProperties;
 
-  const more = PROJECTS.filter((x) => x.page && x.slug !== p.slug).slice(0, 3);
+  const more = projects.filter((x) => x.page && x.slug !== p.slug).slice(0, 3);
 
   return (
     <>
@@ -46,7 +49,7 @@ function ProjectView({ slug }: { slug: string }) {
       <main className="project" style={vars}>
         <div className="project-hero">
           <div className="project-cover" aria-hidden="true">
-            <span className="kind">{p.kind}</span>
+            <span className="kind">{t.kinds[p.kind]}</span>
             <span className="name">{p.coverTitle}</span>
           </div>
           <div className="project-intro">
@@ -81,7 +84,7 @@ function ProjectView({ slug }: { slug: string }) {
           </figure>
         )}
 
-        <section aria-label="Ficha técnica">
+        <section aria-label={t.project.factSheet}>
           <dl className="facts">
             {d.facts.map(([k, v]) => (
               <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
@@ -91,7 +94,7 @@ function ProjectView({ slug }: { slug: string }) {
 
         {d.highlights && (
           <section aria-labelledby="highlights-title">
-            <h2 className="section-title" id="highlights-title">Destaques</h2>
+            <h2 className="section-title" id="highlights-title">{t.project.highlights}</h2>
             <ul className="highlights">
               {d.highlights.map(([t, body]) => (
                 <li key={t} className="highlight">
@@ -105,7 +108,7 @@ function ProjectView({ slug }: { slug: string }) {
 
         {d.chapters && (
           <section aria-labelledby="chapters-title" className="tight">
-            <h2 className="section-title" id="chapters-title">Capítulos</h2>
+            <h2 className="section-title" id="chapters-title">{t.project.chapters}</h2>
             <div className="chapters">
               {d.chapters.map(([t, body], i) => (
                 <details key={t} className="chapter" name="capitulo" open={i === 0}>
@@ -133,8 +136,8 @@ function ProjectView({ slug }: { slug: string }) {
 
         {d.phones && (
           <section aria-labelledby="phones-title">
-            <h2 className="section-title" id="phones-title">Telas</h2>
-            <div className="phones" tabIndex={0} aria-label="Telas do aplicativo (role para os lados)">
+            <h2 className="section-title" id="phones-title">{t.project.screens}</h2>
+            <div className="phones" tabIndex={0} aria-label={t.project.phonesLabel}>
               {d.phones.map((s, i) => (
                 <figure key={s.src} className="phone">
                   <ShotButton shot={s} onOpen={() => setOpen(phonesOffset + i)} />
@@ -147,7 +150,7 @@ function ProjectView({ slug }: { slug: string }) {
 
         {d.gallery && (
           <section aria-labelledby="gallery-title">
-            <h2 className="section-title" id="gallery-title">Telas</h2>
+            <h2 className="section-title" id="gallery-title">{t.project.screens}</h2>
             <div className="gallery">
               {d.gallery.map((g, i) => (
                 <figure key={g.src} className="shot">
@@ -161,8 +164,8 @@ function ProjectView({ slug }: { slug: string }) {
 
         <section aria-labelledby="more-title">
           <div className="section-head">
-            <h2 className="section-title" id="more-title">Mais na biblioteca</h2>
-            <Link to="/" className="see-all">Ver tudo ›</Link>
+            <h2 className="section-title" id="more-title">{t.project.more}</h2>
+            <Link to={to('library')} className="see-all">{t.project.seeAll}</Link>
           </div>
           <div className="more">
             {more.map((x) => (
@@ -177,8 +180,9 @@ function ProjectView({ slug }: { slug: string }) {
 }
 
 function ShotButton({ shot, eager = false, onOpen }: { shot: Shot; eager?: boolean; onOpen: () => void }) {
+  const { t } = useI18n();
   return (
-    <button type="button" className="shot-btn" aria-label={`Ampliar: ${shot.caption || shot.alt}`} onClick={onOpen}>
+    <button type="button" className="shot-btn" aria-label={`${t.project.enlarge}: ${shot.caption || shot.alt}`} onClick={onOpen}>
       <img
         src={shot.src}
         alt={shot.alt}

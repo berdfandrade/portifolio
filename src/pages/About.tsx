@@ -2,32 +2,19 @@ import { useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router';
 import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
-import { PROJECTS } from '../data/projects';
+import { useI18n } from '../i18n';
 
 const AVATAR = `${import.meta.env.BASE_URL}assets/avatar.png`;
 
 // Abas da versão celular. No desktop todas as seções aparecem juntas (ver styles.css).
-const TABS = [
-  { id: 'ficha', label: 'Ficha' },
-  { id: 'astral', label: 'Astral' },
-  { id: 'humor', label: 'Humor' },
-] as const;
-type Tab = (typeof TABS)[number]['id'];
+const TABS = ['ficha', 'astral', 'humor'] as const;
+type Tab = (typeof TABS)[number];
 
 const HUMOR = { positividade: 85, ironia: 95 };
 const ring = (r: number, pct: number) => {
   const c = 2 * Math.PI * r;
   return `${((c * pct) / 100).toFixed(1)} ${c.toFixed(1)}`;
 };
-
-const PLACEMENTS: [string, string][] = [
-  ['Sol', 'Capricórnio'],
-  ['Lua', '[SIGNO]'],
-  ['Ascendente', '[SIGNO]'],
-  ['Mercúrio', '[SIGNO]'],
-  ['Vênus', '[SIGNO]'],
-  ['Marte', '[SIGNO]'],
-];
 
 // Mapa astral: divisões dos signos (anel externo) e das casas (anel interno), e os glifos.
 const SIGN_LINES = [
@@ -48,10 +35,11 @@ const GLYPHS: [number, number, string][] = [
 const CAPRICORNIO = '♑︎';
 
 const SKILLS = ['Figma', 'React', 'React Native', 'NestJS', 'FastAPI', 'Rust', 'C / C++', 'Qt', 'Tailwind', 'Playwright', 'Pixel art'];
-const TRAITS = ['Determinado', 'Disciplinado', 'Ambicioso', 'Paciente'];
 
 export default function About() {
-  usePageTitle('Sobre');
+  const { t, to, projects } = useI18n();
+  const a = t.about;
+  usePageTitle(a.title);
   const [tab, setTab] = useState<Tab>('ficha');
   const panel = (id: Tab) => (tab === id ? 'is-active' : undefined);
 
@@ -59,63 +47,63 @@ export default function About() {
     const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
     if (!step) return;
     const next = TABS[(i + step + TABS.length) % TABS.length];
-    setTab(next.id);
-    document.getElementById(`tab-${next.id}`)?.focus();
+    setTab(next);
+    document.getElementById(`tab-${next}`)?.focus();
   };
 
   return (
     <>
-      <TopBar title="Sobre" />
+      <TopBar title={a.title} />
       <main className="about">
-        <section className="about-hero" aria-label="Ficha de personagem">
+        <section className="about-hero" aria-label={a.heroLabel}>
           <figure className="avatar-card">
-            <img src={AVATAR} width={400} height={400} alt="Avatar em pixel art do Bernardo: cabelo preto bagunçado e camiseta azul" />
+            <img src={AVATAR} width={400} height={400} alt={a.avatarAlt} />
             <div className="avatar-foot">
-              <span className="player">Jogador 1</span>
-              <span className="online">Online</span>
+              <span className="player">{a.player}</span>
+              <span className="online">{a.online}</span>
             </div>
             <figcaption className="avatar-caption" aria-hidden="true">
               <span className="cap-name">Bernardo</span>
-              <span className="cap-sub">Classe Desenvolvedor · {CAPRICORNIO} Capricórnio</span>
+              <span className="cap-sub">{a.classLine} · {CAPRICORNIO} {a.sign}</span>
             </figcaption>
           </figure>
 
           <div className={`about-intro ${panel('ficha') ?? ''}`} data-panel="ficha">
-            <p className="eyebrow">Ficha de personagem</p>
+            <p className="eyebrow">{a.eyebrow}</p>
             <h1>Bernardo</h1>
             <p className="lede">
-              <span className="eyebrow desc-label">Descrição</span>
-              Classe <strong>Desenvolvedor</strong>. Otimista por padrão, irônico por esporte. Constrói apps, automações e páginas — e coleciona tudo nesta biblioteca.
+              <span className="eyebrow desc-label">{a.descLabel}</span>
+              {a.classWord} <strong>{a.className}</strong>. {a.description}
             </p>
             <dl className="facts">
-              {[['Altura', '1.73m'], ['Peso', '82Kg'], ['Signo', 'Capricórnio'], ['Elemento', 'Terra']].map(([k, v]) => (
+              {a.facts.map(([k, v]) => (
                 <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
               ))}
             </dl>
           </div>
         </section>
 
-        <div className="tabs" role="tablist" aria-label="Seções da ficha">
-          {TABS.map((t, i) => (
+        <div className="tabs" role="tablist" aria-label={a.tabsLabel}>
+          {TABS.map((id, i) => (
             <button
-              key={t.id}
-              id={`tab-${t.id}`}
+              key={id}
+              id={`tab-${id}`}
               type="button"
               className="tab"
               role="tab"
-              aria-selected={tab === t.id}
-              tabIndex={tab === t.id ? 0 : -1}
-              onClick={() => setTab(t.id)}
+              aria-selected={tab === id}
+              tabIndex={tab === id ? 0 : -1}
+              onClick={() => setTab(id)}
               onKeyDown={(e) => onTabKey(e, i)}
             >
-              {t.label}
+              {a.tabs[id]}
             </button>
           ))}
         </div>
 
         <section className={`card split humor ${panel('humor') ?? ''}`} aria-labelledby="humor" data-panel="humor">
           <div className="rings">
-            <svg role="img" aria-label={`Positividade ${HUMOR.positividade}%, ironia ${HUMOR.ironia}%`} width="220" height="220" viewBox="0 0 220 220">
+            <svg role="img" aria-label={`${a.positivity} ${HUMOR.positividade}%, ${a.irony.toLowerCase()} ${HUMOR.ironia}%`} width="220" height="220" viewBox="0 0 220 220">
               <circle cx="110" cy="110" r="94" fill="none" stroke="#FF375F" strokeOpacity="0.18" strokeWidth="22" />
               <circle cx="110" cy="110" r="94" fill="none" stroke="#FF375F" strokeWidth="22" strokeLinecap="round" strokeDasharray={ring(94, HUMOR.positividade)} transform="rotate(-90 110 110)" />
               <circle cx="110" cy="110" r="66" fill="none" stroke="#30D158" strokeOpacity="0.18" strokeWidth="22" />
@@ -123,19 +111,19 @@ export default function About() {
             </svg>
           </div>
           <div className="split-text">
-            <p className="eyebrow">Estilo de humor</p>
-            <h2 id="humor">Positivo e irônico</h2>
-            <p className="body">Vê o lado bom de quase tudo — e faz um comentário sarcástico sobre ele logo em seguida.</p>
+            <p className="eyebrow">{a.humorEyebrow}</p>
+            <h2 id="humor">{a.humorTitle}</h2>
+            <p className="body">{a.humorText}</p>
             <div className="meters">
-              <div className="meter"><span className="label pos">Positividade</span><span className="value">{HUMOR.positividade}%</span></div>
-              <div className="meter"><span className="label iron">Ironia</span><span className="value">{HUMOR.ironia}%</span></div>
+              <div className="meter"><span className="label pos">{a.positivity}</span><span className="value">{HUMOR.positividade}%</span></div>
+              <div className="meter"><span className="label iron">{a.irony}</span><span className="value">{HUMOR.ironia}%</span></div>
             </div>
           </div>
         </section>
 
         <section className={`card split astro ${panel('astral') ?? ''}`} aria-labelledby="mapa" data-panel="astral">
           <div className="chart">
-            <svg role="img" aria-label="Mapa astral com o Sol em Capricórnio" viewBox="0 0 320 320">
+            <svg role="img" aria-label={a.chartLabel} viewBox="0 0 320 320">
               <circle cx="160" cy="160" r="150" style={{ fill: 'var(--card)', stroke: 'var(--sep)' }} strokeWidth="1.5" />
               <path d="M160.0 10.0 A150 150 0 0 0 85.0 30.1 L108.0 69.9 A104 104 0 0 1 160.0 56.0 Z" style={{ fill: 'var(--sand)' }} />
               <g style={{ stroke: 'var(--sep)' }} strokeWidth="1">
@@ -153,37 +141,37 @@ export default function About() {
               </g>
               <circle cx="138.5" cy="79.8" r="13" style={{ fill: '#FF9F0A' }} />
               <text x="138.5" y="79.8" textAnchor="middle" dominantBaseline="central" style={{ fill: 'var(--sand-ink)', fontSize: 15, fontWeight: 700, fontFamily: 'sans-serif' }}>☉︎</text>
-              <text x="160" y="152" textAnchor="middle" style={{ fill: 'var(--text3)', fontSize: 11, fontWeight: 600, letterSpacing: 1 }}>SOL EM</text>
-              <text x="160" y="172" textAnchor="middle" style={{ fill: 'var(--text)', fontSize: 15, fontWeight: 700 }}>Capricórnio</text>
+              <text x="160" y="152" textAnchor="middle" style={{ fill: 'var(--text3)', fontSize: 11, fontWeight: 600, letterSpacing: 1 }}>{a.sunIn}</text>
+              <text x="160" y="172" textAnchor="middle" style={{ fill: 'var(--text)', fontSize: 15, fontWeight: 700 }}>{a.sign}</text>
             </svg>
           </div>
           <div className="split-text astro-text">
-            <p className="eyebrow">Mapa astral</p>
-            <h2 id="mapa">Capricórnio, signo de terra</h2>
-            <p className="body">Regido por Saturno: foco, disciplina e paciência para construir coisas que duram.</p>
+            <p className="eyebrow">{a.astroEyebrow}</p>
+            <h2 id="mapa">{a.astroTitle}</h2>
+            <p className="body">{a.astroText}</p>
             <div className="chips">
-              {TRAITS.map((t) => <span key={t} className="chip">{t}</span>)}
+              {a.traits.map((trait) => <span key={trait} className="chip">{trait}</span>)}
             </div>
             <dl className="placements">
-              {PLACEMENTS.map(([planet, sign]) => (
+              {a.placements.map(([planet, sign]) => (
                 <div key={planet}><dt>{planet}</dt><dd>{sign}</dd></div>
               ))}
             </dl>
           </div>
         </section>
 
-        <section className={`pair ${panel('ficha') ?? ''}`} data-panel="ficha" aria-label="Inventário e missões">
+        <section className={`pair ${panel('ficha') ?? ''}`} data-panel="ficha" aria-label={a.pairLabel}>
           <div className="card">
-            <h2>Inventário</h2>
+            <h2>{a.inventory}</h2>
             <div className="chips">
               {SKILLS.map((s) => <span key={s} className="chip">{s}</span>)}
             </div>
-            <Link to="/skill-tree">Ver Skill Tree completa ›</Link>
+            <Link to={to('skills')}>{a.skillsLink}</Link>
           </div>
           <div className="card">
-            <h2>Missões ativas</h2>
-            <p>{new Intl.ListFormat('pt-BR').format(PROJECTS.map((p) => p.title))}.</p>
-            <Link to="/">Abrir a biblioteca ›</Link>
+            <h2>{a.quests}</h2>
+            <p>{new Intl.ListFormat(t.locale).format(projects.map((p) => p.title))}.</p>
+            <Link to={to('library')}>{a.libraryLink}</Link>
           </div>
         </section>
       </main>

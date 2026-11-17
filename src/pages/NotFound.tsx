@@ -1,17 +1,19 @@
 import { Link } from 'react-router';
 import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
+import { useI18n } from '../i18n';
 
 export default function NotFound() {
-  usePageTitle('Não encontrado');
+  const { t, to } = useI18n();
+  usePageTitle(t.notFound.title);
   return (
     <>
       <TopBar title="Bernardo" />
       <main className="project not-found">
-        <h1>Página não encontrada</h1>
-        <p className="lede">Esse endereço não existe na biblioteca.</p>
+        <h1>{t.notFound.heading}</h1>
+        <p className="lede">{t.notFound.text}</p>
         <div className="btns">
-          <Link className="btn" to="/">Voltar para a biblioteca</Link>
+          <Link className="btn" to={to('library')}>{t.notFound.back}</Link>
         </div>
       </main>
     </>

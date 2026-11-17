@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useI18n } from '../i18n';
 
 // O tema inicial é aplicado por um script no index.html (sistema ou escolha salva).
 const root = document.documentElement;
 
 export default function ThemeToggle() {
+  const { t } = useI18n();
   const [dark, setDark] = useState(() => root.dataset.theme === 'dark');
 
   const toggle = () => {
@@ -23,7 +25,7 @@ export default function ThemeToggle() {
       className="theme-toggle"
       onClick={toggle}
       aria-pressed={dark}
-      aria-label={dark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+      aria-label={dark ? t.common.themeToLight : t.common.themeToDark}
     >
       {dark ? (
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

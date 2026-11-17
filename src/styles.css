@@ -100,7 +100,12 @@ img { display: block; max-width: 100%; }
 }
 .search input { border: 0; background: transparent; outline: none; font: inherit; font-size: 14px; color: var(--text); width: 100%; }
 .search:focus-within { outline: 3px solid var(--accent); outline-offset: 2px; }
-.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.topbar-actions { display: flex; align-items: center; gap: 4px; }
+.lang-switch {
+  min-width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; font-size: 13px; font-weight: 600; letter-spacing: 0.4px; color: var(--text2);
+}
+.lang-switch:hover { color: var(--text); background: var(--fill); text-decoration: none; }
 
 .lib { max-width: 1280px; margin: 0 auto; padding: 32px 24px 96px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
 .lib-aside { flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 28px; }
@@ -310,7 +315,7 @@ img { display: block; max-width: 100%; }
   .topbar.sticky { position: static; }
   .topbar.sticky .topbar-inner { gap: 4px 16px; }
   .topbar.sticky .brand { order: 1; }
-  .topbar.sticky .theme-toggle { order: 2; margin-right: -10px; }
+  .topbar.sticky .topbar-actions { order: 2; margin-right: -10px; }
   .lib-nav { order: 3; flex-basis: 100%; }
   .search { order: 4; flex: 1 1 100%; margin: 8px 0 12px; }
   /* Projeto */

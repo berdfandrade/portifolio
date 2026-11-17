@@ -4,6 +4,8 @@
 
 Meu portfólio pessoal, organizado como uma **biblioteca de música**: cada projeto é um "álbum" com capa, ficha técnica, destaques e prints. O visual segue a linguagem da Apple (tipografia do sistema, cartões arredondados, tema claro e escuro) e funciona bem no celular.
 
+O site é bilíngue: português em `/` e inglês em `/en`. Um botão PT/EN no cabeçalho leva para a mesma página no outro idioma.
+
 ## Páginas
 
 | Rota | O que tem |
@@ -14,6 +16,8 @@ Meu portfólio pessoal, organizado como uma **biblioteca de música**: cada proj
 | `/skill-tree` | **Skill Tree**: três ramos (Front-end, Automação, Design) com habilidades dominadas, em treino e bloqueadas, o progresso geral e uma gaveta lateral com os detalhes de cada habilidade |
 
 Projetos com página hoje: Verdant, PixelForge, Ironclad, printa, Owlio, Aplicador de Vagas, Event Hub e mac. Os textos e as imagens vêm dos READMEs dos repositórios no [GitHub](https://github.com/berdfandrade).
+
+Cada página também tem um endereço em inglês: `/en`, `/en/project/:slug`, `/en/about` e `/en/skill-tree`.
 
 ## Stack
 
@@ -49,8 +53,12 @@ public/assets/            imagens servidas como estão
 src/
   main.tsx                rotas e ponto de entrada
   styles.css              todo o CSS (tokens de cor, componentes, responsivo)
-  data/projects.ts        conteúdo dos projetos e categorias
-  data/skills.ts          ramos e habilidades da Skill Tree
+  data/projects.ts        conteúdo dos projetos e categorias (português)
+  data/projects.en.ts     textos dos projetos em inglês
+  data/skills.ts          ramos e habilidades da Skill Tree (português)
+  data/skills.en.ts       textos da Skill Tree em inglês
+  i18n/strings.ts         textos da interface nos dois idiomas
+  i18n/index.tsx          rotas por idioma e o hook useI18n()
   components/
     Layout.tsx            volta ao topo ao trocar de página e define o título da aba
     TopBar.tsx            cabeçalho das páginas internas
@@ -92,6 +100,8 @@ Todo o conteúdo fica em [`src/data/projects.ts`](src/data/projects.ts). Para cr
 ```
 
 Coloque as imagens em `public/assets/projects/<slug>/`. As seções da página (vitrine, destaques, capítulos, código e galeria) só aparecem quando o campo correspondente existe. Os tipos do TypeScript avisam se faltar algum campo obrigatório.
+
+Depois, coloque os textos em inglês com o mesmo `slug` em [`src/data/projects.en.ts`](src/data/projects.en.ts). As listas (links, ficha, destaques, galeria...) seguem a mesma ordem das listas em português; o que faltar aparece em português. Os textos da interface (botões, títulos, rótulos) ficam em [`src/i18n/strings.ts`](src/i18n/strings.ts), onde o TypeScript exige que o objeto em inglês tenha todas as chaves do português.
 
 ## Tema
 

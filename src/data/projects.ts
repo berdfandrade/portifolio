@@ -1,5 +1,6 @@
-// Conteúdo do portfólio. Projetos com `page` ganham uma página em /projeto/<slug>.
+// Conteúdo do portfólio. Projetos com `page` ganham uma página em /projeto/<slug> (e /en/project/<slug>).
 // Ordem = mais recentes primeiro. Textos e imagens vêm dos READMEs no GitHub.
+// A versão em inglês dos textos fica em projects.en.ts.
 
 export type Kind = "App" | "Desktop" | "Sistemas" | "Web" | "Automação";
 
@@ -640,18 +641,6 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-export const CATEGORIES: {
-  id: Kind | "Tudo";
-  label: string;
-  heading: string;
-}[] = [
-  { id: "Tudo", label: "Tudo", heading: "Todos os projetos" },
-  { id: "App", label: "Apps", heading: "Apps" },
-  { id: "Desktop", label: "Desktop", heading: "Desktop" },
-  { id: "Sistemas", label: "Sistemas", heading: "Sistemas" },
-  { id: "Web", label: "Web", heading: "Web" },
-  { id: "Automação", label: "Automação", heading: "Automação" },
-];
-
-export const findProject = (slug: string | undefined) =>
-  PROJECTS.find((p) => p.slug === slug && p.page);
+/** Filtros da Biblioteca, na ordem em que aparecem. Os nomes de cada idioma ficam em src/i18n/strings.ts. */
+export const CATEGORIES = ["Tudo", "App", "Desktop", "Sistemas", "Web", "Automação"] as const satisfies readonly (Kind | "Tudo")[];
+export type Category = (typeof CATEGORIES)[number];

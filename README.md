@@ -4,7 +4,7 @@
 
 My personal portfolio, laid out like a **music library**: each project is an "album" with a cover, a fact sheet, highlights and screenshots. The look follows Apple's design language (system typography, rounded cards, light and dark themes) and works well on phones.
 
-The site content is in Brazilian Portuguese.
+The site is bilingual: Brazilian Portuguese at `/` and English at `/en`. A PT/EN button in the header switches to the same page in the other language.
 
 ## Pages
 
@@ -16,6 +16,8 @@ The site content is in Brazilian Portuguese.
 | `/skill-tree` | **Skill Tree**: three branches (Front-end, Automation, Design) with mastered, training and locked skills, overall progress, and a side drawer with each skill's details |
 
 Projects with a page today: Verdant, PixelForge, Ironclad, printa, Owlio, Aplicador de Vagas, Event Hub and mac. Texts and images come from the READMEs of the repositories on [GitHub](https://github.com/berdfandrade).
+
+Each page has an English address too: `/en`, `/en/project/:slug`, `/en/about` and `/en/skill-tree`.
 
 ## Stack
 
@@ -51,8 +53,12 @@ public/assets/            images served as-is
 src/
   main.tsx                routes and entry point
   styles.css              all the CSS (color tokens, components, responsive rules)
-  data/projects.ts        project content and categories
-  data/skills.ts          Skill Tree branches and skills
+  data/projects.ts        project content and categories (Portuguese)
+  data/projects.en.ts     English text for the projects
+  data/skills.ts          Skill Tree branches and skills (Portuguese)
+  data/skills.en.ts       English text for the Skill Tree
+  i18n/strings.ts         interface text in both languages
+  i18n/index.tsx          language routes and the useI18n() hook
   components/
     Layout.tsx            scrolls to the top on navigation and sets the tab title
     TopBar.tsx            header for inner pages
@@ -94,6 +100,8 @@ All content lives in [`src/data/projects.ts`](src/data/projects.ts). To add a pr
 ```
 
 Put the images in `public/assets/projects/<slug>/`. Each page section (showcase, highlights, chapters, code and gallery) only shows up when its field exists. TypeScript flags any missing required field.
+
+Then add the English text under the same `slug` in [`src/data/projects.en.ts`](src/data/projects.en.ts). Its lists (links, facts, highlights, gallery...) follow the same order as the Portuguese ones; anything missing falls back to Portuguese. Interface text (buttons, headings, labels) lives in [`src/i18n/strings.ts`](src/i18n/strings.ts), where TypeScript requires the English object to have every key the Portuguese one has.
 
 ## Theme
 
