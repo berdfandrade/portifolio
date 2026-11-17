@@ -287,9 +287,22 @@ img { display: block; max-width: 100%; }
 .iron { color: #248A3D; }
 :root[data-theme="dark"] .iron { color: #30D158; }
 
-.chart { flex: 0 1 320px; min-width: 260px; }
-.chart svg { display: block; width: 100%; max-width: 320px; height: auto; }
+.chart { flex: 0 1 360px; min-width: 260px; }
+.chart svg { display: block; width: 100%; max-width: 360px; height: auto; }
 .chart .glyph { font-size: 20px; font-family: 'Segoe UI Symbol', 'Apple Symbols', 'Noto Sans Symbols', sans-serif; fill: var(--text3); }
+.chart .axis { stroke: var(--text2); stroke-width: 1.5; }
+.chart .axis-label { font-size: 12px; font-weight: 700; fill: var(--text); text-anchor: middle; dominant-baseline: central; }
+.chart .planet-ticks { stroke: var(--text3); stroke-width: 1; }
+.chart .planet {
+  font-size: 15px; font-family: 'Segoe UI Symbol', 'Apple Symbols', 'Noto Sans Symbols', sans-serif;
+  fill: var(--text); text-anchor: middle; dominant-baseline: central;
+  /* contorno da cor do fundo para os símbolos não se misturarem com as linhas */
+  stroke: var(--card); stroke-width: 3px; paint-order: stroke; stroke-linejoin: round;
+}
+.chart .planet.sun { fill: var(--sand-ink); stroke: none; font-weight: 700; }
+.chart .planet .retro { font-size: 8px; font-weight: 700; font-family: Inter, sans-serif; }
+.placements .deg { font-weight: 500; color: var(--text3); font-variant-numeric: tabular-nums; margin-left: 4px; }
+.placements .retro { text-decoration: none; color: var(--text3); }
 .astro-text { flex: 1 1 360px; gap: 18px; }
 .placements { margin: 0; border-top: 1px solid var(--sep); }
 .placements > div { display: flex; justify-content: space-between; align-items: center; min-height: 44px; border-bottom: 1px solid var(--sep2); font-size: 15px; }

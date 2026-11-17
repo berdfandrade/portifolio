@@ -1,5 +1,6 @@
 // Textos da interface em português e inglês. `en` precisa ter exatamente as mesmas chaves que `pt`.
 import type { Kind } from "../data/projects";
+import type { Point, Sign } from "../data/astro";
 
 const pt = {
   locale: "pt-BR",
@@ -82,21 +83,21 @@ const pt = {
     humorText: "Vê o lado bom de quase tudo — e faz um comentário sarcástico sobre ele logo em seguida.",
     positivity: "Positividade",
     irony: "Ironia",
-    chartLabel: "Mapa astral com o Sol em Capricórnio",
+    chartLabel: "Mapa astral: Sol em Capricórnio, Lua em Escorpião e Ascendente em Peixes",
     sunIn: "SOL EM",
-    sign: "Capricórnio",
+    signs: {
+      aries: "Áries", taurus: "Touro", gemini: "Gêmeos", cancer: "Câncer", leo: "Leão", virgo: "Virgem",
+      libra: "Libra", scorpio: "Escorpião", sagittarius: "Sagitário", capricorn: "Capricórnio", aquarius: "Aquário", pisces: "Peixes",
+    } satisfies Record<Sign, string>,
+    points: {
+      sun: "Sol", moon: "Lua", mercury: "Mercúrio", venus: "Vênus", mars: "Marte", jupiter: "Júpiter",
+      saturn: "Saturno", uranus: "Urano", neptune: "Netuno", pluto: "Plutão", asc: "Ascendente", mc: "Meio do Céu",
+    } satisfies Record<Point, string>,
+    retrograde: "retrógrado",
     astroEyebrow: "Mapa astral",
     astroTitle: "Capricórnio, signo de terra",
     astroText: "Regido por Saturno: foco, disciplina e paciência para construir coisas que duram.",
     traits: ["Determinado", "Disciplinado", "Ambicioso", "Paciente"],
-    placements: [
-      ["Sol", "Capricórnio"],
-      ["Lua", "[SIGNO]"],
-      ["Ascendente", "[SIGNO]"],
-      ["Mercúrio", "[SIGNO]"],
-      ["Vênus", "[SIGNO]"],
-      ["Marte", "[SIGNO]"],
-    ] as [string, string][],
     pairLabel: "Inventário e missões",
     inventory: "Inventário",
     skillsLink: "Ver Skill Tree completa ›",
@@ -207,21 +208,21 @@ const en: Strings = {
     humorText: "Sees the bright side of almost everything — and makes a sarcastic remark about it right after.",
     positivity: "Positivity",
     irony: "Irony",
-    chartLabel: "Birth chart with the Sun in Capricorn",
+    chartLabel: "Birth chart: Sun in Capricorn, Moon in Scorpio and Pisces rising",
     sunIn: "SUN IN",
-    sign: "Capricorn",
+    signs: {
+      aries: "Aries", taurus: "Taurus", gemini: "Gemini", cancer: "Cancer", leo: "Leo", virgo: "Virgo",
+      libra: "Libra", scorpio: "Scorpio", sagittarius: "Sagittarius", capricorn: "Capricorn", aquarius: "Aquarius", pisces: "Pisces",
+    },
+    points: {
+      sun: "Sun", moon: "Moon", mercury: "Mercury", venus: "Venus", mars: "Mars", jupiter: "Jupiter",
+      saturn: "Saturn", uranus: "Uranus", neptune: "Neptune", pluto: "Pluto", asc: "Ascendant", mc: "Midheaven",
+    },
+    retrograde: "retrograde",
     astroEyebrow: "Birth chart",
     astroTitle: "Capricorn, an earth sign",
     astroText: "Ruled by Saturn: focus, discipline and the patience to build things that last.",
     traits: ["Determined", "Disciplined", "Ambitious", "Patient"],
-    placements: [
-      ["Sun", "Capricorn"],
-      ["Moon", "[SIGN]"],
-      ["Ascendant", "[SIGN]"],
-      ["Mercury", "[SIGN]"],
-      ["Venus", "[SIGN]"],
-      ["Mars", "[SIGN]"],
-    ],
     pairLabel: "Inventory and quests",
     inventory: "Inventory",
     skillsLink: "See the full Skill Tree ›",

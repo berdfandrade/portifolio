@@ -2,7 +2,9 @@ import { useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router';
 import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
+import BirthChart from '../components/BirthChart';
 import { useI18n } from '../i18n';
+import { CHART, PLACEMENT_ORDER, SIGN_GLYPHS, formatDegrees } from '../data/astro';
 
 const AVATAR = `${import.meta.env.BASE_URL}assets/avatar.png`;
 
@@ -15,24 +17,6 @@ const ring = (r: number, pct: number) => {
   const c = 2 * Math.PI * r;
   return `${((c * pct) / 100).toFixed(1)} ${c.toFixed(1)}`;
 };
-
-// Mapa astral: divisões dos signos (anel externo) e das casas (anel interno), e os glifos.
-const SIGN_LINES = [
-  [56, 160, 10, 160], [69.9, 212, 30.1, 235], [108, 250.1, 85, 289.9], [160, 264, 160, 310],
-  [212, 250.1, 235, 289.9], [250.1, 212, 289.9, 235], [264, 160, 310, 160], [250.1, 108, 289.9, 85],
-  [212, 69.9, 235, 30.1], [160, 56, 160, 10], [108, 69.9, 85, 30.1], [69.9, 108, 30.1, 85],
-];
-const HOUSE_LINES = [
-  [98, 160, 56, 160], [106.3, 191, 69.9, 212], [129, 213.7, 108, 250.1], [160, 222, 160, 264],
-  [191, 213.7, 212, 250.1], [213.7, 191, 250.1, 212], [222, 160, 264, 160], [213.7, 129, 250.1, 108],
-  [191, 106.3, 212, 69.9], [160, 98, 160, 56], [129, 106.3, 108, 69.9], [106.3, 129, 69.9, 108],
-];
-const GLYPHS: [number, number, string][] = [
-  [37.3, 192.9, '♈︎'], [70.2, 249.8, '♉︎'], [127.1, 282.7, '♊︎'], [192.9, 282.7, '♋︎'],
-  [249.8, 249.8, '♌︎'], [282.7, 192.9, '♍︎'], [282.7, 127.1, '♎︎'], [249.8, 70.2, '♏︎'],
-  [192.9, 37.3, '♐︎'], [127.1, 37.3, '♑︎'], [70.2, 70.2, '♒︎'], [37.3, 127.1, '♓︎'],
-];
-const CAPRICORNIO = '♑︎';
 
 const SKILLS = ['Figma', 'React', 'React Native', 'NestJS', 'FastAPI', 'Rust', 'C / C++', 'Qt', 'Tailwind', 'Playwright', 'Pixel art'];
 
@@ -64,7 +48,7 @@ export default function About() {
             </div>
             <figcaption className="avatar-caption" aria-hidden="true">
               <span className="cap-name">Bernardo</span>
-              <span className="cap-sub">{a.classLine} · {CAPRICORNIO} {a.sign}</span>
+              <span className="cap-sub">{a.classLine} · {SIGN_GLYPHS[CHART.sun.sign]} {a.signs[CHART.sun.sign]}</span>
             </figcaption>
           </figure>
 
@@ -123,27 +107,7 @@ export default function About() {
 
         <section className={`card split astro ${panel('astral') ?? ''}`} aria-labelledby="mapa" data-panel="astral">
           <div className="chart">
-            <svg role="img" aria-label={a.chartLabel} viewBox="0 0 320 320">
-              <circle cx="160" cy="160" r="150" style={{ fill: 'var(--card)', stroke: 'var(--sep)' }} strokeWidth="1.5" />
-              <path d="M160.0 10.0 A150 150 0 0 0 85.0 30.1 L108.0 69.9 A104 104 0 0 1 160.0 56.0 Z" style={{ fill: 'var(--sand)' }} />
-              <g style={{ stroke: 'var(--sep)' }} strokeWidth="1">
-                {SIGN_LINES.map(([x1, y1, x2, y2]) => <line key={`${x1}-${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} />)}
-              </g>
-              <g className="glyph" textAnchor="middle" dominantBaseline="central">
-                {GLYPHS.map(([x, y, g]) => (
-                  <text key={g} x={x} y={y} style={g === CAPRICORNIO ? { fill: 'var(--sand-ink)' } : undefined}>{g}</text>
-                ))}
-              </g>
-              <circle cx="160" cy="160" r="104" style={{ fill: 'none', stroke: 'var(--sep)' }} strokeWidth="1.5" />
-              <circle cx="160" cy="160" r="62" style={{ fill: 'var(--bg)', stroke: 'var(--sep)' }} strokeWidth="1" />
-              <g style={{ stroke: 'var(--sep2)' }} strokeWidth="1">
-                {HOUSE_LINES.map(([x1, y1, x2, y2]) => <line key={`${x1}-${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} />)}
-              </g>
-              <circle cx="138.5" cy="79.8" r="13" style={{ fill: '#FF9F0A' }} />
-              <text x="138.5" y="79.8" textAnchor="middle" dominantBaseline="central" style={{ fill: 'var(--sand-ink)', fontSize: 15, fontWeight: 700, fontFamily: 'sans-serif' }}>☉︎</text>
-              <text x="160" y="152" textAnchor="middle" style={{ fill: 'var(--text3)', fontSize: 11, fontWeight: 600, letterSpacing: 1 }}>{a.sunIn}</text>
-              <text x="160" y="172" textAnchor="middle" style={{ fill: 'var(--text)', fontSize: 15, fontWeight: 700 }}>{a.sign}</text>
-            </svg>
+            <BirthChart />
           </div>
           <div className="split-text astro-text">
             <p className="eyebrow">{a.astroEyebrow}</p>
@@ -153,9 +117,18 @@ export default function About() {
               {a.traits.map((trait) => <span key={trait} className="chip">{trait}</span>)}
             </div>
             <dl className="placements">
-              {a.placements.map(([planet, sign]) => (
-                <div key={planet}><dt>{planet}</dt><dd>{sign}</dd></div>
-              ))}
+              {PLACEMENT_ORDER.map((id) => {
+                const pos = CHART[id];
+                return (
+                  <div key={id}>
+                    <dt>{a.points[id]}</dt>
+                    <dd>
+                      {a.signs[pos.sign]} <span className="deg">{formatDegrees(pos)}</span>
+                      {pos.retrograde && <abbr className="retro" title={a.retrograde}> ℞</abbr>}
+                    </dd>
+                  </div>
+                );
+              })}
             </dl>
           </div>
         </section>
