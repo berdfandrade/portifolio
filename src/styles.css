@@ -91,9 +91,15 @@ img { display: block; max-width: 100%; }
 .tile.placeholder .tile-title { color: var(--text3); }
 
 /* ---------- Biblioteca ---------- */
-.lib-nav { display: flex; gap: 24px; font-size: 13px; flex-wrap: wrap; font-style: italic; text-decoration-line: underline; }
-.lib-nav a { color: var(--text2); }
-.lib-nav a[aria-current="page"] { color: var(--text); }
+/* Navegação no estilo da barra do apple.com: texto simples, sem sublinhado; a página atual fica em destaque */
+.lib-nav { display: flex; align-items: center; gap: 4px; font-size: 13px; letter-spacing: -0.1px; }
+.lib-nav a {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 0 10px; border-radius: 999px;
+  color: var(--text2); text-decoration: none; white-space: nowrap; transition: color .2s, background-color .2s;
+}
+.lib-nav a:hover { color: var(--text); text-decoration: none; }
+.lib-nav a[aria-current="page"] { color: var(--text); font-weight: 600; background: var(--fill); }
+.lib-nav a:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
 .search {
   display: flex; align-items: center; gap: 8px; background: var(--fill); border-radius: 10px;
   padding: 0 12px; height: 34px; min-width: 200px; color: var(--text3);
@@ -340,7 +346,8 @@ img { display: block; max-width: 100%; }
   .topbar.sticky .topbar-inner { gap: 4px 16px; }
   .topbar.sticky .brand { order: 1; }
   .topbar.sticky .topbar-actions { order: 2; margin-right: -10px; }
-  .lib-nav { order: 3; flex-basis: 100%; }
+  .lib-nav { order: 3; flex-basis: 100%; gap: 0; overflow-x: auto; scrollbar-width: none; margin: 0 -8px; padding: 2px 0; }
+  .lib-nav a { padding: 0 8px; }
   .search { order: 4; flex: 1 1 100%; margin: 8px 0 12px; }
   /* Projeto */
   .project { gap: 44px; }
@@ -567,4 +574,258 @@ img { display: block; max-width: 100%; }
   .skills-page { padding-top: 32px; }
   .skills-intro h1 { font-size: 44px; letter-spacing: -1.2px; }
   .skills-progress { max-width: none; }
+}
+
+/* ---------- Cenas 3D (estante e Skill Tree): controles de giro ---------- */
+.orbit-controls { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px 16px; }
+.orbit-hint { font-size: 13px; color: var(--text3); margin-right: 6px; }
+.orbit-controls button {
+  min-width: 36px; height: 36px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--fill); color: var(--text); font: inherit; font-size: 13px; font-weight: 600;
+}
+.orbit-controls button:hover { background: var(--sep); }
+.orbit-controls button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- Livros: estante 3D em CSS ---------- */
+.books-page { max-width: 1120px; margin: 0 auto; padding: 48px 24px 96px; display: flex; flex-direction: column; gap: 28px; }
+.books-hero { display: flex; flex-direction: column; gap: 12px; max-width: 720px; }
+.books-hero h1 { font-size: 64px; line-height: 1; font-weight: 800; letter-spacing: -2px; }
+.books-hero .lede { font-size: 19px; line-height: 1.45; color: var(--text2); }
+.books-summary { font-size: 14px; font-weight: 600; color: var(--text3); }
+
+.shelf-card {
+  --wood-front: #E2CFAF; --wood-top: #EEE0C7; --wood-side: #D1BA94; --wood-bottom: #B9A07A; --wood-back: #E9DCC5;
+  --stage-glow: #FFFFFF;
+  border-radius: 28px; background: radial-gradient(120% 90% at 50% 0%, var(--stage-glow), var(--card) 60%); border: 1px solid var(--sep2); overflow: hidden;
+}
+:root[data-theme="dark"] .shelf-card {
+  --wood-front: #4A3F33; --wood-top: #5A4D3E; --wood-side: #3A3128; --wood-bottom: #2A231C; --wood-back: #2E2720;
+  --stage-glow: #2A2A2D;
+}
+.shelf-stage { position: relative; perspective: 1500px; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
+.shelf-stage.is-dragging { cursor: grabbing; }
+.shelf-scene { position: absolute; left: 50%; top: 50%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2,.8,.2,1); }
+.shelf-stage.is-dragging .shelf-scene { transition: none; }
+
+/* Caixa genérica: as faces ficam em volta do centro, a meia profundidade para a frente e para trás */
+.box, .book3d { position: absolute; transform-style: preserve-3d; }
+.box > i, .book3d > span { position: absolute; display: block; backface-visibility: hidden; }
+.f-front { inset: 0; transform: translateZ(calc(var(--d) / 2)); }
+.f-back { inset: 0; transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); }
+.f-right, .f-left { top: 0; height: 100%; width: var(--d); left: calc((var(--w) - var(--d)) / 2); }
+.f-right { transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); }
+.f-left { transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); }
+.f-top, .f-bottom { left: 0; width: 100%; height: var(--d); top: calc((var(--h) - var(--d)) / 2); }
+.f-top { transform: rotateX(90deg) translateZ(calc(var(--h) / 2)); }
+.f-bottom { transform: rotateX(-90deg) translateZ(calc(var(--h) / 2)); }
+
+.wood .f-front { background: var(--wood-front); }
+.wood .f-top { background: var(--wood-top); }
+.wood .f-left, .wood .f-right { background: var(--wood-side); }
+.wood .f-bottom, .wood .f-back { background: var(--wood-bottom); }
+.wood.back .f-front { background: linear-gradient(180deg, color-mix(in srgb, var(--wood-back) 80%, black), var(--wood-back) 30%); }
+
+/* Livro: lombada, capa, contracapa e páginas */
+.book3d { padding: 0; border: 0; background: none; cursor: pointer; font: inherit; transition: transform .55s cubic-bezier(.2,.8,.2,1); }
+.shelf-stage.is-dragging .book3d { transition: none; }
+/* --z põe a lombada rente à frente; ao abrir, o livro sai da prateleira e gira mostrando a capa */
+.shelf-scene .book3d { transform: translateZ(var(--z)); }
+.shelf-scene .book3d:hover, .shelf-scene .book3d:focus-visible { transform: translateZ(calc(var(--z) + 22px)); }
+.shelf-scene .book3d.is-open { transform: translateZ(calc(var(--z) + var(--d) * 0.95)) translateY(-14px) rotateY(-82deg); }
+.book3d .spine {
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 6px; padding: 14px 0 12px; overflow: hidden;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color) 78%, black), var(--color) 22%, color-mix(in srgb, var(--color) 88%, white) 55%, var(--color) 80%, color-mix(in srgb, var(--color) 75%, black));
+  color: var(--ink); border-radius: 2px;
+  box-shadow: inset 0 10px 0 -7px color-mix(in srgb, var(--ink) 55%, transparent), inset 0 -10px 0 -7px color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.spine-title {
+  writing-mode: vertical-rl; flex: 1; min-height: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; font-size: clamp(11px, calc(var(--w) * 0.36), 17px); font-weight: 700; letter-spacing: 0.3px;
+}
+.spine-author { font-size: 9px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; writing-mode: vertical-rl; opacity: 0.8; }
+.book3d .front-cover { background: var(--color); color: var(--ink); border-radius: 0 4px 4px 0; box-shadow: inset 6px 0 8px -4px rgba(0,0,0,0.35); overflow: hidden; }
+.book3d .backcover { background: color-mix(in srgb, var(--color) 82%, black); border-radius: 4px 0 0 4px; }
+.book3d .pages {
+  background: repeating-linear-gradient(90deg, #F4EFE3 0 1px, #E3DCCB 1px 2px);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--color) 82%, black), inset -2px 0 0 var(--color);
+}
+.book3d .pages.top { box-shadow: inset 2px 0 0 var(--color), inset -2px 0 0 color-mix(in srgb, var(--color) 82%, black); }
+.book3d:focus-visible { outline: none; }
+.book3d:focus-visible .spine, .book3d.is-open:focus-visible .front-cover { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* Capa desenhada: o tamanho do texto acompanha a largura da capa */
+.book-art {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--d) * 0.06);
+  padding: calc(var(--d) * 0.12) calc(var(--d) * 0.1); text-align: center; font-size: calc(var(--d) * 0.1);
+}
+.book-rule { width: 40%; height: 2px; background: currentColor; opacity: 0.55; }
+.book-title { font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; font-size: 1.35em; line-height: 1.1; font-weight: 700; text-wrap: balance; }
+.book-mark { width: 1.6em; height: 1.6em; border-radius: 50%; border: 2px solid currentColor; opacity: 0.7; }
+.book-author { font-size: 0.62em; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
+
+/* Detalhes do livro aberto */
+.book-detail { display: flex; flex-wrap: wrap; align-items: center; gap: 40px; padding: 32px; border-radius: 28px; background: var(--card); min-height: 120px; }
+.book-pick { margin: 0 auto; color: var(--text3); font-size: 16px; }
+.book-detail-art { flex: 0 0 auto; width: 220px; height: 300px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+.book3d.static { position: relative; cursor: default; transform: rotateX(-6deg) rotateY(-58deg); animation: book-in .7s cubic-bezier(.2,.8,.2,1); }
+@keyframes book-in { from { transform: rotateX(-6deg) rotateY(-150deg) translateZ(-60px); opacity: 0; } }
+.book-detail-text { flex: 1 1 320px; display: flex; flex-direction: column; gap: 14px; }
+.book-detail-text h2 { font-size: 34px; line-height: 1.1; font-weight: 800; letter-spacing: -0.8px; }
+.book-detail-text p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--text2); max-width: 60ch; }
+.book-facts { margin: 0; display: flex; flex-wrap: wrap; gap: 8px 28px; }
+.book-facts dt { font-size: 12px; color: var(--text3); }
+.book-facts dd { margin: 0; font-size: 15px; font-weight: 600; }
+.book-putback { align-self: flex-start; min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: var(--fill); color: var(--text); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.book-putback:hover { background: var(--sep); }
+.book-putback:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  .books-page { padding: 32px 16px 64px; gap: 20px; }
+  .books-hero h1 { font-size: 44px; letter-spacing: -1.2px; }
+  .books-hero .lede { font-size: 17px; }
+  .shelf-card, .book-detail { border-radius: 22px; }
+  .book-detail { padding: 20px; gap: 16px; justify-content: center; }
+  .book-detail-art { width: 180px; height: 260px; }
+  .orbit-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shelf-scene, .book3d { transition: none; }
+  .book3d.static { animation: none; }
+}
+
+/* ---------- Skill Tree: troca 2D / 3D e o tabuleiro 3D ---------- */
+.map-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: -12px; }
+.map-block { display: flex; flex-direction: column; }
+.view-switch { display: inline-grid; grid-auto-flow: column; gap: 2px; padding: 2px; border-radius: 10px; background: var(--fill); }
+.view-switch button { min-width: 56px; min-height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--text2); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.view-switch button[aria-pressed="true"] { background: var(--card); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+.view-switch button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.skill-map-scroll.is-3d {
+  position: relative; overflow: hidden; perspective: 1600px; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  background: radial-gradient(120% 90% at 50% 0%, var(--map-inset), var(--map-bg) 70%);
+}
+.skill-map-scroll.is-3d.is-dragging { cursor: grabbing; }
+.is-3d .skill-map {
+  position: absolute; left: 50%; top: 50%; margin: 0; transform-style: preserve-3d; border-radius: 18px;
+  background-color: var(--map-bg);
+  background-image: linear-gradient(var(--map-grid) 1px, transparent 1px), linear-gradient(90deg, var(--map-grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+  box-shadow: 0 0 0 1px var(--map-border), 0 50px 80px -20px rgba(0,0,0,0.25);
+  transition: transform .7s cubic-bezier(.2,.8,.2,1);
+}
+.is-3d.is-dragging .skill-map { transition: none; }
+.is-3d .skill-map > div { transform-style: preserve-3d; }
+/* Os ramos ficam em pé, sempre virados para quem olha */
+.is-3d .map-branch { transform-origin: 50% 100%; transform: translateY(-26px) rotateZ(calc(var(--rz) * -1)) rotateX(calc(var(--rx) * -1)); }
+/* Blocos viram cubos: a face de cima sobe e quatro laterais descem até o tabuleiro */
+.is-3d .map-tile { transform: translateZ(16px); transform-style: preserve-3d; box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -3px 0 rgba(0,0,0,0.3); }
+.is-3d .map-tile:hover, .is-3d .map-tile:focus-visible { transform: translateZ(28px); filter: none; }
+.is-3d .map-tile:active { transform: translateZ(10px); }
+.side { position: absolute; background: color-mix(in srgb, var(--tone) 58%, black); }
+.map-tile.locked .side { background: color-mix(in srgb, var(--locked-ink) 60%, black); }
+.s-b, .s-t { left: -2px; width: calc(100% + 4px); height: 16px; }
+.s-l, .s-r { top: -2px; height: calc(100% + 4px); width: 16px; }
+.s-b { top: calc(100% + 2px); transform-origin: top; transform: rotateX(-90deg); }
+.s-t { bottom: calc(100% + 2px); transform-origin: bottom; transform: rotateX(90deg); background: color-mix(in srgb, var(--tone) 75%, black); }
+.s-l { right: calc(100% + 2px); transform-origin: right; transform: rotateY(-90deg); background: color-mix(in srgb, var(--tone) 48%, black); }
+.s-r { left: calc(100% + 2px); transform-origin: left; transform: rotateY(90deg); background: color-mix(in srgb, var(--tone) 48%, black); }
+/* O nome da habilidade também fica em pé ao passar o mouse */
+.is-3d .map-tip, .is-3d .map-tile:hover .map-tip, .is-3d .map-tile:focus-visible .map-tip {
+  transform-origin: 50% 100%; transform: translate(-50%, 0) translateZ(24px) rotateZ(calc(var(--rz) * -1)) rotateX(calc(var(--rx) * -1));
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-3d .skill-map { transition: none; }
+}
+
+/* ---------- Contato ---------- */
+.contact-page { max-width: 1120px; margin: 0 auto; padding: 56px 24px 96px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 32px 48px; align-items: center; }
+.contact-hero { display: flex; flex-direction: column; gap: 14px; }
+.contact-hero h1 {
+  font-size: 80px; line-height: 0.98; font-weight: 800; letter-spacing: -3px;
+  background: linear-gradient(120deg, var(--text) 30%, #30B456 60%, #0A84FF 85%); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.contact-hero .lede { font-size: 21px; line-height: 1.45; color: var(--text2); max-width: 30ch; }
+.contact-clock { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; margin-top: 6px; padding: 8px 14px; border-radius: 999px; background: var(--card); font-size: 13px; font-weight: 600; color: var(--text2); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: #30D158; box-shadow: 0 0 0 0 rgba(48,209,88,0.5); animation: pulse 2s infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(48,209,88,0); } 100% { box-shadow: 0 0 0 0 rgba(48,209,88,0); } }
+
+/* Conversa no estilo do app Mensagens */
+.chat-card { background: var(--card); border-radius: 28px; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,0.25), 0 0 0 1px var(--sep2); }
+.chat-head { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--sep2); background: var(--bar); }
+.chat-head img { width: 40px; height: 40px; border-radius: 50%; background: var(--sand); image-rendering: pixelated; }
+.chat-head div { display: flex; flex-direction: column; }
+.chat-head strong { font-size: 15px; }
+.chat-head span { font-size: 12px; color: var(--text3); }
+.chat-thread { display: flex; flex-direction: column; gap: 8px; padding: 24px 20px 12px; min-height: 170px; }
+.bubble { margin: 0; max-width: 78%; padding: 9px 14px; border-radius: 20px; font-size: 16px; line-height: 1.35; overflow-wrap: anywhere; white-space: pre-wrap; animation: bubble-in .35s cubic-bezier(.2,.9,.3,1.3); }
+.bubble.in { align-self: flex-start; background: var(--fill); color: var(--text); border-bottom-left-radius: 6px; }
+.bubble.out { align-self: flex-end; background: #0A84FF; color: #FFFFFF; border-bottom-right-radius: 6px; }
+.bubble.typing { display: flex; gap: 4px; padding: 13px 16px; background: var(--fill); }
+.bubble.typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); animation: dot 1.2s infinite ease-in-out; }
+.bubble.typing span:nth-child(2) { animation-delay: .15s; }
+.bubble.typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes dot { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-4px); opacity: 1; } }
+@keyframes bubble-in { from { transform: scale(.85) translateY(6px); opacity: 0; } }
+.chat-compose { display: flex; flex-direction: column; gap: 12px; padding: 12px 20px 20px; }
+.chat-compose textarea {
+  width: 100%; resize: vertical; min-height: 84px; padding: 12px 16px; border-radius: 18px; border: 1px solid var(--sep); background: var(--bg);
+  font: inherit; font-size: 16px; line-height: 1.4; color: var(--text);
+}
+.chat-compose textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
+.chat-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.send {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 16px; border-radius: 14px;
+  font-size: 15px; font-weight: 600; color: #FFFFFF; transition: filter .2s, transform .1s;
+}
+.send:hover { color: #FFFFFF; text-decoration: none; filter: brightness(1.08); }
+.send:active { transform: scale(.98); }
+.send:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.send.whatsapp { background: #1F9D55; }
+.send.email { background: #0071E3; }
+.chat-note { margin: 0; font-size: 12px; line-height: 1.4; color: var(--text3); text-align: center; }
+
+/* Canais: cartões com ícone no estilo de app */
+.channels { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
+.channels h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+.channel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.channel { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 24px; border-radius: 24px; background: var(--card); transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
+.channel:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px rgba(0,0,0,0.3); }
+.app-icon {
+  width: 60px; height: 60px; margin-bottom: 10px; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #FFFFFF;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 6px 14px -6px rgba(0,0,0,0.4);
+}
+.whatsapp .app-icon { background: linear-gradient(180deg, #5BE584, #1FAF4B); }
+.email .app-icon { background: linear-gradient(180deg, #3FA9FF, #0A6CF0); }
+.instagram .app-icon { background: radial-gradient(circle at 30% 107%, #FDDC6C 0%, #FDB14C 10%, #F5533D 40%, #D6249F 65%, #6A3CE0 95%); }
+.channel h3 { font-size: 13px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; }
+.channel-value { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.3px; overflow-wrap: anywhere; }
+.channel-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.channel-actions a, .channel-actions button {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 0 16px; border-radius: 999px;
+  border: 0; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.channel-actions a { background: var(--accent); color: #FFFFFF; }
+.channel-actions a:hover { color: #FFFFFF; text-decoration: none; filter: brightness(1.08); }
+.channel-actions button { min-width: 36px; padding: 0 12px; background: var(--fill); color: var(--text); }
+.channel-actions button:hover { background: var(--sep); }
+.channel-actions a:focus-visible, .channel-actions button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 900px) {
+  .contact-page { grid-template-columns: minmax(0, 1fr); padding-top: 32px; }
+  .channel-grid { grid-template-columns: minmax(0, 1fr); }
+  .channels { margin-top: 8px; }
+}
+@media (max-width: 640px) {
+  .contact-page { padding: 24px 16px 64px; gap: 24px; }
+  .contact-hero h1 { font-size: 52px; letter-spacing: -1.6px; }
+  .contact-hero .lede { font-size: 17px; }
+  .chat-card { border-radius: 22px; }
+  .chat-actions { grid-template-columns: minmax(0, 1fr); }
+  .channels h2 { font-size: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse, .bubble, .bubble.typing span { animation: none; }
+  .channel { transition: none; }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { OrbitControls, useOrbit, useWidth } from '../components/orbit';
 import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
 import type { Branch, Skill, SkillStatus } from '../data/skills';
@@ -18,6 +19,18 @@ const BRANCH_GAP = 24;
 const branchWidth = (branch: Branch) => Math.max(3, ...branch.skills.map((s) => s.col + 1)) * CELL_W;
 const cellY = (row: number) => HEAD + row * CELL_H + CELL_H / 2;
 
+type View = '2d' | '3d';
+const VIEW_KEY = 'skill-tree-view';
+
+/** A visualização escolhida fica guardada neste navegador (se o armazenamento estiver disponível). */
+function savedView(): View {
+  try {
+    return localStorage.getItem(VIEW_KEY) === '3d' ? '3d' : '2d';
+  } catch {
+    return '2d';
+  }
+}
+
 /** Linha em "cotovelo" do requisito até a habilidade, como nas árvores de habilidade de jogos. */
 function edgePath(x1: number, y1: number, x2: number, y2: number) {
   const start = y1 + TILE / 2;
@@ -35,6 +48,15 @@ export default function SkillTree() {
   const pct = (n: number) => `${((n / skills.length) * 100).toFixed(1)}%`;
   // Índice em `skills` da habilidade aberta na gaveta, ou null com a gaveta fechada.
   const [open, setOpen] = useState<number | null>(null);
+  const [view, setView] = useState<View>(savedView);
+  const chooseView = (v: View) => {
+    setView(v);
+    try {
+      localStorage.setItem(VIEW_KEY, v);
+    } catch {
+      /* sem armazenamento: a escolha vale só nesta visita */
+    }
+  };
   const done = count('done');
   const wip = count('wip');
 
@@ -65,8 +87,17 @@ export default function SkillTree() {
           </div>
         </section>
 
+        <div className="map-toolbar">
+          <div className="view-switch" role="group" aria-label={st.viewLabel}>
+            {(['2d', '3d'] as const).map((v) => (
+              <button key={v} type="button" aria-pressed={view === v} onClick={() => chooseView(v)}>
+                {v === '2d' ? st.view2d : st.view3d}
+              </button>
+            ))}
+          </div>
+        </div>
         {(['stack', 'human'] as const).map((group) => (
-          <SkillMap key={group} group={group} onOpen={(id) => setOpen(skills.findIndex((s) => s.skill.id === id))} />
+          <SkillMap key={group} group={group} is3d={view === '3d'} onOpen={(id) => setOpen(skills.findIndex((s) => s.skill.id === id))} />
         ))}
       </main>
       <SkillDrawer index={open} onChange={setOpen} />
@@ -74,8 +105,10 @@ export default function SkillTree() {
   );
 }
 
-/** Um painel do mapa (a stack ou as habilidades humanas): blocos quadrados e as linhas de requisito. */
-function SkillMap({ group, onOpen }: { group: Branch['group']; onOpen: (id: string) => void }) {
+/** Um painel do mapa (a stack ou as habilidades humanas): blocos e linhas de requisito. No 3D cada painel gira sozinho. */
+function SkillMap({ group, is3d, onOpen }: { group: Branch['group']; is3d: boolean; onOpen: (id: string) => void }) {
+  const ownOrbit = useOrbit({ initial: { x: 52, y: -14 }, limits: { x: [30, 66], y: [-45, 45] }, speed: { x: -0.2, y: -0.25 } });
+  const orbit = is3d ? ownOrbit : null;
   const { t, tree } = useI18n();
   const st = t.skills;
   const branches = tree.filter((b) => b.group === group);
@@ -102,45 +135,69 @@ function SkillMap({ group, onOpen }: { group: Branch['group']; onOpen: (id: stri
   });
   edges.sort((a, b) => Number(a.active) - Number(b.active));
 
-  return (
-    <section className="skill-map-scroll" aria-label={st.groups[group]}>
-      <div className="skill-map" style={{ width, height }}>
-        <svg className="skill-map-lines" width={width} height={height} aria-hidden="true">
-          {edges.map((e) => <path key={e.key} d={e.d} className={e.active ? 'active' : undefined} />)}
-        </svg>
+  // No 3D o painel vira um tabuleiro inclinado que gira com o arraste; a escala o encaixa na largura.
+  const ref = useRef<HTMLElement>(null);
+  const available = useWidth(ref);
+  const fit = orbit && available ? Math.max(0.22, Math.min(1, (available - 32) / width) * 0.8) : 1;
+  const mapStyle = orbit
+    ? ({
+        width,
+        height,
+        '--rx': `${orbit.rot.x}deg`,
+        '--rz': `${orbit.rot.y}deg`,
+        transform: `translate(-50%, -50%) scale(${fit}) rotateX(${orbit.rot.x}deg) rotateZ(${orbit.rot.y}deg)`,
+      } as CSSProperties)
+    : { width, height };
 
-        {branches.map((branch, bi) => {
-          const unlocked = branch.skills.filter((s) => s.status !== 'locked').length;
-          return (
-            <div key={branch.name} style={toneStyle(branch)}>
-              <h2 className="map-branch" style={{ left: lefts[bi], width: branchWidth(branch) }}>
-                <span className="tag">{branch.tag}</span>
-                <span className="name">{branch.name}</span>
-                <span className="count">{st.unlocked(unlocked, branch.skills.length)}</span>
-              </h2>
-              {branch.skills.map((skill) => (
-                <button
-                  key={skill.id}
-                  type="button"
-                  className={`map-tile ${skill.status}`}
-                  style={{ left: cellX(bi, skill.col) - TILE / 2, top: cellY(skill.row) - TILE / 2 }}
-                  aria-haspopup="dialog"
-                  aria-label={st.openDetails(skill.label, st.status[skill.status])}
-                  onClick={() => onOpen(skill.id)}
-                >
-                  <SkillIcon skill={skill} size={28} />
-                  <StatusMark status={skill.status} />
-                  <span className="map-tip" aria-hidden="true">
-                    <strong>{skill.label}</strong>
-                    <span className={`skill-status ${skill.status}`}>{st.status[skill.status]}</span>
-                  </span>
-                </button>
-              ))}
-            </div>
-          );
-        })}
-      </div>
-    </section>
+  return (
+    <div className="map-block">
+      <section
+        ref={ref}
+        className={`skill-map-scroll${orbit ? ' is-3d' : ''}${orbit?.dragging ? ' is-dragging' : ''}`}
+        aria-label={st.groups[group]}
+        style={orbit ? { height: Math.round(height * fit * 0.8 + 230) } : undefined}
+        {...orbit?.handlers}
+      >
+        <div className="skill-map" style={mapStyle}>
+          <svg className="skill-map-lines" width={width} height={height} aria-hidden="true">
+            {edges.map((e) => <path key={e.key} d={e.d} className={e.active ? 'active' : undefined} />)}
+          </svg>
+
+          {branches.map((branch, bi) => {
+            const unlocked = branch.skills.filter((s) => s.status !== 'locked').length;
+            return (
+              <div key={branch.name} style={toneStyle(branch)}>
+                <h2 className="map-branch" style={{ left: lefts[bi], width: branchWidth(branch) }}>
+                  <span className="tag">{branch.tag}</span>
+                  <span className="name">{branch.name}</span>
+                  <span className="count">{st.unlocked(unlocked, branch.skills.length)}</span>
+                </h2>
+                {branch.skills.map((skill) => (
+                  <button
+                    key={skill.id}
+                    type="button"
+                    className={`map-tile ${skill.status}`}
+                    style={{ left: cellX(bi, skill.col) - TILE / 2, top: cellY(skill.row) - TILE / 2 }}
+                    aria-haspopup="dialog"
+                    aria-label={st.openDetails(skill.label, st.status[skill.status])}
+                    onClick={() => onOpen(skill.id)}
+                  >
+                    {orbit && <><span className="side s-b" /><span className="side s-t" /><span className="side s-l" /><span className="side s-r" /></>}
+                    <SkillIcon skill={skill} size={28} />
+                    <StatusMark status={skill.status} />
+                    <span className="map-tip" aria-hidden="true">
+                      <strong>{skill.label}</strong>
+                      <span className={`skill-status ${skill.status}`}>{st.status[skill.status]}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+      {orbit && <OrbitControls onNudge={orbit.nudge} onReset={orbit.reset} />}
+    </div>
   );
 }
 

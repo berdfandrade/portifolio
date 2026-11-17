@@ -4,14 +4,16 @@ import { PROJECTS } from '../data/projects';
 import { PROJECTS_EN } from '../data/projects.en';
 import { TREE, flattenTree } from '../data/skills';
 import { TREE_EN } from '../data/skills.en';
+import { BOOKS } from '../data/books';
+import { BOOKS_EN } from '../data/books.en';
 
 export type Lang = 'pt' | 'en';
-export type Page = 'library' | 'project' | 'about' | 'skills';
+export type Page = 'library' | 'project' | 'about' | 'skills' | 'books' | 'contact';
 
 // O português fica na raiz e o inglês em /en, cada um com os próprios nomes de rota.
 export const SEGMENTS: Record<Lang, Record<Page, string>> = {
-  pt: { library: '', project: 'projeto', about: 'sobre', skills: 'skill-tree' },
-  en: { library: '', project: 'project', about: 'about', skills: 'skill-tree' },
+  pt: { library: '', project: 'projeto', about: 'sobre', skills: 'skill-tree', books: 'livros', contact: 'contato' },
+  en: { library: '', project: 'project', about: 'about', skills: 'skill-tree', books: 'books', contact: 'contact' },
 };
 
 /** Caminho de uma página num idioma: pathTo('en', 'project', 'owlio') → '/en/project/owlio'. */
@@ -21,8 +23,8 @@ export function pathTo(lang: Lang, page: Page, slug?: string) {
 }
 
 const CONTENT = {
-  pt: { t: STRINGS.pt, projects: PROJECTS, tree: TREE, skills: flattenTree(TREE) },
-  en: { t: STRINGS.en, projects: PROJECTS_EN, tree: TREE_EN, skills: flattenTree(TREE_EN) },
+  pt: { t: STRINGS.pt, projects: PROJECTS, tree: TREE, skills: flattenTree(TREE), books: BOOKS },
+  en: { t: STRINGS.en, projects: PROJECTS_EN, tree: TREE_EN, skills: flattenTree(TREE_EN), books: BOOKS_EN },
 };
 
 export const LangContext = createContext<Lang>('pt');

@@ -13,11 +13,13 @@ The site is bilingual: Brazilian Portuguese at `/` and English at `/en`. A PT/EN
 | `/` | **Library**: projects you can filter by category (Apps, Desktop, Systems, Web, Automation), search, a featured project and the "All tracks" list |
 | `/projeto/:slug` | **Project page**: cover, summary, links, showcase (screenshot or video), fact sheet, highlights, a code excerpt, a screenshot gallery with a full-screen viewer, and "More in the library" |
 | `/sobre` | **About**: pixel-art avatar with level and XP (from my age), a bit about me, sense of humor, birth chart, skill inventory and active quests. On phones it becomes a tabbed screen (Profile, Astral and Humor) |
-| `/skill-tree` | **Skill Tree**: three branches (Front-end, Automation, Design) with mastered, training and locked skills, overall progress, and a side drawer with each skill's details |
+| `/skill-tree` | **Skill Tree**: five stack branches plus people skills, with mastered, training and locked skills, overall progress, a side drawer with each skill's details and a 3D view you can rotate by dragging |
+| `/livros` | **Books**: a 3D bookshelf of books I've read. Drag to rotate it and tap a book to take it off the shelf and see its cover and details |
+| `/contato` | **Contact**: a Messages-style chat that opens WhatsApp or email with your message ready, plus cards for WhatsApp, email and Instagram with one-tap copy |
 
 Projects with a page today: Verdant, PixelForge, Ironclad, printa, Owlio, Aplicador de Vagas, Event Hub and mac. Texts and images come from the READMEs of the repositories on [GitHub](https://github.com/berdfandrade).
 
-Each page has an English address too: `/en`, `/en/project/:slug`, `/en/about` and `/en/skill-tree`.
+Each page has an English address too: `/en`, `/en/project/:slug`, `/en/about`, `/en/skill-tree`, `/en/books` and `/en/contact`.
 
 ## Stack
 
@@ -57,6 +59,9 @@ src/
   data/projects.en.ts     English text for the projects
   data/skills.ts          Skill Tree branches and skills (Portuguese)
   data/skills.en.ts       English text for the Skill Tree
+  data/books.ts           books on the shelf (Portuguese; the current seven are examples)
+  data/books.en.ts        English titles and blurbs for the books
+  data/contact.ts         WhatsApp, email and Instagram
   i18n/strings.ts         interface text in both languages
   i18n/index.tsx          language routes and the useI18n() hook
   components/
@@ -65,11 +70,14 @@ src/
     ThemeToggle.tsx       light/dark theme button
     Tile.tsx              a project's "album" cover
     Lightbox.tsx          full-screen image viewer
+    orbit.tsx             drag-to-rotate hook and controls for the 3D scenes
   pages/
     Library.tsx           Library
     ProjectPage.tsx       project page
     About.tsx             About
     SkillTree.tsx         Skill Tree
+    Books.tsx             3D bookshelf
+    Contact.tsx           contact page
     NotFound.tsx          not found page
 ```
 

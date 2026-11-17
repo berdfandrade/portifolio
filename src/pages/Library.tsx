@@ -33,8 +33,9 @@ export default function Library() {
           <nav className="lib-nav" aria-label={l.nav.label}>
             <Link to={to('library')} aria-current="page">{l.nav.library}</Link>
             <Link to={to('skills')}>{l.nav.skills}</Link>
+            <Link to={to('books')}>{l.nav.books}</Link>
             <Link to={to('about')}>{l.nav.about}</Link>
-            <a href="#">{t.common.contact}</a>
+            <Link to={to('contact')}>{t.common.contact}</Link>
           </nav>
           <label className="search">
             <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>

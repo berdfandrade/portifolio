@@ -12,7 +12,7 @@ export default function TopBar({ title, contact = false }: { title: string; cont
         <Link to={to('library')} className="back">{t.common.back}</Link>
         <span className="brand">{title}</span>
         <div className="topbar-actions">
-          {contact && <a href="#" className="topbar-link">{t.common.contact}</a>}
+          {contact && <Link to={to('contact')} className="topbar-link">{t.common.contact}</Link>}
           <LangSwitch />
           <ThemeToggle />
         </div>
