@@ -12,7 +12,7 @@ The site is bilingual: Brazilian Portuguese at `/` and English at `/en`. A PT/EN
 | --- | --- |
 | `/` | **Library**: projects you can filter by category (Apps, Desktop, Systems, Web, Automation), search, a featured project and the "All tracks" list |
 | `/projeto/:slug` | **Project page**: cover, summary, links, showcase (screenshot or video), fact sheet, highlights, a code excerpt, a screenshot gallery with a full-screen viewer, and "More in the library" |
-| `/sobre` | **Character sheet**: pixel-art avatar, sense of humor, birth chart, skill inventory and active quests. On phones it becomes a tabbed screen (Sheet, Astral and Humor) |
+| `/sobre` | **About**: pixel-art portrait with level and XP (from my age), a bit about me, sense of humor, birth chart, skill inventory and active quests. On phones it becomes a tabbed screen (Profile, Astral and Humor) |
 | `/skill-tree` | **Skill Tree**: three branches (Front-end, Automation, Design) with mastered, training and locked skills, overall progress, and a side drawer with each skill's details |
 
 Projects with a page today: Verdant, PixelForge, Ironclad, printa, Owlio, Aplicador de Vagas, Event Hub and mac. Texts and images come from the READMEs of the repositories on [GitHub](https://github.com/berdfandrade).
@@ -48,7 +48,7 @@ The site opens at `http://localhost:5173`.
 
 ```
 public/assets/            images served as-is
-  avatar.png              pixel-art avatar for the About page
+  avatar.webp             pixel-art portrait for the About page
   projects/<slug>/        screenshots and videos for each project
 src/
   main.tsx                routes and entry point

@@ -12,7 +12,7 @@ O site é bilíngue: português em `/` e inglês em `/en`. Um botão PT/EN no ca
 | --- | --- |
 | `/` | **Biblioteca**: projetos filtráveis por categoria (Apps, Desktop, Sistemas, Web, Automação), busca, projeto em destaque e a lista "Todas as faixas" |
 | `/projeto/:slug` | **Página do projeto**: capa, resumo, links, vitrine (print ou vídeo), ficha técnica, destaques, trecho de código, galeria de telas com visualizador em tela cheia e "Mais na biblioteca" |
-| `/sobre` | **Ficha de personagem**: avatar em pixel art, estilo de humor, mapa astral, inventário de habilidades e missões ativas. No celular vira uma tela com abas (Ficha, Astral e Humor) |
+| `/sobre` | **Sobre**: retrato em pixel art com nível e experiência (pela minha idade), um pouco sobre mim, estilo de humor, mapa astral, inventário de habilidades e missões ativas. No celular vira uma tela com abas (Perfil, Astral e Humor) |
 | `/skill-tree` | **Skill Tree**: três ramos (Front-end, Automação, Design) com habilidades dominadas, em treino e bloqueadas, o progresso geral e uma gaveta lateral com os detalhes de cada habilidade |
 
 Projetos com página hoje: Verdant, PixelForge, Ironclad, printa, Owlio, Aplicador de Vagas, Event Hub e mac. Os textos e as imagens vêm dos READMEs dos repositórios no [GitHub](https://github.com/berdfandrade).
@@ -48,7 +48,7 @@ O site abre em `http://localhost:5173`.
 
 ```
 public/assets/            imagens servidas como estão
-  avatar.png              avatar em pixel art da página Sobre
+  avatar.webp             retrato em pixel art da página Sobre
   projects/<slug>/        prints e vídeos de cada projeto
 src/
   main.tsx                rotas e ponto de entrada

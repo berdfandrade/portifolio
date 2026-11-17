@@ -4,9 +4,25 @@ import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
 import BirthChart from '../components/BirthChart';
 import { useI18n } from '../i18n';
-import { CHART, PLACEMENT_ORDER, SIGN_GLYPHS, formatDegrees } from '../data/astro';
+import { CHART, PLACEMENT_ORDER, formatDegrees } from '../data/astro';
 
-const AVATAR = `${import.meta.env.BASE_URL}assets/avatar.png`;
+const AVATAR = `${import.meta.env.BASE_URL}assets/avatar.webp`;
+
+// Nível = idade; a experiência é quanto do ano já passou desde o último aniversário (15 de janeiro de 1996).
+const BIRTH = { year: 1996, month: 0, day: 15 };
+const HP = 60; // sem fórmula: só a barra de vida do personagem
+const DAY = 24 * 60 * 60 * 1000;
+
+function levelStats(now = new Date()) {
+  const birthday = (year: number) => new Date(year, BIRTH.month, BIRTH.day);
+  const last = now >= birthday(now.getFullYear()) ? birthday(now.getFullYear()) : birthday(now.getFullYear() - 1);
+  const next = birthday(last.getFullYear() + 1);
+  return {
+    level: last.getFullYear() - BIRTH.year,
+    exp: Math.floor(((now.getTime() - last.getTime()) / (next.getTime() - last.getTime())) * 1000),
+    daysLeft: Math.ceil((next.getTime() - now.getTime()) / DAY),
+  };
+}
 
 // Abas da versão celular. No desktop todas as seções aparecem juntas (ver styles.css).
 const TABS = ['ficha', 'astral', 'humor'] as const;
@@ -26,6 +42,7 @@ export default function About() {
   usePageTitle(a.title);
   const [tab, setTab] = useState<Tab>('ficha');
   const panel = (id: Tab) => (tab === id ? 'is-active' : undefined);
+  const { level, exp, daysLeft } = levelStats();
 
   const onTabKey = (e: KeyboardEvent, i: number) => {
     const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
@@ -41,23 +58,30 @@ export default function About() {
       <main className="about">
         <section className="about-hero" aria-label={a.heroLabel}>
           <figure className="avatar-card">
-            <img src={AVATAR} width={400} height={400} alt={a.avatarAlt} />
-            <div className="avatar-foot">
-              <span className="player">{a.player}</span>
-              <span className="online">{a.online}</span>
-            </div>
-            <figcaption className="avatar-caption" aria-hidden="true">
-              <span className="cap-name">Bernardo</span>
-              <span className="cap-sub">{a.classLine} · {SIGN_GLYPHS[CHART.sun.sign]} {a.signs[CHART.sun.sign]}</span>
+            <img src={AVATAR} width={800} height={800} alt={a.avatarAlt} />
+            <figcaption className="stats">
+              <span className="stats-title">{a.statsTitle}</span>
+              <span className="stats-head">
+                <span className="lvl">Lv. <strong>{level}</strong></span>
+                <span className="class">{a.classWord} <strong>{a.className}</strong></span>
+              </span>
+              <span className="stat" role="img" aria-label={a.hpLabel(HP)}>
+                <span className="stat-name" aria-hidden="true">HP</span>
+                <span className="stat-bar hp" aria-hidden="true"><span style={{ width: `${HP}%` }} /></span>
+              </span>
+              <span className="stat" role="img" aria-label={a.expLabel(exp, level + 1, daysLeft)}>
+                <span className="stat-name" aria-hidden="true">Exp.</span>
+                <span className="stat-bar exp" aria-hidden="true"><span style={{ width: `${exp / 10}%` }} /></span>
+                <span className="stat-num" aria-hidden="true">{exp} / 1000</span>
+              </span>
             </figcaption>
           </figure>
 
           <div className={`about-intro ${panel('ficha') ?? ''}`} data-panel="ficha">
-            <p className="eyebrow">{a.eyebrow}</p>
             <h1>Bernardo</h1>
             <p className="lede">
               <span className="eyebrow desc-label">{a.descLabel}</span>
-              {a.classWord} <strong>{a.className}</strong>. {a.description}
+              {a.description}
             </p>
             <dl className="facts">
               {a.facts.map(([k, v]) => (
@@ -84,6 +108,11 @@ export default function About() {
             </button>
           ))}
         </div>
+
+        <section className={`card about-me ${panel('ficha') ?? ''}`} aria-labelledby="about-me" data-panel="ficha">
+          <h2 id="about-me">{a.aboutMeTitle}</h2>
+          {a.aboutMe.map((text) => <p key={text}>{text}</p>)}
+        </section>
 
         <section className={`card split humor ${panel('humor') ?? ''}`} aria-labelledby="humor" data-panel="humor">
           <div className="rings">
