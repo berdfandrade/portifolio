@@ -12,7 +12,7 @@ O site é bilíngue: português em `/` e inglês em `/en`. Um botão PT/EN no ca
 | --- | --- |
 | `/` | **Biblioteca**: projetos filtráveis por categoria (Apps, Desktop, Sistemas, Web, Automação), busca, projeto em destaque e a lista "Todas as faixas" |
 | `/projeto/:slug` | **Página do projeto**: capa, resumo, links, vitrine (print ou vídeo), ficha técnica, destaques, trecho de código, galeria de telas com visualizador em tela cheia e "Mais na biblioteca" |
-| `/sobre` | **Sobre**: avatar em pixel art com nível e experiência (pela minha idade), um pouco sobre mim, estilo de humor, mapa astral, inventário de habilidades e missões ativas. No celular vira uma tela com abas (Perfil, Astral e Humor) |
+| `/sobre` | **Sobre**: avatar em pixel art com nível e experiência (pela minha idade), e quatro abas: Perfil (um pouco sobre mim, inventário, missões ativas), Gostos (interesses, músicas mais ouvidas no Spotify, estante), Astral (mapa astral e uma leitura extensa) e Humor |
 | `/skill-tree` | **Skill Tree**: cinco ramos da stack e as habilidades humanas, com habilidades dominadas, em treino e bloqueadas, o progresso geral, uma gaveta lateral com os detalhes de cada habilidade e uma visualização 3D que gira com o arraste |
 | `/livros` | **Livros**: estante 3D com os livros que já li. Arraste para girar e toque num livro para tirá-lo da prateleira e ver a capa e os detalhes |
 | `/contato` | **Contato**: uma conversa no estilo do Mensagens que abre o WhatsApp ou o e-mail com a mensagem pronta, e cartões de WhatsApp, e-mail e Instagram com botão de copiar |
@@ -45,6 +45,8 @@ O site abre em `http://localhost:5173`.
 | `npm run build` | Checa os tipos e gera o site final em `dist/` |
 | `npm run preview` | Serve a pasta `dist/` localmente para conferir o build |
 | `npm run typecheck` | Só checa os tipos |
+| `npm start` | Roda o `server.js`: entrega o `dist/` e a rota `/api/top-tracks` (Spotify) |
+| `npm run spotify:auth` | Autorização única do Spotify; grava as chaves no Railway |
 
 ## Estrutura
 
@@ -117,14 +119,21 @@ O tema começa seguindo o sistema (claro ou escuro). Quando a pessoa clica no bo
 
 ## Publicar
 
-`npm run build` gera um site estático em `dist/`. Como as rotas são do React, a hospedagem precisa devolver o `index.html` para qualquer endereço (por exemplo `/projeto/owlio`):
+O site roda no [Railway](https://railway.com), em https://bernardo.up.railway.app. Cada push na `main` gera um deploy novo: o Railway roda `npm run build` e depois `npm start`.
 
-- **Vercel**: funciona sem configuração para projetos Vite.
-- **Netlify**: crie `public/_redirects` com a linha `/*  /index.html  200`.
-- **GitHub Pages**: em `vite.config.ts`, defina `base: '/nome-do-repositorio/'`. Depois copie `dist/index.html` para `dist/404.html` no deploy, para as rotas funcionarem ao recarregar a página.
+O [`server.js`](server.js) é um servidor Node pequeno e sem dependências. Ele entrega o `dist/`, devolve o `index.html` para as rotas do React (como `/projeto/owlio`) e responde em `/api/top-tracks` com as músicas que mais ouvi no Spotify nas últimas 4 semanas, guardadas por uma hora.
+
+### Spotify
+
+O cartão "Mais ouvidas" da página Sobre precisa de três variáveis no Railway: `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET` e `SPOTIFY_REFRESH_TOKEN`. Sem elas, o cartão simplesmente não aparece.
+
+1. Crie um app em [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) com a Web API e a Redirect URI `http://127.0.0.1:8888/callback`.
+2. Rode `npm run spotify:auth` com a CLI do Railway logada, cole o Client ID e o Client Secret e autorize no navegador. O script grava as três variáveis no Railway e publica de novo.
+
+Para testar localmente, rode `npm start` com essas variáveis definidas e `npm run dev` em outro terminal; o Vite repassa `/api` para a porta 3000.
 
 ## Pendências
 
 - Textos entre colchetes, como `[ANO]` e `[ALTURA]`, ainda precisam ser preenchidos.
-- Os links de Instagram e Contato ainda apontam para `#`.
+- Os sete livros da estante são exemplos e precisam ser trocados.
 - Os projetos Skill Tree e Link na Bio ainda não têm página de projeto.

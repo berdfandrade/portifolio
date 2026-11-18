@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
 import BirthChart from '../components/BirthChart';
+import TopTracks from '../components/TopTracks';
+import AstroReading from '../components/AstroReading';
 import { useI18n } from '../i18n';
 import { CHART, PLACEMENT_ORDER, formatDegrees } from '../data/astro';
 
@@ -24,8 +26,8 @@ function levelStats(now = new Date()) {
   };
 }
 
-// Abas da versão celular. No desktop todas as seções aparecem juntas (ver styles.css).
-const TABS = ['ficha', 'astral', 'humor'] as const;
+// Abas da página. No celular, a apresentação (nome, descrição e dados) também fica dentro de "Perfil".
+const TABS = ['ficha', 'gostos', 'astral', 'humor'] as const;
 type Tab = (typeof TABS)[number];
 
 const HUMOR = { positividade: 85, ironia: 95 };
@@ -34,10 +36,20 @@ const ring = (r: number, pct: number) => {
   return `${((c * pct) / 100).toFixed(1)} ${c.toFixed(1)}`;
 };
 
+// Ícones (traço, 24×24) dos interesses da aba Gostos.
+const INTEREST_ICONS: Record<string, string> = {
+  cinema: 'M3 6h18v12H3zM3 10h18M7 6l2 4M12 6l2 4M17 6l2 4',
+  music: 'M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
+  history: 'M3 21h18M5 21V10M9.5 21V10M14.5 21V10M19 21V10M2 10l10-7 10 7z',
+  philosophy: 'M12 3a6 6 0 0 0-3.5 10.9V17h7v-3.1A6 6 0 0 0 12 3zM9.5 21h5',
+  tech: 'M4 5h16v11H4zM2 20h20M10 16v4M14 16v4',
+  people: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20a6 6 0 0 1 12 0M12 20a6 6 0 0 1 10 0',
+};
+
 const SKILLS = ['Figma', 'React', 'React Native', 'NestJS', 'FastAPI', 'Rust', 'C / C++', 'Qt', 'Tailwind', 'Playwright', 'Pixel art'];
 
 export default function About() {
-  const { t, to, projects } = useI18n();
+  const { t, to, projects, books } = useI18n();
   const a = t.about;
   usePageTitle(a.title);
   const [tab, setTab] = useState<Tab>('ficha');
@@ -100,6 +112,7 @@ export default function About() {
               className="tab"
               role="tab"
               aria-selected={tab === id}
+              aria-controls={`panel-${id}`}
               tabIndex={tab === id ? 0 : -1}
               onClick={() => setTab(id)}
               onKeyDown={(e) => onTabKey(e, i)}
@@ -109,73 +122,112 @@ export default function About() {
           ))}
         </div>
 
-        <section className={`card about-me ${panel('ficha') ?? ''}`} aria-labelledby="about-me" data-panel="ficha">
-          <h2 id="about-me">{a.aboutMeTitle}</h2>
-          {a.aboutMe.map((text) => <p key={text}>{text}</p>)}
-        </section>
+        <div className="about-panel" role="tabpanel" id="panel-ficha" aria-labelledby="tab-ficha" hidden={tab !== 'ficha'}>
+          <section className="card about-me" aria-labelledby="about-me">
+            <h2 id="about-me">{a.aboutMeTitle}</h2>
+            {a.aboutMe.map((text) => <p key={text}>{text}</p>)}
+          </section>
 
-        <section className={`card split humor ${panel('humor') ?? ''}`} aria-labelledby="humor" data-panel="humor">
-          <div className="rings">
-            <svg role="img" aria-label={`${a.positivity} ${HUMOR.positividade}%, ${a.irony.toLowerCase()} ${HUMOR.ironia}%`} width="220" height="220" viewBox="0 0 220 220">
-              <circle cx="110" cy="110" r="94" fill="none" stroke="#FF375F" strokeOpacity="0.18" strokeWidth="22" />
-              <circle cx="110" cy="110" r="94" fill="none" stroke="#FF375F" strokeWidth="22" strokeLinecap="round" strokeDasharray={ring(94, HUMOR.positividade)} transform="rotate(-90 110 110)" />
-              <circle cx="110" cy="110" r="66" fill="none" stroke="#30D158" strokeOpacity="0.18" strokeWidth="22" />
-              <circle cx="110" cy="110" r="66" fill="none" stroke="#30D158" strokeWidth="22" strokeLinecap="round" strokeDasharray={ring(66, HUMOR.ironia)} transform="rotate(-90 110 110)" />
-            </svg>
-          </div>
-          <div className="split-text">
-            <p className="eyebrow">{a.humorEyebrow}</p>
-            <h2 id="humor">{a.humorTitle}</h2>
-            <p className="body">{a.humorText}</p>
-            <div className="meters">
-              <div className="meter"><span className="label pos">{a.positivity}</span><span className="value">{HUMOR.positividade}%</span></div>
-              <div className="meter"><span className="label iron">{a.irony}</span><span className="value">{HUMOR.ironia}%</span></div>
+          <section className="pair" aria-label={a.pairLabel}>
+            <div className="card">
+              <h2>{a.inventory}</h2>
+              <div className="chips">
+                {SKILLS.map((s) => <span key={s} className="chip">{s}</span>)}
+              </div>
+              <Link to={to('skills')}>{a.skillsLink}</Link>
             </div>
-          </div>
-        </section>
+            <div className="card">
+              <h2>{a.quests}</h2>
+              <p>{new Intl.ListFormat(t.locale).format(projects.map((p) => p.title))}.</p>
+              <Link to={to('library')}>{a.libraryLink}</Link>
+            </div>
+          </section>
+        </div>
 
-        <section className={`card split astro ${panel('astral') ?? ''}`} aria-labelledby="mapa" data-panel="astral">
-          <div className="chart">
-            <BirthChart />
-          </div>
-          <div className="split-text astro-text">
-            <p className="eyebrow">{a.astroEyebrow}</p>
-            <h2 id="mapa">{a.astroTitle}</h2>
-            <p className="body">{a.astroText}</p>
-            <div className="chips">
-              {a.traits.map((trait) => <span key={trait} className="chip">{trait}</span>)}
-            </div>
-            <dl className="placements">
-              {PLACEMENT_ORDER.map((id) => {
-                const pos = CHART[id];
-                return (
-                  <div key={id}>
-                    <dt>{a.points[id]}</dt>
-                    <dd>
-                      {a.signs[pos.sign]} <span className="deg">{formatDegrees(pos)}</span>
-                      {pos.retrograde && <abbr className="retro" title={a.retrograde}> ℞</abbr>}
-                    </dd>
-                  </div>
-                );
-              })}
-            </dl>
-          </div>
-        </section>
+        <div className="about-panel" role="tabpanel" id="panel-gostos" aria-labelledby="tab-gostos" hidden={tab !== 'gostos'}>
+          <section className="card interests" aria-labelledby="interests">
+            <h2 id="interests">{a.interestsTitle}</h2>
+            <p className="interests-sub">{a.interestsSub}</p>
+            <ul className="interest-grid">
+              {a.interests.map(([id, label]) => (
+                <li key={id} className={`interest ${id}`}>
+                  <span className="interest-icon" aria-hidden="true">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d={INTEREST_ICONS[id]} /></svg>
+                  </span>
+                  <span>{label}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        <section className={`pair ${panel('ficha') ?? ''}`} data-panel="ficha" aria-label={a.pairLabel}>
-          <div className="card">
-            <h2>{a.inventory}</h2>
-            <div className="chips">
-              {SKILLS.map((s) => <span key={s} className="chip">{s}</span>)}
+          <TopTracks />
+
+          <Link to={to('books')} className="card shelf-link">
+            <span className="shelf-link-books" aria-hidden="true">
+              {books.slice(0, 5).map((book) => <span key={book.id} style={{ background: book.color, height: `${book.height / 4}px` }} />)}
+            </span>
+            <span className="shelf-link-text">
+              <span className="eyebrow">{a.booksEyebrow}</span>
+              <strong>{a.booksTitle}</strong>
+              <span>{a.booksText(books.length)}</span>
+            </span>
+            <span className="shelf-link-arrow" aria-hidden="true">›</span>
+          </Link>
+        </div>
+
+        <div className="about-panel" role="tabpanel" id="panel-astral" aria-labelledby="tab-astral" hidden={tab !== 'astral'}>
+          <section className="card split astro" aria-labelledby="mapa">
+            <div className="chart">
+              <BirthChart />
             </div>
-            <Link to={to('skills')}>{a.skillsLink}</Link>
-          </div>
-          <div className="card">
-            <h2>{a.quests}</h2>
-            <p>{new Intl.ListFormat(t.locale).format(projects.map((p) => p.title))}.</p>
-            <Link to={to('library')}>{a.libraryLink}</Link>
-          </div>
-        </section>
+            <div className="split-text astro-text">
+              <p className="eyebrow">{a.astroEyebrow}</p>
+              <h2 id="mapa">{a.astroTitle}</h2>
+              <p className="body">{a.astroText}</p>
+              <div className="chips">
+                {a.traits.map((trait) => <span key={trait} className="chip">{trait}</span>)}
+              </div>
+              <dl className="placements">
+                {PLACEMENT_ORDER.map((id) => {
+                  const pos = CHART[id];
+                  return (
+                    <div key={id}>
+                      <dt>{a.points[id]}</dt>
+                      <dd>
+                        {a.signs[pos.sign]} <span className="deg">{formatDegrees(pos)}</span>
+                        {pos.retrograde && <abbr className="retro" title={a.retrograde}> ℞</abbr>}
+                      </dd>
+                    </div>
+                  );
+                })}
+              </dl>
+            </div>
+          </section>
+
+          <AstroReading />
+        </div>
+
+        <div className="about-panel" role="tabpanel" id="panel-humor" aria-labelledby="tab-humor" hidden={tab !== 'humor'}>
+          <section className="card split humor" aria-labelledby="humor">
+            <div className="rings">
+              <svg role="img" aria-label={`${a.positivity} ${HUMOR.positividade}%, ${a.irony.toLowerCase()} ${HUMOR.ironia}%`} width="220" height="220" viewBox="0 0 220 220">
+                <circle cx="110" cy="110" r="94" fill="none" stroke="#FF375F" strokeOpacity="0.18" strokeWidth="22" />
+                <circle cx="110" cy="110" r="94" fill="none" stroke="#FF375F" strokeWidth="22" strokeLinecap="round" strokeDasharray={ring(94, HUMOR.positividade)} transform="rotate(-90 110 110)" />
+                <circle cx="110" cy="110" r="66" fill="none" stroke="#30D158" strokeOpacity="0.18" strokeWidth="22" />
+                <circle cx="110" cy="110" r="66" fill="none" stroke="#30D158" strokeWidth="22" strokeLinecap="round" strokeDasharray={ring(66, HUMOR.ironia)} transform="rotate(-90 110 110)" />
+              </svg>
+            </div>
+            <div className="split-text">
+              <p className="eyebrow">{a.humorEyebrow}</p>
+              <h2 id="humor">{a.humorTitle}</h2>
+              <p className="body">{a.humorText}</p>
+              <div className="meters">
+                <div className="meter"><span className="label pos">{a.positivity}</span><span className="value">{HUMOR.positividade}%</span></div>
+                <div className="meter"><span className="label iron">{a.irony}</span><span className="value">{HUMOR.ironia}%</span></div>
+              </div>
+            </div>
+          </section>
+        </div>
       </main>
     </>
   );

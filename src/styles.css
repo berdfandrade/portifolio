@@ -258,7 +258,16 @@ img { display: block; max-width: 100%; }
 
 /* ---------- Sobre ---------- */
 .about { max-width: 1120px; margin: 0 auto; padding: 48px 24px 96px; display: flex; flex-direction: column; gap: 32px; }
-.tabs { display: none; }
+.tabs {
+  display: grid; grid-template-columns: repeat(4, minmax(96px, 1fr)); gap: 2px; padding: 2px; border-radius: 10px; background: var(--fill);
+  align-self: center; position: sticky; top: 12px; z-index: 3; box-shadow: 0 6px 20px -10px rgba(0,0,0,0.25);
+}
+.tab { min-height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: var(--text2); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; transition: color .2s; }
+.tab:hover { color: var(--text); }
+.tab[aria-selected="true"] { background: var(--card); color: var(--text); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+.tab:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.about-panel { display: flex; flex-direction: column; gap: 24px; }
+.about-panel[hidden] { display: none; }
 .about-hero { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; }
 .avatar-card { flex: 1 1 320px; max-width: 400px; margin: 0; background: var(--sand); border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
 .avatar-card img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; image-rendering: pixelated; }
@@ -377,12 +386,9 @@ img { display: block; max-width: 100%; }
   .avatar-card { max-width: none; border-radius: 32px; order: -2; }
   .stats-head .lvl strong { font-size: 30px; }
 
-  .tabs {
-    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 2px; border-radius: 10px; background: var(--fill);
-    position: sticky; top: 0; z-index: 3; order: -1; box-shadow: 0 0 0 12px var(--bg); margin: 2px 0;
-  }
-  .tab { min-height: 36px; border: 0; border-radius: 8px; background: transparent; color: var(--text2); font-size: 14px; font-weight: 500; cursor: pointer; }
-  .tab[aria-selected="true"] { background: var(--card); color: var(--text); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+  .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); align-self: stretch; top: 0; order: -1; box-shadow: 0 0 0 12px var(--bg); margin: 2px 0; }
+  .tab { padding: 0 4px; }
+  .about-panel { gap: 14px; }
   [data-panel]:not(.is-active) { display: none !important; }
 
   .about-intro { gap: 14px; }
@@ -824,4 +830,138 @@ img { display: block; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .pulse, .bubble, .bubble.typing span { animation: none; }
   .channel { transition: none; }
+}
+
+/* ---------- Sobre: músicas mais ouvidas no Spotify ---------- */
+.music { display: flex; flex-direction: column; gap: 18px; }
+.music-brand { display: inline-flex; align-items: center; gap: 6px; }
+.music h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-top: 4px; }
+.music-sub { margin: 4px 0 0; font-size: 15px; color: var(--text3); }
+.top-tracks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: repeat(5, auto); column-gap: 32px; }
+.top-tracks a, .top-tracks .skeleton { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 8px 10px; margin: 0 -10px; border-radius: 12px; color: var(--text); }
+.top-tracks a:hover { background: var(--sep2); text-decoration: none; color: var(--text); }
+.top-tracks a:focus-visible { outline: 3px solid var(--accent); outline-offset: 0; }
+.track-rank { width: 20px; flex: none; text-align: right; font-size: 15px; font-weight: 600; color: var(--text3); font-variant-numeric: tabular-nums; }
+.top-tracks img, .track-art { width: 48px; height: 48px; flex: none; border-radius: 8px; object-fit: cover; background: var(--fill); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+.track-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.track-name, .track-artist { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.track-name { font-size: 15px; font-weight: 600; }
+.track-artist { font-size: 13px; color: var(--text3); }
+.skeleton .bar { display: block; width: 90px; height: 10px; border-radius: 999px; background: var(--fill); animation: shimmer 1.4s ease-in-out infinite; }
+.skeleton .bar.long { width: 160px; height: 12px; }
+.skeleton .track-art { animation: shimmer 1.4s ease-in-out infinite; }
+@keyframes shimmer { 50% { opacity: .5; } }
+@media (max-width: 760px) {
+  .top-tracks { grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; grid-template-rows: none; }
+  .music h2 { font-size: 22px; }
+}
+@media (prefers-reduced-motion: reduce) { .skeleton .bar, .skeleton .track-art { animation: none; } }
+
+/* ---------- Sobre: aba Gostos ---------- */
+.interests { display: flex; flex-direction: column; gap: 6px; }
+.interests h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+.interests-sub { margin: 0 0 14px; font-size: 15px; color: var(--text3); }
+.interest-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.interest { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; padding: 20px 16px; border-radius: 18px; background: var(--bg); font-size: 15px; font-weight: 600; }
+.interest-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; box-shadow: inset 0 1px 0 rgba(255,255,255,0.3); }
+.interest.cinema .interest-icon { background: linear-gradient(180deg, #FF6B5E, #E0352B); }
+.interest.music .interest-icon { background: linear-gradient(180deg, #FF5F8F, #E5245E); }
+.interest.history .interest-icon { background: linear-gradient(180deg, #D9A66B, #A87332); }
+.interest.philosophy .interest-icon { background: linear-gradient(180deg, #A78BFA, #7C4DDB); }
+.interest.tech .interest-icon { background: linear-gradient(180deg, #4FA8FF, #0A6CF0); }
+.interest.people .interest-icon { background: linear-gradient(180deg, #4BD07A, #1F9D55); }
+
+.shelf-link { display: flex; align-items: center; gap: 24px; color: var(--text); transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
+.shelf-link:hover { color: var(--text); text-decoration: none; transform: translateY(-2px); box-shadow: 0 18px 40px -20px rgba(0,0,0,0.3); }
+.shelf-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.shelf-link-books { display: flex; align-items: flex-end; gap: 3px; height: 66px; padding: 0 10px 6px; border-bottom: 5px solid var(--sand); flex: none; }
+.shelf-link-books span { width: 12px; border-radius: 2px 2px 0 0; box-shadow: inset -3px 0 0 rgba(0,0,0,0.15); }
+.shelf-link-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.shelf-link-text strong { font-size: 20px; letter-spacing: -0.3px; }
+.shelf-link-text span:last-child { font-size: 14px; color: var(--text3); }
+.shelf-link-arrow { font-size: 28px; color: var(--text3); }
+
+/* ---------- Sobre: leitura do mapa astral ---------- */
+.reading { display: flex; flex-direction: column; gap: 28px; padding: 40px; }
+.reading-head h2 { font-size: 40px; line-height: 1.08; font-weight: 800; letter-spacing: -1.2px; margin-top: 6px; }
+.reading p, .reading li { font-size: 17px; line-height: 1.65; color: var(--text2); }
+.reading p { margin: 0; }
+.reading strong { color: var(--text); }
+.reading-intro { display: flex; flex-direction: column; gap: 18px; max-width: 760px; }
+.reading-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 48px; align-items: start; border-top: 1px solid var(--sep2); padding-top: 32px; }
+.reading-toc { position: sticky; top: 72px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 96px); overflow-y: auto; }
+.reading-toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.reading-toc a { display: flex; gap: 10px; padding: 7px 10px; border-radius: 10px; font-size: 13px; line-height: 1.35; color: var(--text2); }
+.reading-toc a:hover { background: var(--sep2); color: var(--text); text-decoration: none; }
+.reading-toc a[aria-current="true"] { background: var(--fill); color: var(--text); font-weight: 600; }
+.reading-toc a:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+.toc-number { width: 18px; flex: none; color: var(--text3); font-variant-numeric: tabular-nums; }
+.reading-body { display: flex; flex-direction: column; gap: 56px; min-width: 0; max-width: 760px; }
+.reading-section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 72px; }
+.reading-section > header { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 10px 14px; margin-bottom: 4px; }
+.section-number { font-size: 13px; font-weight: 700; color: var(--text3); letter-spacing: 0.6px; }
+.section-number::before { content: "§ "; }
+.section-glyphs { display: flex; gap: 6px; justify-self: end; }
+.reading-section h3 { grid-column: 1 / -1; margin: 0; font-size: 30px; line-height: 1.15; font-weight: 700; letter-spacing: -0.6px; }
+.reading-section h4 { margin: 14px 0 0; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.reading-list, .reading-steps { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.reading-list li::marker { color: var(--accent); }
+.reading-steps li::marker { color: var(--text3); font-weight: 700; }
+.reading-quote {
+  margin: 8px 0; padding: 20px 24px; border-radius: 18px; background: var(--bg); border-left: 4px solid transparent;
+  border-image: linear-gradient(180deg, #A2845E, #0A84FF) 1; font-size: 21px; line-height: 1.45; font-weight: 600; letter-spacing: -0.3px; color: var(--text);
+}
+.reading-quote strong { font-weight: 700; }
+.reading .reading-note { padding: 12px 16px; border-radius: 12px; background: var(--sep2); font-size: 14px; line-height: 1.5; color: var(--text3); }
+
+/* Selos dos signos: a cor vem do elemento */
+.glyph-badge { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-family: 'Segoe UI Symbol', 'Apple Symbols', 'Noto Sans Symbols', 'Noto Sans Symbols 2', sans-serif; line-height: 1; flex: none; }
+.glyph-badge.sm { width: 32px; height: 32px; font-size: 17px; }
+.glyph-badge.lg { width: 52px; height: 52px; font-size: 27px; }
+.glyph-badge.el-fire { background: color-mix(in srgb, #FF6B3D 16%, transparent); color: #D9480F; }
+.glyph-badge.el-earth { background: color-mix(in srgb, #A2845E 20%, transparent); color: #7A5C34; }
+.glyph-badge.el-air { background: color-mix(in srgb, #5AC8FA 22%, transparent); color: #0A7EA8; }
+.glyph-badge.el-water { background: color-mix(in srgb, #5E5CE6 16%, transparent); color: #4B49C9; }
+.glyph-badge.is-planet { background: var(--fill); color: var(--text); }
+.glyph-badge.is-text { background: var(--fill); color: var(--text2); font-family: inherit; font-size: 11px; font-weight: 800; letter-spacing: 0.4px; }
+:root[data-theme="dark"] .glyph-badge.el-fire { color: #FF9566; }
+:root[data-theme="dark"] .glyph-badge.el-earth { color: #D2B48C; }
+:root[data-theme="dark"] .glyph-badge.el-air { color: #7FD6FF; }
+:root[data-theme="dark"] .glyph-badge.el-water { color: #A5A3FF; }
+
+.reading-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.reading-card { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 20px; border-radius: 18px; background: var(--bg); }
+.reading-card .glyph-badge { margin-bottom: 6px; }
+.reading-card strong { font-size: 17px; }
+.reading .reading-card p { font-size: 15px; line-height: 1.5; }
+.reading-versus { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 12px; }
+.versus-side { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 20px; border-radius: 18px; background: var(--bg); height: 100%; }
+.versus-side .glyph-badge { margin-bottom: 6px; }
+.reading .versus-side p { font-size: 15px; line-height: 1.5; }
+.versus-mark { font-size: 22px; color: var(--text3); }
+.reading-table { overflow-x: auto; border-radius: 14px; border: 1px solid var(--sep2); }
+.reading-table table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.reading-table th, .reading-table td { padding: 12px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--sep2); color: var(--text2); }
+.reading-table thead th { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text3); background: var(--bg); }
+.reading-table tbody th { font-weight: 600; color: var(--text); white-space: nowrap; }
+.reading-table tr:last-child > * { border-bottom: 0; }
+
+@media (max-width: 900px) {
+  .reading-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .reading-toc { position: static; max-height: none; }
+  .reading-toc ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+}
+@media (max-width: 640px) {
+  .reading { padding: 20px; gap: 20px; }
+  .reading-head h2 { font-size: 28px; letter-spacing: -0.6px; }
+  .reading p, .reading li { font-size: 16px; }
+  .reading-section h3 { font-size: 23px; }
+  .reading-quote { font-size: 18px; padding: 16px 18px; }
+  .reading-versus { grid-template-columns: minmax(0, 1fr); }
+  .versus-mark { justify-self: center; }
+  .reading-body { gap: 40px; }
+  .interests h2 { font-size: 22px; }
+  .interest-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shelf-link { gap: 16px; }
+  .shelf-link-books { display: none; }
 }

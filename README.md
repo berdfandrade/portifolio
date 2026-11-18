@@ -12,7 +12,7 @@ The site is bilingual: Brazilian Portuguese at `/` and English at `/en`. A PT/EN
 | --- | --- |
 | `/` | **Library**: projects you can filter by category (Apps, Desktop, Systems, Web, Automation), search, a featured project and the "All tracks" list |
 | `/projeto/:slug` | **Project page**: cover, summary, links, showcase (screenshot or video), fact sheet, highlights, a code excerpt, a screenshot gallery with a full-screen viewer, and "More in the library" |
-| `/sobre` | **About**: pixel-art avatar with level and XP (from my age), a bit about me, sense of humor, birth chart, skill inventory and active quests. On phones it becomes a tabbed screen (Profile, Astral and Humor) |
+| `/sobre` | **About**: pixel-art avatar with level and XP (from my age), and four tabs: Profile (a bit about me, skill inventory, active quests), Tastes (interests, most played Spotify tracks, bookshelf), Astral (birth chart and an in-depth reading) and Humor |
 | `/skill-tree` | **Skill Tree**: five stack branches plus people skills, with mastered, training and locked skills, overall progress, a side drawer with each skill's details and a 3D view you can rotate by dragging |
 | `/livros` | **Books**: a 3D bookshelf of books I've read. Drag to rotate it and tap a book to take it off the shelf and see its cover and details |
 | `/contato` | **Contact**: a Messages-style chat that opens WhatsApp or email with your message ready, plus cards for WhatsApp, email and Instagram with one-tap copy |
@@ -45,6 +45,8 @@ The site opens at `http://localhost:5173`.
 | `npm run build` | Type-checks and builds the final site into `dist/` |
 | `npm run preview` | Serves `dist/` locally to check the build |
 | `npm run typecheck` | Type-checks only |
+| `npm start` | Runs `server.js`: serves `dist/` and the `/api/top-tracks` route (Spotify) |
+| `npm run spotify:auth` | One-time Spotify authorization; saves the keys to Railway |
 
 ## Structure
 
@@ -117,14 +119,21 @@ The theme starts by following the system (light or dark). Once a visitor clicks 
 
 ## Deploying
 
-`npm run build` produces a static site in `dist/`. Because routing happens in React, the host must serve `index.html` for any path (for example `/projeto/owlio`):
+The site runs on [Railway](https://railway.com) at https://bernardo.up.railway.app. Every push to `main` triggers a new deploy: Railway runs `npm run build` and then `npm start`.
 
-- **Vercel**: works with no configuration for Vite projects.
-- **Netlify**: create `public/_redirects` containing the line `/*  /index.html  200`.
-- **GitHub Pages**: set `base: '/repository-name/'` in `vite.config.ts`. Then copy `dist/index.html` to `dist/404.html` when deploying, so routes still work after a page reload.
+[`server.js`](server.js) is a small Node server with no dependencies. It serves `dist/`, returns `index.html` for React routes (such as `/projeto/owlio`) and answers `/api/top-tracks` with my most played Spotify tracks from the last 4 weeks, cached for an hour.
+
+### Spotify
+
+The "On repeat" card on the About page needs three Railway variables: `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET` and `SPOTIFY_REFRESH_TOKEN`. Without them the card simply doesn't show.
+
+1. Create an app at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) with the Web API and the Redirect URI `http://127.0.0.1:8888/callback`.
+2. Run `npm run spotify:auth` with the Railway CLI logged in, paste the Client ID and Client Secret, and authorize in the browser. The script saves the three variables to Railway and redeploys.
+
+To try it locally, run `npm start` with those variables set and `npm run dev` in another terminal; Vite forwards `/api` to port 3000.
 
 ## To do
 
 - Bracketed placeholders such as `[ANO]` and `[ALTURA]` still need to be filled in.
-- The Instagram and Contact links still point to `#`.
+- The seven books on the bookshelf are examples to be replaced.
 - The Skill Tree and Link na Bio projects don't have a project page yet.
