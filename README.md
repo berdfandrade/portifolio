@@ -52,7 +52,8 @@ The site opens at `http://localhost:5173`.
 
 ```
 public/assets/            images served as-is
-  avatar.png              pixel-art avatar for the About page
+  avatar.png              pixel-art avatar (Contact page)
+  portrait.webp           pixel-art portrait for the About page
   projects/<slug>/        screenshots and videos for each project
 src/
   main.tsx                routes and entry point

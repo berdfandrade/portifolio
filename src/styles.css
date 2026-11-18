@@ -277,7 +277,7 @@ img { display: block; max-width: 100%; }
 .about-panel[hidden] { display: none; }
 .about-hero { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; }
 .avatar-card { flex: 1 1 320px; max-width: 400px; margin: 0; background: var(--sand); border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-.avatar-card img { width: 100%; height: auto; aspect-ratio: 1 / 0.86; object-fit: cover; object-position: 50% 100%; image-rendering: pixelated; }
+.avatar-card img { width: 100%; height: auto; aspect-ratio: 1 / 0.86; object-fit: cover; object-position: 50% 0; }
 .avatar-card { background: radial-gradient(120% 80% at 50% 10%, #F6DDB6, var(--sand) 60%, #D9B385); }
 /* Cartão de jogador em vidro fosco sobre o avatar */
 .player {

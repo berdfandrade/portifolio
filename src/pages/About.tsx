@@ -8,7 +8,7 @@ import AstroReading from '../components/AstroReading';
 import { useI18n } from '../i18n';
 import { CHART, PLACEMENT_ORDER, formatDegrees } from '../data/astro';
 
-const AVATAR = `${import.meta.env.BASE_URL}assets/avatar.png`;
+const AVATAR = `${import.meta.env.BASE_URL}assets/portrait.webp`;
 
 // Nível = idade; a experiência é quanto do ano já passou desde o último aniversário (15 de janeiro de 1996).
 const BIRTH = { year: 1996, month: 0, day: 15 };
@@ -75,7 +75,7 @@ export default function About() {
       <main className="about">
         <section className="about-hero" aria-label={a.heroLabel}>
           <figure className="avatar-card">
-            <img src={AVATAR} width={400} height={400} alt={a.avatarAlt} />
+            <img src={AVATAR} width={800} height={855} alt={a.avatarAlt} />
             {/* Cartão de jogador em vidro: o anel mostra a experiência até o próximo nível, como os anéis do Atividade */}
             <figcaption className="player">
               <span className="level-ring" role="img" aria-label={a.expLabel(exp, level + 1, daysLeft)}>

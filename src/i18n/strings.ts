@@ -63,7 +63,7 @@ const pt = {
   about: {
     title: "Sobre",
     heroLabel: "Apresentação",
-    avatarAlt: "Avatar em pixel art do Bernardo: cabelo preto bagunçado e camiseta azul",
+    avatarAlt: "Retrato em pixel art do Bernardo: cabelo castanho cacheado, barba, fones no pescoço e camiseta preta com um alienígena de fliperama",
     statsTitle: "Bernardo",
     levelWord: "Nível",
     nextLevel: (next: number, days: number) => `Nível ${next} em ${days} dias`,
@@ -256,7 +256,7 @@ const en: Strings = {
   about: {
     title: "About",
     heroLabel: "Introduction",
-    avatarAlt: "Pixel-art avatar of Bernardo: messy black hair and a blue T-shirt",
+    avatarAlt: "Pixel-art portrait of Bernardo: curly brown hair, a beard, headphones around his neck and a black T-shirt with an arcade alien",
     statsTitle: "Bernardo",
     levelWord: "Level",
     nextLevel: (next: number, days: number) => `Level ${next} in ${days} days`,
