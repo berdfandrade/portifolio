@@ -76,20 +76,32 @@ export default function About() {
         <section className="about-hero" aria-label={a.heroLabel}>
           <figure className="avatar-card">
             <img src={AVATAR} width={400} height={400} alt={a.avatarAlt} />
-            <figcaption className="stats">
-              <span className="stats-title">{a.statsTitle}</span>
-              <span className="stats-head">
-                <span className="lvl">Lv. <strong>{level}</strong></span>
-                <span className="class">{a.classWord} <strong>{a.className}</strong></span>
+            {/* Cartão de jogador em vidro: o anel mostra a experiência até o próximo nível, como os anéis do Atividade */}
+            <figcaption className="player">
+              <span className="level-ring" role="img" aria-label={a.expLabel(exp, level + 1, daysLeft)}>
+                <svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="ring-exp" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stopColor="#5AC8FA" />
+                      <stop offset="1" stopColor="#0A6CF0" />
+                    </linearGradient>
+                  </defs>
+                  <circle className="ring-track" cx="42" cy="42" r="35" />
+                  <circle className="ring-fill" cx="42" cy="42" r="35" pathLength={1000} strokeDasharray={`${exp} 1000`} transform="rotate(-90 42 42)" />
+                </svg>
+                <span className="level-text" aria-hidden="true">
+                  <span>{a.levelWord}</span>
+                  <strong>{level}</strong>
+                </span>
               </span>
-              <span className="stat" role="img" aria-label={a.hpLabel(HP)}>
-                <span className="stat-name" aria-hidden="true">HP</span>
-                <span className="stat-bar hp" aria-hidden="true"><span style={{ width: `${HP}%` }} /></span>
-              </span>
-              <span className="stat" role="img" aria-label={a.expLabel(exp, level + 1, daysLeft)}>
-                <span className="stat-name" aria-hidden="true">Exp.</span>
-                <span className="stat-bar exp" aria-hidden="true"><span style={{ width: `${exp / 10}%` }} /></span>
-                <span className="stat-num" aria-hidden="true">{exp} / 1000</span>
+              <span className="player-info">
+                <span className="player-name">{a.statsTitle}</span>
+                <span className="player-class">{a.className}</span>
+                <span className="player-meter" role="img" aria-label={a.hpLabel(HP)}>
+                  <span className="meter-label" aria-hidden="true">HP</span>
+                  <span className="meter-bar hp" aria-hidden="true"><span style={{ width: `${HP}%` }} /></span>
+                </span>
+                <span className="player-next" aria-hidden="true">{a.nextLevel(level + 1, daysLeft)}</span>
               </span>
             </figcaption>
           </figure>
