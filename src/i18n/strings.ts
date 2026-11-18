@@ -84,7 +84,7 @@ const pt = {
     interestsTitle: "Interesses",
     interestsSub: "Curioso por natureza: o que ocupa a cabeça e as horas livres.",
     interests: [
-      ["cinema", "Cinema"], ["music", "Música"], ["history", "História"],
+      ["cinema", "Cinema"], ["music", "Música"], ["literature", "Literatura"], ["history", "História"],
       ["philosophy", "Filosofia"], ["tech", "Tecnologia"], ["people", "Comportamento humano"],
       ["running", "Corrida"], ["meditation", "Meditação"], ["drums", "Tocar bateria"],
       ["guitar", "Tocar guitarra"], ["impressions", "Fazer imitações"],
@@ -277,7 +277,7 @@ const en: Strings = {
     interestsTitle: "Interests",
     interestsSub: "Curious by nature: what fills my head and my free time.",
     interests: [
-      ["cinema", "Film"], ["music", "Music"], ["history", "History"],
+      ["cinema", "Film"], ["music", "Music"], ["literature", "Literature"], ["history", "History"],
       ["philosophy", "Philosophy"], ["tech", "Technology"], ["people", "Human behavior"],
       ["running", "Running"], ["meditation", "Meditation"], ["drums", "Playing drums"],
       ["guitar", "Playing guitar"], ["impressions", "Doing impressions"],

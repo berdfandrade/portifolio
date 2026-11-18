@@ -40,6 +40,7 @@ const ring = (r: number, pct: number) => {
 const INTEREST_ICONS: Record<string, string> = {
   cinema: 'M3 6h18v12H3zM3 10h18M7 6l2 4M12 6l2 4M17 6l2 4',
   music: 'M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
+  literature: 'M4 5.5C6.5 4 9.5 4 12 6c2.5-2 5.5-2 8-.5v13c-2.5-1.5-5.5-1.5-8 .5-2.5-2-5.5-2-8-.5zM12 6v13.5',
   history: 'M3 21h18M5 21V10M9.5 21V10M14.5 21V10M19 21V10M2 10l10-7 10 7z',
   philosophy: 'M12 3a6 6 0 0 0-3.5 10.9V17h7v-3.1A6 6 0 0 0 12 3zM9.5 21h5',
   tech: 'M4 5h16v11H4zM2 20h20M10 16v4M14 16v4',
@@ -79,7 +80,7 @@ export default function About() {
             {/* Cartão de jogador em vidro: o anel mostra a experiência até o próximo nível, como os anéis do Atividade */}
             <figcaption className="player">
               <span className="level-ring" role="img" aria-label={a.expLabel(exp, level + 1, daysLeft)}>
-                <svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
+                <svg width="60" height="60" viewBox="0 0 84 84" aria-hidden="true">
                   <defs>
                     <linearGradient id="ring-exp" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0" stopColor="#5AC8FA" />
@@ -95,8 +96,10 @@ export default function About() {
                 </span>
               </span>
               <span className="player-info">
-                <span className="player-name">{a.statsTitle}</span>
-                <span className="player-class">{a.className}</span>
+                <span className="player-title">
+                  <span className="player-name">{a.statsTitle}</span>
+                  <span className="player-class">{a.className}</span>
+                </span>
                 <span className="player-meter" role="img" aria-label={a.hpLabel(HP)}>
                   <span className="meter-label" aria-hidden="true">HP</span>
                   <span className="meter-bar hp" aria-hidden="true"><span style={{ width: `${HP}%` }} /></span>
