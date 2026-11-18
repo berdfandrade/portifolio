@@ -63,7 +63,20 @@ function Box({ x, y, z = 0, w, h, d, className }: { x: number; y: number; z?: nu
 
 /** Capa do livro: a foto da edição, quando existe, ou uma capa desenhada com título, autor e ornamento nas cores do livro. */
 function Cover({ book }: { book: Book }) {
-  if (book.cover) return <img className="book-photo" src={`${import.meta.env.BASE_URL}assets/books/${book.cover}`} alt="" loading="lazy" decoding="async" />;
+  // Se a foto não existir ou falhar ao carregar, volta para a capa desenhada.
+  const [broken, setBroken] = useState(false);
+  if (book.cover && !broken) {
+    return (
+      <img
+        className="book-photo"
+        src={`${import.meta.env.BASE_URL}assets/books/${book.cover}`}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        onError={() => setBroken(true)}
+      />
+    );
+  }
   return (
     <span className="book-art">
       <span className="book-rule" />

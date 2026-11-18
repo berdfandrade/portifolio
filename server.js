@@ -134,7 +134,8 @@ createServer(async (req, res) => {
     }
     // Rotas do React (como /sobre ou /en/books) recebem o index.html; arquivos que não existem, 404.
     if (extname(url.pathname)) {
-      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      // Sem cache: um 404 de passagem (por exemplo, durante um deploy) não fica guardado no navegador.
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
       return res.end('Não encontrado');
     }
     return await sendFile(res, join(DIST, 'index.html'));
