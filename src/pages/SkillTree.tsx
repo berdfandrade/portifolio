@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { OrbitControls, useOrbit, useWidth } from '../components/orbit';
+import { ViewSwitch, useSavedView } from '../components/ViewSwitch';
 import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
 import type { Branch, Skill, SkillStatus } from '../data/skills';
@@ -19,18 +20,6 @@ const BRANCH_GAP = 24;
 const branchWidth = (branch: Branch) => Math.max(3, ...branch.skills.map((s) => s.col + 1)) * CELL_W;
 const cellY = (row: number) => HEAD + row * CELL_H + CELL_H / 2;
 
-type View = '2d' | '3d';
-const VIEW_KEY = 'skill-tree-view';
-
-/** A visualização escolhida fica guardada neste navegador (se o armazenamento estiver disponível). */
-function savedView(): View {
-  try {
-    return localStorage.getItem(VIEW_KEY) === '3d' ? '3d' : '2d';
-  } catch {
-    return '2d';
-  }
-}
-
 /** Linha em "cotovelo" do requisito até a habilidade, como nas árvores de habilidade de jogos. */
 function edgePath(x1: number, y1: number, x2: number, y2: number) {
   const start = y1 + TILE / 2;
@@ -48,15 +37,7 @@ export default function SkillTree() {
   const pct = (n: number) => `${((n / skills.length) * 100).toFixed(1)}%`;
   // Índice em `skills` da habilidade aberta na gaveta, ou null com a gaveta fechada.
   const [open, setOpen] = useState<number | null>(null);
-  const [view, setView] = useState<View>(savedView);
-  const chooseView = (v: View) => {
-    setView(v);
-    try {
-      localStorage.setItem(VIEW_KEY, v);
-    } catch {
-      /* sem armazenamento: a escolha vale só nesta visita */
-    }
-  };
+  const [view, chooseView] = useSavedView('skill-tree-view');
   const done = count('done');
   const wip = count('wip');
 
@@ -88,13 +69,7 @@ export default function SkillTree() {
         </section>
 
         <div className="map-toolbar">
-          <div className="view-switch" role="group" aria-label={st.viewLabel}>
-            {(['2d', '3d'] as const).map((v) => (
-              <button key={v} type="button" aria-pressed={view === v} onClick={() => chooseView(v)}>
-                {v === '2d' ? st.view2d : st.view3d}
-              </button>
-            ))}
-          </div>
+          <ViewSwitch view={view} onChange={chooseView} />
         </div>
         {(['stack', 'human'] as const).map((group) => (
           <SkillMap key={group} group={group} is3d={view === '3d'} onOpen={(id) => setOpen(skills.findIndex((s) => s.skill.id === id))} />

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
 import { OrbitControls, useOrbit, useWidth } from '../components/orbit';
+import { ViewSwitch, useSavedView } from '../components/ViewSwitch';
 import type { Book } from '../data/books';
 import { useI18n } from '../i18n';
 
@@ -96,6 +97,7 @@ export default function Books() {
   const b = t.books;
   usePageTitle(b.title);
   const [open, setOpen] = useState<string | null>(null);
+  const [view, chooseView] = useSavedView('books-view');
   const selected = books.find((book) => book.id === open) ?? null;
   const orbit = useOrbit({ initial: { x: -12, y: -22 }, limits: { x: [-32, 8], y: [-60, 60] }, speed: { x: -0.2, y: 0.3 } });
   const stage = useRef<HTMLDivElement>(null);
@@ -126,44 +128,72 @@ export default function Books() {
         <section className="books-hero">
           <p className="eyebrow">{b.eyebrow}</p>
           <h1>{b.heading}</h1>
-          <p className="lede">{b.intro}</p>
+          <p className="lede">{view === '3d' ? b.intro3d : b.intro}</p>
           <p className="books-summary">{b.summary(books.length, totalPages)}</p>
         </section>
 
-        <section className="shelf-card" aria-label={b.shelfLabel}>
-          <div
-            ref={stage}
-            className={`shelf-stage${orbit.dragging ? ' is-dragging' : ''}`}
-            style={{ height: Math.max(380, caseH * scale + 230) }}
-            {...orbit.handlers}
-          >
-            <div className="shelf-scene" style={sceneStyle}>
-              <Box className="wood" x={0} y={0} w={caseW} h={WOOD} d={caseD} />
-              <Box className="wood" x={0} y={0} w={WOOD} h={caseH} d={caseD} />
-              <Box className="wood" x={caseW - WOOD} y={0} w={WOOD} h={caseH} d={caseD} />
-              <Box className="wood back" x={WOOD} y={WOOD} w={caseW - WOOD * 2} h={caseH - WOOD} d={4} z={-caseD / 2 + 2} />
-              {floors.map((y) => <Box key={y} className="wood" x={WOOD} y={y} w={caseW - WOOD * 2} h={WOOD} d={caseD} />)}
+        <div className="map-toolbar">
+          <ViewSwitch view={view} onChange={chooseView} />
+        </div>
 
-              {placed.map(({ book, x, y, t: th, d }) => {
+        {view === '2d' ? (
+          <section className="shelf2d" aria-label={b.shelfLabel}>
+            <ul>
+              {books.map((book) => {
                 const isOpen = book.id === open;
                 return (
-                  <button
-                    key={book.id}
-                    type="button"
-                    className={`book3d${isOpen ? ' is-open' : ''}`}
-                    style={{ ...bookVars(book, th, d), left: x, top: y, width: th, height: book.height, '--z': `${front - d / 2}px` } as CSSProperties}
-                    aria-label={b.open(book.title, book.author)}
-                    aria-pressed={isOpen}
-                    onClick={() => setOpen(isOpen ? null : book.id)}
-                  >
-                    <BookFaces book={book} />
-                  </button>
+                  <li key={book.id}>
+                    <button
+                      type="button"
+                      className={`cover2d${isOpen ? ' is-open' : ''}`}
+                      style={{ '--bh': book.height, '--color': book.color, '--ink': book.ink } as CSSProperties}
+                      aria-label={b.open(book.title, book.author)}
+                      aria-pressed={isOpen}
+                      onClick={() => setOpen(isOpen ? null : book.id)}
+                    >
+                      <Cover book={book} />
+                    </button>
+                  </li>
                 );
               })}
+            </ul>
+          </section>
+        ) : (
+          <section className="shelf-card" aria-label={b.shelfLabel}>
+            <div
+              ref={stage}
+              className={`shelf-stage${orbit.dragging ? ' is-dragging' : ''}`}
+              style={{ height: Math.max(380, caseH * scale + 230) }}
+              {...orbit.handlers}
+            >
+              <div className="shelf-scene" style={sceneStyle}>
+                <Box className="wood" x={0} y={0} w={caseW} h={WOOD} d={caseD} />
+                <Box className="wood" x={0} y={0} w={WOOD} h={caseH} d={caseD} />
+                <Box className="wood" x={caseW - WOOD} y={0} w={WOOD} h={caseH} d={caseD} />
+                <Box className="wood back" x={WOOD} y={WOOD} w={caseW - WOOD * 2} h={caseH - WOOD} d={4} z={-caseD / 2 + 2} />
+                {floors.map((y) => <Box key={y} className="wood" x={WOOD} y={y} w={caseW - WOOD * 2} h={WOOD} d={caseD} />)}
+
+                {placed.map(({ book, x, y, t: th, d }) => {
+                  const isOpen = book.id === open;
+                  return (
+                    <button
+                      key={book.id}
+                      type="button"
+                      className={`book3d${isOpen ? ' is-open' : ''}`}
+                      style={{ ...bookVars(book, th, d), left: x, top: y, width: th, height: book.height, '--z': `${front - d / 2}px` } as CSSProperties}
+                      aria-label={b.open(book.title, book.author)}
+                      aria-pressed={isOpen}
+                      onClick={() => setOpen(isOpen ? null : book.id)}
+                    >
+                      <BookFaces book={book} />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-          <OrbitControls onNudge={orbit.nudge} onReset={orbit.reset} />
-        </section>
+            <OrbitControls onNudge={orbit.nudge} onReset={orbit.reset} />
+          </section>
+        )}
 
         <section className="book-detail" aria-live="polite">
           {selected ? (
