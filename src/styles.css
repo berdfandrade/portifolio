@@ -284,16 +284,19 @@ img { display: block; max-width: 100%; }
 .about-panel[hidden] { display: none; }
 .about-hero { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; }
 .avatar-card { flex: 1 1 320px; max-width: 400px; margin: 0; background: var(--sand); border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-/* O retrato fica um pouco abaixo do topo e a camiseta some num degradê antes do cartão de vidro,
-   escondendo o corte reto da ilustração na lateral */
+/* Personagem de corpo inteiro, em pé sobre uma sombra no chão, com o cartão de vidro embaixo */
 .avatar-card img {
-  width: 100%; height: auto; aspect-ratio: 1 / 0.92; padding-top: 7%; object-fit: cover; object-position: 50% 0;
-  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 93%); mask-image: linear-gradient(to bottom, #000 72%, transparent 93%);
+  display: block; width: auto; max-width: 70%; height: clamp(300px, 32vw, 380px); margin: 32px auto 0; object-fit: contain;
+  image-rendering: pixelated; position: relative;
+}
+.avatar-card::before {
+  content: ""; position: absolute; left: 50%; top: calc(32px + clamp(300px, 32vw, 380px) - 14px); width: 46%; height: 22px; translate: -50% 0;
+  border-radius: 50%; background: radial-gradient(closest-side, rgba(58,42,24,0.35), transparent);
 }
 .avatar-card { background: radial-gradient(120% 80% at 50% 10%, #F6DDB6, var(--sand) 60%, #D9B385); }
 /* Cartão de jogador em vidro fosco sobre o avatar */
 .player {
-  position: relative; margin: -36px 12px 12px; display: flex; align-items: center; gap: 12px; padding: 8px 14px 8px 8px;
+  position: relative; margin: 20px 12px 12px; display: flex; align-items: center; gap: 12px; padding: 8px 14px 8px 8px;
   border-radius: 18px; color: #1D1D1F;
   background: rgba(255,255,255,0.58); -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6);
   border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 10px 30px -12px rgba(58,42,24,0.45), inset 0 1px 0 rgba(255,255,255,0.8);

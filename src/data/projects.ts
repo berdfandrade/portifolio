@@ -635,26 +635,94 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    slug: "skill-tree",
-    title: "Skill Tree",
-    coverTitle: "Skill\nTree",
-    kind: "Web",
-    meta: "Web · React + Tailwind",
-    stack: "React · Tailwind",
-    status: "Em andamento",
-    bg: "#FFD60A",
-    fg: "#111111",
-  },
-  {
-    slug: "link-na-bio",
-    title: "Link na Bio",
-    coverTitle: "Link\nna Bio",
-    kind: "Web",
-    meta: "Web · Personagem chibi 3D",
-    stack: "[STACK]",
-    status: "Em andamento",
-    bg: "#F6C9D8",
-    fg: "#5A1030",
+    slug: "rdock",
+    title: "rdock",
+    coverTitle: "rdock",
+    kind: "Desktop",
+    meta: "Dock estilo macOS para Linux · Rust",
+    stack: "Rust · X11",
+    status: "Código aberto",
+    bg: "#3A2850",
+    fg: "#FFD3BA",
+    accent: "#FF9466",
+    page: {
+      eyebrow: "Desktop · 2026",
+      lede: "Uma dock no estilo do macOS para desktops Linux com X11 (Cinnamon, XFCE, MATE), escrita em Rust puro, sem GTK nem Qt. Ela mesma desenha tudo na CPU e conversa direto com o servidor X.",
+      links: [{ label: "Ver no GitHub", href: GH + "rdock" }],
+      facts: [
+        ["Papel", "Design e desenvolvimento"],
+        ["Linguagem", "Rust"],
+        ["Plataforma", "Linux · X11"],
+        ["Licença", "MIT"],
+      ],
+      showcase: {
+        src: IMG + "rdock/hero.webp",
+        alt: "A rdock na parte de baixo da tela, com o ícone do Calendário ampliado pelo efeito olho de peixe e uma dica com o nome",
+        caption: "Magnificação em olho de peixe, dica com o nome do app e pontinhos embaixo dos apps abertos.",
+      },
+      highlights: [
+        [
+          "Olho de peixe com molas",
+          "Os ícones crescem numa curva de cosseno conforme o mouse chega perto, animados com molas amortecidas. O ícone continua quicando até a janela do app abrir.",
+        ],
+        [
+          "Arrastar e soltar",
+          "Os ícones mudam de ordem enquanto os vizinhos abrem espaço. Arrastar um ícone para fora da dock remove o app com um “puf”.",
+        ],
+        [
+          "Launchpad",
+          "Grade em tela cheia com todos os apps sobre uma cópia desfocada da área de trabalho, com páginas que deslizam e busca que ignora acentos.",
+        ],
+        [
+          "Ocultação inteligente",
+          "Pode ficar sempre visível, sumir quando o mouse sai ou sumir só quando a janela ativa encosta nela. Funciona embaixo, à esquerda ou à direita da tela.",
+        ],
+        [
+          "Temas em um PNG",
+          "Um tema é uma única imagem da prateleira: as pontas ficam fixas e o meio se repete conforme a dock cresce. Já vem com Vidro, Grafite, Gelo, Neon, Pôr do sol e Madeira.",
+        ],
+        [
+          "0% de CPU parada",
+          "Sem animação, a dock não gasta CPU. Um quadro animado leva de 0,5 a 2 ms, porque só a parte que mudou é redesenhada e enviada ao servidor X.",
+        ],
+      ],
+      chapters: [
+        [
+          "Por que fazer uma dock",
+          "Eu queria no Linux a mesma sensação da dock do macOS: o olho de peixe, o quique ao abrir um app e o Launchpad. As docks que existem dependem de GTK ou Qt, então decidi escrever uma do zero em Rust, para entender como as janelas, os ícones e as animações funcionam por baixo.",
+        ],
+        [
+          "Desenhando sem toolkit",
+          "Tudo é desenhado na CPU com o tiny-skia e enviado ao servidor X pelo x11rb. A janela da dock é transparente, e uma região de entrada do X Shape deixa os cliques passarem pelas áreas vazias até as janelas de baixo. Os apps vêm dos arquivos .desktop do padrão XDG e os ícones vêm do tema do sistema, carregados em threads separadas.",
+        ],
+        [
+          "Animações com molas",
+          "Todas as animações usam a mesma mola amortecida: a magnificação, a entrada e saída dos ícones, a reordenação no arrastar e os fades. Quando nada se move, o loop de eventos para de desenhar, e por isso a dock fica em 0% de CPU parada.",
+        ],
+      ],
+      code: {
+        title: "A mola por trás de todas as animações",
+        file: "src/anim.rs",
+        body: "pub fn step(&mut self, dt: f32) -> bool {\n    if self.value == self.target && self.vel == 0.0 {\n        return false; // parada: nada para redesenhar\n    }\n    let n = (dt / 0.004).ceil().max(1.0) as u32;\n    let h = dt / n as f32;\n    for _ in 0..n {\n        let a = self.k * (self.target - self.value) - self.c * self.vel;\n        self.vel += a * h;\n        self.value += self.vel * h;\n    }\n    if (self.target - self.value).abs() < 0.002 && self.vel.abs() < 0.02 {\n        self.value = self.target;\n        self.vel = 0.0;\n        return false;\n    }\n    true\n}",
+      },
+      gallery: [
+        {
+          src: IMG + "rdock/launchpad.webp",
+          alt: "Launchpad com a grade de todos os apps instalados sobre a área de trabalho desfocada",
+          caption: "Launchpad",
+        },
+        {
+          src: IMG + "rdock/settings.webp",
+          alt: "Janela de preferências da dock com controles deslizantes e chaves",
+          caption: "Preferências",
+        },
+        {
+          src: IMG + "rdock/themes.webp",
+          alt: "A mesma dock nos temas Vidro, Grafite, Gelo, Neon, Pôr do sol e Madeira",
+          caption: "Temas",
+        },
+      ],
+    },
   },
 ];
 

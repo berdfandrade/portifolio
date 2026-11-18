@@ -137,4 +137,3 @@ Para testar localmente, rode `npm start` com essas variáveis definidas e `npm r
 
 - Textos entre colchetes, como `[ANO]` e `[ALTURA]`, ainda precisam ser preenchidos.
 - Os sete livros da estante são exemplos e precisam ser trocados.
-- Os projetos Skill Tree e Link na Bio ainda não têm página de projeto.

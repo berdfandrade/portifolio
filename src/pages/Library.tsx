@@ -52,7 +52,7 @@ export default function Library() {
         <aside className="lib-aside">
           <div className="cats" role="group" aria-labelledby="cats-label">
             <p className="eyebrow" id="cats-label">{l.title}</p>
-            {CATEGORIES.map((c) => (
+            {CATEGORIES.filter((c) => c === 'Tudo' || projects.some((p) => p.kind === c)).map((c) => (
               <button key={c} type="button" className="cat" aria-pressed={filter === c} onClick={() => setFilter(c)}>
                 <span>{t.categories[c].label}</span>
               </button>

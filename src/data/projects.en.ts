@@ -299,8 +299,44 @@ const EN: Record<string, ProjectText> = {
       },
     },
   },
-  "skill-tree": { meta: "Web · React + Tailwind", status: "In progress" },
-  "link-na-bio": { title: "Link in Bio", coverTitle: "Link\nin Bio", meta: "Web · 3D chibi character", status: "In progress" },
+  rdock: {
+    meta: "macOS-style dock for Linux · Rust",
+    status: "Open source",
+    page: {
+      eyebrow: "Desktop · 2026",
+      lede: "A macOS-style dock for X11 Linux desktops (Cinnamon, XFCE, MATE), written in pure Rust with no GTK or Qt. It draws everything itself on the CPU and talks straight to the X server.",
+      links: ["View on GitHub"],
+      facts: [
+        ["Role", "Design and development"],
+        ["Language", "Rust"],
+        ["Platform", "Linux · X11"],
+        ["License", "MIT"],
+      ],
+      showcase: {
+        alt: "rdock at the bottom of the screen, with the Calendar icon magnified by the fish-eye effect and a tooltip with its name",
+        caption: "Fish-eye magnification, a tooltip with the app name and dots under the open apps.",
+      },
+      highlights: [
+        ["Fish-eye with springs", "Icons grow along a cosine curve as the pointer gets close, animated with damped springs. An icon keeps bouncing until its app's window appears."],
+        ["Drag and drop", "Icons reorder while their neighbors make room. Dragging an icon out of the dock removes the app with a “poof”."],
+        ["Launchpad", "A full-screen grid of every app over a blurred copy of the desktop, with sliding pages and accent-insensitive search."],
+        ["Smart hiding", "It can stay visible, hide when the pointer leaves or hide only when the active window touches it. It works at the bottom, left or right of the screen."],
+        ["Themes in one PNG", "A theme is a single image of the shelf: the ends stay fixed and the middle tiles as the dock grows. It ships with Glass, Graphite, Ice, Neon, Sunset and Wood."],
+        ["0% CPU when idle", "With nothing animating, the dock uses no CPU. An animated frame takes 0.5 to 2 ms, because only the region that changed is redrawn and sent to the X server."],
+      ],
+      chapters: [
+        ["Why build a dock", "I wanted the feel of the macOS dock on Linux: the fish-eye, the bounce when an app opens and the Launchpad. The existing docks depend on GTK or Qt, so I decided to write one from scratch in Rust and learn how windows, icons and animations work underneath."],
+        ["Drawing without a toolkit", "Everything is drawn on the CPU with tiny-skia and sent to the X server through x11rb. The dock window is transparent, and an X Shape input region lets clicks on empty areas pass through to the windows below. Apps come from the standard XDG .desktop files and icons from the system theme, loaded on background threads."],
+        ["Spring animations", "Every animation uses the same damped spring: magnification, icons appearing and leaving, reordering while dragging and fades. When nothing moves, the event loop stops drawing, which is why the dock sits at 0% CPU when idle."],
+      ],
+      code: { title: "The spring behind every animation" },
+      gallery: [
+        { caption: "Launchpad", alt: "Launchpad with a grid of every installed app over the blurred desktop" },
+        { caption: "Preferences", alt: "Dock preferences window with sliders and switches" },
+        { caption: "Themes", alt: "The same dock in the Glass, Graphite, Ice, Neon, Sunset and Wood themes" },
+      ],
+    },
+  },
 };
 
 /** Junta os textos em inglês com o projeto em português. O que faltar fica em português. */

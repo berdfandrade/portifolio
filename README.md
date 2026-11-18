@@ -137,4 +137,3 @@ To try it locally, run `npm start` with those variables set and `npm run dev` in
 
 - Bracketed placeholders such as `[ANO]` and `[ALTURA]` still need to be filled in.
 - The seven books on the bookshelf are examples to be replaced.
-- The Skill Tree and Link na Bio projects don't have a project page yet.
