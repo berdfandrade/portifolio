@@ -1,6 +1,7 @@
 // Servidor de produção: entrega o site gerado em dist/ e a rota /api/top-tracks com as
 // músicas mais ouvidas no Spotify. As chaves ficam nas variáveis de ambiente do Railway:
 // SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET e SPOTIFY_REFRESH_TOKEN (veja scripts/spotify-auth.js).
+// A rota /api/letterboxd lê o feed RSS público do perfil no Letterboxd, sem chave.
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, sep } from 'node:path';
@@ -55,6 +56,48 @@ async function topTracks() {
   }
 }
 
+// ---------- Letterboxd ----------
+const LETTERBOXD_USER = 'bennnnnyson';
+let filmsCache = { at: 0, films: null };
+
+const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
+const decode = (text) => text.replace(/&(#x?[0-9a-f]+|\w+);/gi, (m, e) =>
+  e[0] === '#' ? String.fromCodePoint(parseInt(e.slice(1).replace(/^x/i, '0x'))) : ENTITIES[e] ?? m);
+const tag = (xml, name) => xml.match(new RegExp(`<${name}>([\\s\\S]*?)</${name}>`))?.[1].trim() ?? '';
+
+/** Últimos filmes do diário. O feed também traz listas, que ficam de fora. */
+async function recentFilms() {
+  if (filmsCache.films && Date.now() - filmsCache.at < CACHE_MS) return filmsCache.films;
+  try {
+    const res = await fetch(`https://letterboxd.com/${LETTERBOXD_USER}/rss/`, { headers: { 'User-Agent': 'Mozilla/5.0 (portfolio feed)' } });
+    if (!res.ok) throw new Error(`RSS do Letterboxd: ${res.status}`);
+    const xml = await res.text();
+    const films = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)]
+      .map(([, item]) => item)
+      .filter((item) => item.includes('<letterboxd:filmTitle>'))
+      .slice(0, 12)
+      .map((item) => {
+        const rating = Number(tag(item, 'letterboxd:memberRating'));
+        const poster = tag(item, 'description').match(/<img src="([^"]+)"/)?.[1] ?? null;
+        return {
+          title: decode(tag(item, 'letterboxd:filmTitle')),
+          year: tag(item, 'letterboxd:filmYear'),
+          rating: rating > 0 ? rating : null,
+          liked: tag(item, 'letterboxd:memberLike') === 'Yes',
+          rewatch: tag(item, 'letterboxd:rewatch') === 'Yes',
+          watched: tag(item, 'letterboxd:watchedDate'),
+          poster: poster?.replace('-0-600-0-900-', '-0-230-0-345-') ?? null,
+          url: tag(item, 'link'),
+        };
+      });
+    filmsCache = { at: Date.now(), films };
+    return films;
+  } catch (err) {
+    if (filmsCache.films) return filmsCache.films;
+    throw err;
+  }
+}
+
 // ---------- Arquivos estáticos ----------
 async function sendFile(res, path, status = 200) {
   const body = await readFile(path);
@@ -73,6 +116,11 @@ createServer(async (req, res) => {
       const tracks = await topTracks();
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=600' });
       return res.end(JSON.stringify({ tracks }));
+    }
+    if (url.pathname === '/api/letterboxd') {
+      const films = await recentFilms();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=600' });
+      return res.end(JSON.stringify({ profile: `https://letterboxd.com/${LETTERBOXD_USER}/`, films }));
     }
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       res.writeHead(405);

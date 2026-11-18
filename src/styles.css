@@ -889,6 +889,28 @@ img { display: block; max-width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .skeleton .bar, .skeleton .track-art { animation: none; } }
 
+/* ---------- Sobre: filmes recentes do Letterboxd ---------- */
+.music-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.films-profile { flex: none; font-size: 15px; font-weight: 500; }
+.film-row { list-style: none; margin: 0 -32px; padding: 4px 32px 8px; display: grid; grid-auto-flow: column; grid-auto-columns: 128px; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 32px; scrollbar-width: none; }
+.film-row::-webkit-scrollbar { display: none; }
+.film-row li { scroll-snap-align: start; }
+.film-row a { display: flex; flex-direction: column; gap: 8px; color: var(--text); border-radius: 10px; }
+.film-row a:hover { text-decoration: none; }
+.film-row a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.film-row img, .film-poster { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; border-radius: 10px; object-fit: cover; background: var(--fill); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.12), 0 6px 16px rgba(0,0,0,0.14); transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s; }
+.film-row a:hover img { transform: translateY(-4px); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.12), 0 12px 24px rgba(0,0,0,0.2); }
+.film-meta { display: flex; align-items: center; gap: 6px; min-height: 18px; font-size: 13px; }
+.film-stars { color: #00B847; letter-spacing: 1px; }
+[data-theme="dark"] .film-stars { color: #00E054; }
+.film-like { color: #FF8000; }
+.film-rewatch { color: var(--text3); }
+.film-row .skeleton .film-poster { animation: shimmer 1.4s ease-in-out infinite; }
+@media (max-width: 640px) {
+  .film-row { margin: 0 -18px; padding-inline: 18px; scroll-padding-inline: 18px; grid-auto-columns: 108px; gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .film-row img { transition: none; } .film-row .skeleton .film-poster { animation: none; } }
+
 /* ---------- Sobre: aba Gostos ---------- */
 .interests { display: flex; flex-direction: column; gap: 6px; }
 .interests h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }

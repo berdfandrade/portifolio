@@ -4,6 +4,7 @@ import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
 import BirthChart from '../components/BirthChart';
 import TopTracks from '../components/TopTracks';
+import RecentFilms from '../components/RecentFilms';
 import AstroReading from '../components/AstroReading';
 import { useI18n } from '../i18n';
 import { CHART, PLACEMENT_ORDER, formatDegrees } from '../data/astro';
@@ -181,6 +182,8 @@ export default function About() {
           </section>
 
           <TopTracks />
+
+          <RecentFilms />
 
           <Link to={to('books')} className="card shelf-link">
             <span className="shelf-link-books" aria-hidden="true">

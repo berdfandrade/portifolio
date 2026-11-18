@@ -90,11 +90,16 @@ const pt = {
       ["guitar", "Tocar guitarra"], ["impressions", "Fazer imitações"],
     ] as [string, string][],
     booksEyebrow: "Estante",
-    booksTitle: "Livros que já li",
+    booksTitle: "Livros da minha estante",
     booksText: (n: number) => `${n} livros na estante 3D`,
     musicTitle: "Mais ouvidas",
     musicSub: "O que mais toquei no Spotify nas últimas 4 semanas.",
     trackLabel: (rank: number, name: string, artists: string) => `${rank}. ${name}, de ${artists}. Ouvir no Spotify`,
+    filmsTitle: "Assistidos recentemente",
+    filmsSub: "Os últimos filmes do meu diário no Letterboxd.",
+    filmsProfile: "Ver perfil",
+    filmLabel: (title: string, year: string, rating: number | null, liked: boolean) =>
+      `${title} (${year})${rating ? `, nota ${String(rating).replace('.', ',')} de 5` : ''}${liked ? ', curtido' : ''}. Abrir no Letterboxd`,
     aboutMeTitle: "Um pouco sobre mim",
     aboutMe: [
       "Sou uma pessoa curiosa por natureza. Gosto de aprender coisas novas, conhecer perspectivas diferentes e descobrir como o mundo funciona. Me interesso por assuntos bastante variados: cinema, música, história, filosofia, tecnologia e comportamento humano.",
@@ -180,7 +185,7 @@ const pt = {
   books: {
     title: "Livros",
     eyebrow: "Estante",
-    heading: "Livros que já li",
+    heading: "Livros da minha estante",
     intro: "Arraste para girar a estante e toque num livro para tirá-lo da prateleira.",
     summary: (n: number, pages: string) => `${n} livros · ${pages} páginas`,
     shelfLabel: "Estante de livros em 3D",
@@ -283,11 +288,16 @@ const en: Strings = {
       ["guitar", "Playing guitar"], ["impressions", "Doing impressions"],
     ],
     booksEyebrow: "Bookshelf",
-    booksTitle: "Books I've read",
+    booksTitle: "Books on my shelf",
     booksText: (n: number) => `${n} books on the 3D shelf`,
     musicTitle: "On repeat",
     musicSub: "What I've played most on Spotify in the last 4 weeks.",
     trackLabel: (rank: number, name: string, artists: string) => `${rank}. ${name} by ${artists}. Listen on Spotify`,
+    filmsTitle: "Recently watched",
+    filmsSub: "The latest films from my Letterboxd diary.",
+    filmsProfile: "View profile",
+    filmLabel: (title: string, year: string, rating: number | null, liked: boolean) =>
+      `${title} (${year})${rating ? `, rated ${rating} out of 5` : ''}${liked ? ', liked' : ''}. Open on Letterboxd`,
     aboutMeTitle: "A little about me",
     aboutMe: [
       "I'm curious by nature. I like learning new things, hearing different perspectives and figuring out how the world works. I'm interested in all sorts of subjects: film, music, history, philosophy, technology and human behavior.",
@@ -373,7 +383,7 @@ const en: Strings = {
   books: {
     title: "Books",
     eyebrow: "Bookshelf",
-    heading: "Books I've read",
+    heading: "Books on my shelf",
     intro: "Drag to rotate the bookshelf and tap a book to take it off the shelf.",
     summary: (n: number, pages: string) => `${n} books · ${pages} pages`,
     shelfLabel: "3D bookshelf",
