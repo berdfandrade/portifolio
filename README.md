@@ -12,7 +12,7 @@ The site is bilingual: Brazilian Portuguese at `/` and English at `/en`. A PT/EN
 | --- | --- |
 | `/` | **Library**: projects you can filter by category (Apps, Desktop, Systems, Web, Automation), search, a featured project and the "All tracks" list |
 | `/projeto/:slug` | **Project page**: cover, summary, links, showcase (screenshot or video), fact sheet, highlights, a code excerpt, a screenshot gallery with a full-screen viewer, and "More in the library" |
-| `/sobre` | **About**: pixel-art avatar with level and XP (from my age), and four tabs: Profile (a bit about me, skill inventory, active quests), Tastes (interests, most played Spotify tracks, bookshelf), Astral (birth chart and an in-depth reading) and Humor |
+| `/sobre` | **About**: pixel-art avatar with level and XP (from my age), and four tabs: Profile (a bit about me, skill inventory, active quests), Interests (interests, most played Spotify tracks, bookshelf), Astral (birth chart and an in-depth reading) and Humor |
 | `/skill-tree` | **Skill Tree**: five stack branches plus people skills, with mastered, training and locked skills, overall progress, a side drawer with each skill's details and a 3D view you can rotate by dragging |
 | `/livros` | **Books**: a 3D bookshelf of books I've read. Drag to rotate it and tap a book to take it off the shelf and see its cover and details |
 | `/contato` | **Contact**: a Messages-style chat that opens WhatsApp or email with your message ready, plus cards for WhatsApp, email and Instagram with one-tap copy |

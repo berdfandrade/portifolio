@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from 'react';
+import { useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { Link } from 'react-router';
 import TopBar from '../components/TopBar';
 import { usePageTitle } from '../components/Layout';
@@ -44,6 +44,11 @@ const INTEREST_ICONS: Record<string, string> = {
   philosophy: 'M12 3a6 6 0 0 0-3.5 10.9V17h7v-3.1A6 6 0 0 0 12 3zM9.5 21h5',
   tech: 'M4 5h16v11H4zM2 20h20M10 16v4M14 16v4',
   people: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20a6 6 0 0 1 12 0M12 20a6 6 0 0 1 10 0',
+  running: 'M15 2.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM7 21l3.5-5.5 3 2.5V22M10.5 15.5L12.5 9 9 10.5 7.5 13.5M12.5 9l2.5 3.5H19',
+  meditation: 'M12 2.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM12 8.5v5.5M6.5 12l5.5 2 5.5-2M3.5 19.5c2.5-2.3 5.3-3.3 8.5-3.3s6 1 8.5 3.3M8 17.5l-2.5 3M16 17.5l2.5 3',
+  drums: 'M3 10c0-1.7 4-3 9-3s9 1.3 9 3-4 3-9 3-9-1.3-9-3zM3 10v6c0 1.7 4 3 9 3s9-1.3 9-3v-6M5 3l5 5M19 3l-5 5',
+  guitar: 'M19 3l2 2-6.2 6.2M14.8 11.2a3 3 0 0 0-4.3-.1L9.3 12.3a4 4 0 0 0-5.1 1 4 4 0 0 0 .6 5.4 4 4 0 0 0 5.4.6 4 4 0 0 0 1-5.1l1.2-1.2a3 3 0 0 0-.1-4.3zM7.5 16.5h.01',
+  impressions: 'M3 4h8v6a4 4 0 0 1-8 0zM5.5 7h.01M8.5 7h.01M5.2 10.5a2 2 0 0 0 3.6 0M13 9h8v6a4 4 0 0 1-8 0zM15.5 12h.01M18.5 12h.01M15.2 16.8a2 2 0 0 1 3.6 0',
 };
 
 const SKILLS = ['Figma', 'React', 'React Native', 'NestJS', 'FastAPI', 'Rust', 'C / C++', 'Qt', 'Tailwind', 'Playwright', 'Pixel art'];
@@ -103,7 +108,7 @@ export default function About() {
           </div>
         </section>
 
-        <div className="tabs" role="tablist" aria-label={a.tabsLabel}>
+        <div className="tabs" role="tablist" aria-label={a.tabsLabel} style={{ '--i': TABS.indexOf(tab) } as CSSProperties}>
           {TABS.map((id, i) => (
             <button
               key={id}
@@ -150,7 +155,7 @@ export default function About() {
             <p className="interests-sub">{a.interestsSub}</p>
             <ul className="interest-grid">
               {a.interests.map(([id, label]) => (
-                <li key={id} className={`interest ${id}`}>
+                <li key={id} className={`interest is-${id}`}>
                   <span className="interest-icon" aria-hidden="true">
                     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d={INTEREST_ICONS[id]} /></svg>
                   </span>

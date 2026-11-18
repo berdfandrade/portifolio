@@ -264,7 +264,14 @@ img { display: block; max-width: 100%; }
 }
 .tab { min-height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: var(--text2); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; transition: color .2s; }
 .tab:hover { color: var(--text); }
-.tab[aria-selected="true"] { background: var(--card); color: var(--text); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+.tab { position: relative; z-index: 1; }
+.tab[aria-selected="true"] { color: var(--text); font-weight: 600; }
+/* Fundo branco que desliza até a aba ativa, como no controle segmentado do iOS */
+.tabs::before {
+  content: ""; position: absolute; top: 2px; bottom: 2px; left: 2px; width: calc((100% - 10px) / 4); border-radius: 8px;
+  background: var(--card); box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  transform: translateX(calc(var(--i, 0) * (100% + 2px))); transition: transform .35s cubic-bezier(.2,.8,.2,1);
+}
 .tab:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .about-panel { display: flex; flex-direction: column; gap: 24px; }
 .about-panel[hidden] { display: none; }
@@ -864,12 +871,17 @@ img { display: block; max-width: 100%; }
 .interest-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
 .interest { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; padding: 20px 16px; border-radius: 18px; background: var(--bg); font-size: 15px; font-weight: 600; }
 .interest-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; box-shadow: inset 0 1px 0 rgba(255,255,255,0.3); }
-.interest.cinema .interest-icon { background: linear-gradient(180deg, #FF6B5E, #E0352B); }
-.interest.music .interest-icon { background: linear-gradient(180deg, #FF5F8F, #E5245E); }
-.interest.history .interest-icon { background: linear-gradient(180deg, #D9A66B, #A87332); }
-.interest.philosophy .interest-icon { background: linear-gradient(180deg, #A78BFA, #7C4DDB); }
-.interest.tech .interest-icon { background: linear-gradient(180deg, #4FA8FF, #0A6CF0); }
-.interest.people .interest-icon { background: linear-gradient(180deg, #4BD07A, #1F9D55); }
+.interest.is-cinema .interest-icon { background: linear-gradient(180deg, #FF6B5E, #E0352B); }
+.interest.is-music .interest-icon { background: linear-gradient(180deg, #FF5F8F, #E5245E); }
+.interest.is-history .interest-icon { background: linear-gradient(180deg, #D9A66B, #A87332); }
+.interest.is-philosophy .interest-icon { background: linear-gradient(180deg, #A78BFA, #7C4DDB); }
+.interest.is-tech .interest-icon { background: linear-gradient(180deg, #4FA8FF, #0A6CF0); }
+.interest.is-people .interest-icon { background: linear-gradient(180deg, #4BD07A, #1F9D55); }
+.interest.is-running .interest-icon { background: linear-gradient(180deg, #FFA94D, #F0700A); }
+.interest.is-meditation .interest-icon { background: linear-gradient(180deg, #4DD4C6, #12A594); }
+.interest.is-drums .interest-icon { background: linear-gradient(180deg, #FFCF4D, #E0A100); }
+.interest.is-guitar .interest-icon { background: linear-gradient(180deg, #E07A5F, #B5452A); }
+.interest.is-impressions .interest-icon { background: linear-gradient(180deg, #F27AD8, #C2259E); }
 
 .shelf-link { display: flex; align-items: center; gap: 24px; color: var(--text); transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
 .shelf-link:hover { color: var(--text); text-decoration: none; transform: translateY(-2px); box-shadow: 0 18px 40px -20px rgba(0,0,0,0.3); }
@@ -965,3 +977,24 @@ img { display: block; max-width: 100%; }
   .shelf-link { gap: 16px; }
   .shelf-link-books { display: none; }
 }
+
+/* ---------- Movimento: transições leves (só opacidade e deslocamento, que a GPU anima sem custo) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* Cada página entra com um leve fade de baixo para cima */
+  .lib-main, .about, .project, .skills-page, .books-page, .contact-page { animation: page-in .5s cubic-bezier(.2,.8,.2,1) both; }
+  /* Troca de aba na página Sobre */
+  .about-panel:not([hidden]) { animation: panel-in .35s cubic-bezier(.2,.8,.2,1) both; }
+  /* Botões respondem ao toque */
+  .tab:active, .orbit-controls button:active, .view-switch button:active, .cat:active, .book-putback:active, .channel-actions a:active, .channel-actions button:active { scale: .97; }
+  .tab, .orbit-controls button, .view-switch button, .cat, .book-putback, .channel-actions a, .channel-actions button { transition-property: color, background-color, scale; transition-duration: .2s; }
+  /* Cartões aparecem conforme entram na tela, guiados pela rolagem (sem JavaScript) */
+  @supports (animation-timeline: view()) {
+    .lib-main .tile, .about-panel .card, .pair .card, .channel, .reading-section, .book-detail, .lib-section {
+      animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 40%;
+    }
+  }
+}
+@keyframes page-in { from { opacity: 0; translate: 0 12px; } }
+@keyframes panel-in { from { opacity: 0; translate: 0 8px; } }
+@keyframes reveal { from { opacity: 0; translate: 0 28px; } }
+@media (prefers-reduced-motion: reduce) { .tabs::before { transition: none; } }

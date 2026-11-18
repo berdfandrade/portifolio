@@ -12,7 +12,7 @@ O site é bilíngue: português em `/` e inglês em `/en`. Um botão PT/EN no ca
 | --- | --- |
 | `/` | **Biblioteca**: projetos filtráveis por categoria (Apps, Desktop, Sistemas, Web, Automação), busca, projeto em destaque e a lista "Todas as faixas" |
 | `/projeto/:slug` | **Página do projeto**: capa, resumo, links, vitrine (print ou vídeo), ficha técnica, destaques, trecho de código, galeria de telas com visualizador em tela cheia e "Mais na biblioteca" |
-| `/sobre` | **Sobre**: avatar em pixel art com nível e experiência (pela minha idade), e quatro abas: Perfil (um pouco sobre mim, inventário, missões ativas), Gostos (interesses, músicas mais ouvidas no Spotify, estante), Astral (mapa astral e uma leitura extensa) e Humor |
+| `/sobre` | **Sobre**: avatar em pixel art com nível e experiência (pela minha idade), e quatro abas: Perfil (um pouco sobre mim, inventário, missões ativas), Interesses (interesses, músicas mais ouvidas no Spotify, estante), Astral (mapa astral e uma leitura extensa) e Humor |
 | `/skill-tree` | **Skill Tree**: cinco ramos da stack e as habilidades humanas, com habilidades dominadas, em treino e bloqueadas, o progresso geral, uma gaveta lateral com os detalhes de cada habilidade e uma visualização 3D que gira com o arraste |
 | `/livros` | **Livros**: estante 3D com os livros que já li. Arraste para girar e toque num livro para tirá-lo da prateleira e ver a capa e os detalhes |
 | `/contato` | **Contato**: uma conversa no estilo do Mensagens que abre o WhatsApp ou o e-mail com a mensagem pronta, e cartões de WhatsApp, e-mail e Instagram com botão de copiar |
