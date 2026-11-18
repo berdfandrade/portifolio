@@ -5,7 +5,7 @@ import type { Point, Sign } from "../data/astro";
 const pt = {
   locale: "pt-BR",
   common: {
-    back: "‹ Biblioteca",
+    back: "‹ Projetos",
     contact: "Contato",
     themeToLight: "Mudar para tema claro",
     themeToDark: "Mudar para tema escuro",
@@ -27,9 +27,9 @@ const pt = {
     Automação: { label: "Automação", heading: "Automação" },
   } satisfies Record<Kind | "Tudo", { label: string; heading: string }>,
   library: {
-    title: "Biblioteca",
-    nav: { label: "Principal", library: "Biblioteca", skills: "Skill Tree", books: "Livros", about: "Sobre" },
-    searchLabel: "Buscar na biblioteca",
+    title: "Projetos",
+    nav: { label: "Principal", library: "Projetos", skills: "Skill Tree", books: "Livros", about: "Sobre" },
+    searchLabel: "Buscar nos projetos",
     searchPlaceholder: "Buscar",
     bio: "Desenvolvedor. Construo apps, automações e páginas web — e guardo tudo aqui.",
     subtitle: (n: number) => `${n} projetos · apps, desktop, sistemas, web e automações`,
@@ -50,7 +50,7 @@ const pt = {
     chapters: "Capítulos",
     screens: "Telas",
     phonesLabel: "Telas do aplicativo (role para os lados)",
-    more: "Mais na biblioteca",
+    more: "Mais projetos",
     seeAll: "Ver tudo ›",
     enlarge: "Ampliar",
   },
@@ -58,8 +58,8 @@ const pt = {
   notFound: {
     title: "Não encontrado",
     heading: "Página não encontrada",
-    text: "Esse endereço não existe na biblioteca.",
-    back: "Voltar para a biblioteca",
+    text: "Esse endereço não existe no site.",
+    back: "Voltar para os projetos",
   },
   about: {
     title: "Sobre",
@@ -73,7 +73,7 @@ const pt = {
     hpLabel: (hp: number) => `HP: ${hp}%`,
     expLabel: (exp: number, next: number, days: number) => `Experiência: ${exp} de 1000 para o nível ${next}, daqui a ${days} dias`,
     descLabel: "Descrição",
-    description: "Otimista por padrão, irônico por esporte. Constrói apps, automações e páginas — e coleciona tudo nesta biblioteca.",
+    description: "Otimista por padrão, irônico por esporte. Constrói apps, automações e páginas — e reúne tudo aqui.",
     facts: [
       ["Altura", "1.73m"],
       ["Peso", "82Kg"],
@@ -133,7 +133,7 @@ const pt = {
     inventory: "Inventário",
     skillsLink: "Ver Skill Tree completa ›",
     quests: "Missões ativas",
-    libraryLink: "Abrir a biblioteca ›",
+    libraryLink: "Ver os projetos ›",
   },
   skills: {
     eyebrow: "Classe Desenvolvedor",
@@ -202,7 +202,7 @@ export type Strings = typeof pt;
 const en: Strings = {
   locale: "en",
   common: {
-    back: "‹ Library",
+    back: "‹ Projects",
     contact: "Contact",
     themeToLight: "Switch to light theme",
     themeToDark: "Switch to dark theme",
@@ -224,9 +224,9 @@ const en: Strings = {
     Automação: { label: "Automation", heading: "Automation" },
   },
   library: {
-    title: "Library",
-    nav: { label: "Main", library: "Library", skills: "Skill Tree", books: "Books", about: "About" },
-    searchLabel: "Search the library",
+    title: "Projects",
+    nav: { label: "Main", library: "Projects", skills: "Skill Tree", books: "Books", about: "About" },
+    searchLabel: "Search projects",
     searchPlaceholder: "Search",
     bio: "Developer. I build apps, automations and web pages — and keep them all here.",
     subtitle: (n: number) => `${n} projects · apps, desktop, systems, web and automation`,
@@ -247,7 +247,7 @@ const en: Strings = {
     chapters: "Chapters",
     screens: "Screens",
     phonesLabel: "App screens (scroll sideways)",
-    more: "More in the library",
+    more: "More projects",
     seeAll: "See all ›",
     enlarge: "Enlarge",
   },
@@ -255,8 +255,8 @@ const en: Strings = {
   notFound: {
     title: "Not found",
     heading: "Page not found",
-    text: "This address doesn't exist in the library.",
-    back: "Back to the library",
+    text: "This address doesn't exist on the site.",
+    back: "Back to projects",
   },
   about: {
     title: "About",
@@ -270,7 +270,7 @@ const en: Strings = {
     hpLabel: (hp: number) => `HP: ${hp}%`,
     expLabel: (exp: number, next: number, days: number) => `Experience: ${exp} of 1000 to level ${next}, ${days} days from now`,
     descLabel: "Description",
-    description: "Optimistic by default, ironic for sport. Builds apps, automations and pages — and collects them all in this library.",
+    description: "Optimistic by default, ironic for sport. Builds apps, automations and pages — and gathers them all here.",
     facts: [
       ["Height", "1.73 m"],
       ["Weight", "82 kg"],
@@ -330,7 +330,7 @@ const en: Strings = {
     inventory: "Inventory",
     skillsLink: "See the full Skill Tree ›",
     quests: "Active quests",
-    libraryLink: "Open the library ›",
+    libraryLink: "See the projects ›",
   },
   skills: {
     eyebrow: "Developer class",
