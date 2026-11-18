@@ -26,7 +26,8 @@ export interface ProjectPage {
   facts: [label: string, value: string][];
   showcase?: Showcase;
   highlights?: [title: string, body: string][];
-  chapters?: [title: string, body: string][];
+  /** O terceiro item, opcional, é uma paleta de cores: [nome, hex]. */
+  chapters?: [title: string, body: string, palette?: [name: string, hex: string][]][];
   code?: { title: string; file: string; body: string };
   gallery?: Shot[];
   /** Telas de celular (390×844), mostradas numa fileira de aparelhos. */
@@ -63,8 +64,8 @@ export const PROJECTS: Project[] = [
     fg: "#E4F3DE",
     accent: "#A8D5A0",
     page: {
-      eyebrow: "Aplicativo · [ANO]",
-      lede: "Um aplicativo de relacionamento com buscas e salas de batepapo!",
+      eyebrow: "Aplicativo · 2024",
+      lede: "Um app de relacionamento só para assinantes, com dates, busca de pessoas e salas de bate-papo.",
       links: [
         { label: "Ver protótipo", href: "https://www.figma.com/proto/zRD5uMolpdYHC71gPsiB6k/Verdant?node-id=2009-153&scaling=scale-down" },
         { label: "Abrir no Figma", href: "https://www.figma.com/design/zRD5uMolpdYHC71gPsiB6k/Verdant" },
@@ -104,15 +105,31 @@ export const PROJECTS: Project[] = [
         ],
       ],
       chapters: [
-        ["O problema", "[O QUE MOTIVOU O VERDANT? PARA QUEM ELE É?]"],
+        [
+          "O problema",
+          "Criar um app de relacionamento em que só entra quem paga a assinatura. A ideia é que o pagamento funcione como filtro: menos perfis falsos e gente mais disposta a se conhecer de verdade. Além do swipe e do match, o app precisava de recursos para ir além da conversa: marcar dates, procurar pessoas pelo nome e participar de salas de bate-papo públicas e privadas.",
+        ],
         [
           "Identidade visual",
-          "[CORES, TIPOGRAFIA E CONCEITO DA MARCA QUE VOCÊ CRIOU]",
+          "O nome vem de “verdejante”, e o slogan é “Conexões que florescem de verdade”. O logo é uma folha simples, e o verde é a cor principal: aparece na abertura, nos botões de curtir e nos balões das minhas mensagens. O resto da interface é neutro, com fundo cinza-claro e cartões brancos, para as fotos dos perfis serem o destaque. A tipografia é a Inter. Cada cor tem uma versão para o tema escuro.",
+          [
+            ["Verde Verdant", "#10AD5E"],
+            ["Verde suave", "#E3F8EC"],
+            ["Texto", "#14171F"],
+            ["Texto secundário", "#8A909A"],
+            ["Fundo", "#F2F3F5"],
+            ["Cartões", "#FFFFFF"],
+            ["Linhas", "#E6E8EB"],
+            ["Passar", "#E5484D"],
+          ],
         ],
-        ["Design no Figma", "[FLUXOS, COMPONENTES E DECISÕES DE INTERFACE]"],
+        [
+          "Design no Figma",
+          "Desenhei o fluxo completo antes de programar: abertura, login com Google ou telefone, Descobrir com os cards de perfil, a tela de match, chat, Conexões, Dates com calendário e convites, Pesquisar com filtros e Configurações com Verdant Stats e Premium. As telas usam os mesmos componentes (botões em pílula, cartões e uma barra de abas com cinco seções), e o protótipo navegável está no Figma.",
+        ],
         [
           "Desenvolvimento",
-          "App em Expo + React Native, TanStack Query e Zustand, consumindo uma API em NestJS, MongoDB, Redis e Socket.IO com testes em Jest. [DESAFIOS TÉCNICOS E O QUE VOCÊ APRENDEU]",
+          "O app é feito em Expo + React Native com TypeScript, Expo Router, TanStack Query e Zustand. A API é em NestJS, com MongoDB, Redis e Socket.IO, e os dois lados têm testes em Jest. Os maiores desafios foram o chat em tempo real (histórico paginado, reconexão automática e envio por HTTP quando o socket cai), a sessão segura com renovação automática do token e o feed ordenado por proximidade, respeitando distância e faixa etária.",
         ],
       ],
       phones: [

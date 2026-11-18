@@ -110,7 +110,7 @@ function ProjectView({ slug }: { slug: string }) {
           <section aria-labelledby="chapters-title" className="tight">
             <h2 className="section-title" id="chapters-title">{t.project.chapters}</h2>
             <div className="chapters">
-              {d.chapters.map(([t, body], i) => (
+              {d.chapters.map(([t, body, palette], i) => (
                 <details key={t} className="chapter" name="capitulo" open={i === 0}>
                   <summary>
                     <span className="n">{i + 1}</span>
@@ -118,6 +118,17 @@ function ProjectView({ slug }: { slug: string }) {
                     <span className="sign" aria-hidden="true" />
                   </summary>
                   <p>{body}</p>
+                  {palette && (
+                    <ul className="palette">
+                      {palette.map(([name, hex]) => (
+                        <li key={hex}>
+                          <span className="swatch" style={{ background: hex }} aria-hidden="true" />
+                          <span className="swatch-name">{name}</span>
+                          <code>{hex}</code>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </details>
               ))}
             </div>

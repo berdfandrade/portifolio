@@ -17,7 +17,8 @@ interface ProjectText {
     facts: [label: string, value: string][];
     showcase?: Caption;
     highlights?: [title: string, body: string][];
-    chapters?: [title: string, body: string][];
+    /** O terceiro item traduz os nomes da paleta, na mesma ordem. */
+    chapters?: [title: string, body: string, palette?: string[]][];
     code?: { title: string; file?: string; body?: string };
     gallery?: Caption[];
     phones?: Caption[];
@@ -29,8 +30,8 @@ const EN: Record<string, ProjectText> = {
     meta: "App · React Native + NestJS",
     status: "In progress",
     page: {
-      eyebrow: "Mobile app · [YEAR]",
-      lede: "A dating app with search and chat rooms!",
+      eyebrow: "Mobile app · 2024",
+      lede: "A subscribers-only dating app with dates, people search and chat rooms.",
       links: ["View prototype", "Open in Figma", "App on GitHub", "API on GitHub"],
       facts: [
         ["Role", "Design and development"],
@@ -47,12 +48,22 @@ const EN: Record<string, ProjectText> = {
         ["Light and dark themes", "The app follows the system theme automatically."],
       ],
       chapters: [
-        ["The problem", "[WHAT MOTIVATED VERDANT? WHO IS IT FOR?]"],
-        ["Visual identity", "[THE COLORS, TYPOGRAPHY AND BRAND CONCEPT YOU CREATED]"],
-        ["Design in Figma", "[FLOWS, COMPONENTS AND INTERFACE DECISIONS]"],
+        [
+          "The problem",
+          "Build a dating app that only paying subscribers can join. The payment works as a filter: fewer fake profiles and people who actually want to meet. Beyond swiping and matching, the app needed ways to go past the chat: setting up dates, searching for people by name and joining public and private chat rooms.",
+        ],
+        [
+          "Visual identity",
+          "The name comes from “verdant”, and the tagline is “Connections that truly bloom”. The logo is a simple leaf, and green is the main color: it shows up on the launch screen, the like buttons and my own chat bubbles. The rest of the interface is neutral, with a light gray background and white cards, so the profile photos stand out. The typeface is Inter. Every color has a dark theme version.",
+          ["Verdant green", "Soft green", "Text", "Secondary text", "Background", "Cards", "Lines", "Pass"],
+        ],
+        [
+          "Design in Figma",
+          "I designed the whole flow before writing code: launch screen, sign in with Google or phone, Discover with the profile cards, the match screen, chat, Connections, Dates with a calendar and invitations, Search with filters and Settings with Verdant Stats and Premium. The screens share the same components (pill buttons, cards and a five-section tab bar), and the clickable prototype is in Figma.",
+        ],
         [
           "Development",
-          "An Expo + React Native app with TanStack Query and Zustand, talking to an API built with NestJS, MongoDB, Redis and Socket.IO, tested with Jest. [TECHNICAL CHALLENGES AND WHAT YOU LEARNED]",
+          "The app is built with Expo + React Native in TypeScript, Expo Router, TanStack Query and Zustand. The API uses NestJS, MongoDB, Redis and Socket.IO, and both sides are tested with Jest. The hardest parts were the real-time chat (paginated history, automatic reconnection and an HTTP fallback when the socket drops), the secure session with automatic token renewal and the feed sorted by distance, respecting the distance and age range preferences.",
         ],
       ],
       phones: [
@@ -316,7 +327,10 @@ function translate(p: Project): Project {
             facts: d.facts.map((f, i) => e.facts[i] ?? f),
             showcase: d.showcase && { ...d.showcase, ...e.showcase },
             highlights: d.highlights?.map((h, i) => e.highlights?.[i] ?? h),
-            chapters: d.chapters?.map((c, i) => e.chapters?.[i] ?? c),
+            chapters: d.chapters?.map(([title, body, palette], i) => {
+              const tr = e.chapters?.[i];
+              return [tr?.[0] ?? title, tr?.[1] ?? body, palette?.map(([name, hex], j) => [tr?.[2]?.[j] ?? name, hex] as [string, string])];
+            }),
             code: d.code && { ...d.code, ...e.code },
             gallery: captions(d.gallery, e.gallery),
             phones: captions(d.phones, e.phones),

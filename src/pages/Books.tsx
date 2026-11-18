@@ -61,8 +61,9 @@ function Box({ x, y, z = 0, w, h, d, className }: { x: number; y: number; z?: nu
   );
 }
 
-/** Capa desenhada pelo site: título, autor e um ornamento, nas cores do livro. */
+/** Capa do livro: a foto da edição, quando existe, ou uma capa desenhada com título, autor e ornamento nas cores do livro. */
 function Cover({ book }: { book: Book }) {
+  if (book.cover) return <img className="book-photo" src={`${import.meta.env.BASE_URL}assets/books/${book.cover}`} alt="" loading="lazy" decoding="async" />;
   return (
     <span className="book-art">
       <span className="book-rule" />

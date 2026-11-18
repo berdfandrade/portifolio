@@ -189,6 +189,13 @@ img { display: block; max-width: 100%; }
 .chapter[open] .sign::before { content: "−"; }
 .chapter p { padding: 0 20px 20px 64px; font-size: 15px; line-height: 1.55; color: var(--text2); }
 
+.palette { list-style: none; margin: 0; padding: 0 20px 22px 64px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 16px 12px; }
+.palette li { display: flex; flex-direction: column; gap: 2px; }
+.swatch { height: 56px; border-radius: 12px; margin-bottom: 6px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); }
+.swatch-name { font-size: 13px; font-weight: 600; }
+.palette code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text3); }
+@media (max-width: 640px) { .palette { padding-left: 20px; grid-template-columns: repeat(4, minmax(0, 1fr)); } .swatch { height: 44px; } }
+
 /* Telas de celular: uma fileira de aparelhos que rola para os lados */
 .phones {
   display: flex; gap: 28px; overflow-x: auto; scroll-snap-type: x mandatory;
@@ -210,7 +217,7 @@ img { display: block; max-width: 100%; }
 }
 .showcase-frame img, .showcase-frame video { display: block; width: 100%; height: auto; }
 .showcase figcaption, .shot figcaption { font-size: 14px; line-height: 1.45; color: var(--text3); text-align: center; }
-.shot-btn { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.shot-btn { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
 .shot-btn img { transition: transform .35s ease; }
 .shot-btn:hover img { transform: scale(1.015); }
 .pixelated { image-rendering: pixelated; }
@@ -761,13 +768,18 @@ img { display: block; max-width: 100%; }
   position: relative; container-type: size; overflow: hidden; padding: 0; border: 0; cursor: pointer; font: inherit;
   height: calc(var(--bh) * var(--k) * 1px); aspect-ratio: 0.68;
   border-radius: 2px 5px 5px 2px; color: var(--ink);
-  background:
-    linear-gradient(90deg, rgba(0,0,0,0.28) 0 3px, rgba(255,255,255,0.22) 3px 5px, rgba(0,0,0,0.08) 5px 9px, transparent 12px),
-    linear-gradient(120deg, rgba(255,255,255,0.22), rgba(255,255,255,0) 45%),
-    var(--color);
+  background: var(--color);
   box-shadow: 0 1px 1px rgba(0,0,0,0.25), 5px 6px 12px -2px rgba(40,20,0,0.45);
   transition: translate .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;
 }
+/* Dobra da lombada e brilho por cima da capa, desenhada ou fotografada */
+.cover2d::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.28) 0 3px, rgba(255,255,255,0.22) 3px 5px, rgba(0,0,0,0.08) 5px 9px, transparent 12px),
+    linear-gradient(120deg, rgba(255,255,255,0.18), rgba(255,255,255,0) 45%);
+}
+.book-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .cover2d .book-art { font-size: 11cqw; padding: 12cqh 10cqw 10cqh 14cqw; gap: 5cqh; }
 .cover2d:hover { translate: 0 -6px; box-shadow: 0 1px 1px rgba(0,0,0,0.25), 8px 14px 18px -4px rgba(40,20,0,0.5); }
 .cover2d.is-open { translate: 0 -10px; box-shadow: 0 0 0 3px var(--accent), 8px 16px 20px -4px rgba(40,20,0,0.5); }
