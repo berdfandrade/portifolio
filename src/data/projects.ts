@@ -584,57 +584,6 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    slug: "mac",
-    title: "mac",
-    coverTitle: "mac",
-    kind: "Sistemas",
-    meta: "Máquina virtual com assembler · C11",
-    stack: "C11",
-    status: "Código aberto",
-    bg: "#101010",
-    fg: "#39FF88",
-    accent: "#39FF88",
-    page: {
-      eyebrow: "Sistemas · 2024",
-      lede: "Uma máquina virtual de pilha pequena e legível, escrita em C11, com assembler, executor de linha de comando e um debugger interativo no terminal.",
-      links: [{ label: "Ver no GitHub", href: GH + "virtualmachine" }],
-      facts: [
-        ["Papel", "Desenvolvimento"],
-        ["Linguagem", "C11"],
-        ["Plataforma", "Linux · macOS"],
-        ["Testes", "37 testes · CI"],
-      ],
-      highlights: [
-        [
-          "Máquina de pilha",
-          "Pilha de 256 posições, seis registradores de uso geral e 23 instruções.",
-        ],
-        [
-          "Segura por design",
-          "Estouro de pilha, divisão por zero e saltos inválidos viram erros. A VM nunca lê ou escreve fora dos limites.",
-        ],
-        [
-          "Assembler de duas passadas",
-          "Rótulos com referência adiante, comentários, números em hexadecimal e erros com número de linha.",
-        ],
-        [
-          "Debugger no terminal",
-          "Execute passo a passo, marque breakpoints e veja registradores, pilha e saída mudarem, sem ncurses.",
-        ],
-        ["Sem dependências", "Só um compilador C11 e um sistema POSIX."],
-        [
-          "Testada",
-          "37 testes unitários, testes de ponta a ponta, builds com sanitizers e CI no Linux e no macOS.",
-        ],
-      ],
-      code: {
-        title: "Fatorial de 10 em assembly",
-        file: "examples/factorial.asm",
-        body: "        SET A 10        ; contador\n        SET B 1         ; acumulador\nloop:   LOD A\n        JZ done         ; para quando o contador chega a 0\n        LOD B\n        LOD A\n        MUL\n        STR B           ; B = B * A\n        LOD A\n        PSH 1\n        SUB\n        STR A           ; A = A - 1\n        JMP loop\ndone:   LOD B\n        POP             ; imprime 3628800\n        HLT",
-      },
-    },
-  },
-  {
     slug: "rdock",
     title: "rdock",
     coverTitle: "rdock",

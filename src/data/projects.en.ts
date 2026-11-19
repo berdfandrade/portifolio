@@ -272,33 +272,7 @@ const EN: Record<string, ProjectText> = {
       },
     },
   },
-  mac: {
-    meta: "Virtual machine with an assembler · C11",
-    status: "Open source",
-    page: {
-      eyebrow: "Systems · 2024",
-      lede: "A small, readable stack-based virtual machine written in C11, with an assembler, a command-line runner and an interactive terminal debugger.",
-      links: ["View on GitHub"],
-      facts: [
-        ["Role", "Development"],
-        ["Language", "C11"],
-        ["Platform", "Linux · macOS"],
-        ["Tests", "37 tests · CI"],
-      ],
-      highlights: [
-        ["Stack machine", "A 256-entry stack, six general-purpose registers and 23 instructions."],
-        ["Safe by design", "Stack overflow, division by zero and invalid jumps become errors. The VM never reads or writes out of bounds."],
-        ["Two-pass assembler", "Labels with forward references, comments, hex numbers and errors with line numbers."],
-        ["Terminal debugger", "Step through programs, set breakpoints and watch the registers, stack and output change, no ncurses needed."],
-        ["No dependencies", "Just a C11 compiler and a POSIX system."],
-        ["Tested", "37 unit tests, end-to-end tests, sanitizer builds and CI on Linux and macOS."],
-      ],
-      code: {
-        title: "10 factorial in assembly",
-        body: "        SET A 10        ; counter\n        SET B 1         ; accumulator\nloop:   LOD A\n        JZ done         ; stop when the counter reaches 0\n        LOD B\n        LOD A\n        MUL\n        STR B           ; B = B * A\n        LOD A\n        PSH 1\n        SUB\n        STR A           ; A = A - 1\n        JMP loop\ndone:   LOD B\n        POP             ; prints 3628800\n        HLT",
-      },
-    },
-  },
+
   rdock: {
     meta: "macOS-style dock for Linux · Rust",
     status: "Open source",

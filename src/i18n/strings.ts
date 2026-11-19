@@ -64,7 +64,7 @@ const pt = {
   about: {
     title: "Sobre",
     heroLabel: "Apresentação",
-    avatarAlt: "Bernardo em pixel art, de corpo inteiro: cabelo castanho cacheado, barba, jaqueta verde-oliva, camiseta cinza, bolsa a tiracolo, calça bege e botas",
+    avatarAlt: "Bernardo em pixel art, de corpo inteiro: cabelo castanho cacheado, barba, camiseta preta, calça camuflada bege e tênis",
     statsTitle: "Bernardo",
     levelWord: "Nível",
     nextLevel: (next: number, days: number) => `Nível ${next} em ${days} dias`,
@@ -101,6 +101,16 @@ const pt = {
     filmsProfile: "Ver perfil",
     filmLabel: (title: string, year: string, rating: number | null, liked: boolean) =>
       `${title} (${year})${rating ? `, nota ${String(rating).replace('.', ',')} de 5` : ''}${liked ? ', curtido' : ''}. Abrir no Letterboxd`,
+    personalTitle: "Ficha pessoal",
+    personal: [
+      ["record", "Passagem criminal", "Não"],
+      ["status", "Estado civil", "Solteiro"],
+      ["beliefs", "Crenças", "Espiritualidade"],
+      ["smoke", "Fuma", "Não"],
+      ["drink", "Bebe", "Aos fins de semana"],
+      ["drugs", "Drogas", "Não"],
+      ["messages", "Mensagens", "Responde rápido"],
+    ] as [string, string, string][],
     aboutMeTitle: "Um pouco sobre mim",
     aboutMe: [
       "Sou uma pessoa curiosa por natureza. Gosto de aprender coisas novas, conhecer perspectivas diferentes e descobrir como o mundo funciona. Me interesso por assuntos bastante variados: cinema, música, história, filosofia, tecnologia e comportamento humano.",
@@ -131,6 +141,8 @@ const pt = {
     traits: ["Determinado", "Disciplinado", "Ambicioso", "Paciente"],
     pairLabel: "Inventário e missões",
     inventory: "Inventário",
+    slots: (used: number, total: number) => `${used}/${total} espaços`,
+    rarity: { legendary: "Lendário", epic: "Épico", rare: "Raro" },
     skillsLink: "Ver Skill Tree completa ›",
     quests: "Missões ativas",
     libraryLink: "Ver os projetos ›",
@@ -261,7 +273,7 @@ const en: Strings = {
   about: {
     title: "About",
     heroLabel: "Introduction",
-    avatarAlt: "Full-body pixel art of Bernardo: curly brown hair, a beard, an olive jacket, a gray T-shirt, a crossbody bag, beige pants and boots",
+    avatarAlt: "Full-body pixel art of Bernardo: curly brown hair, a beard, a black T-shirt, beige camo pants and sneakers",
     statsTitle: "Bernardo",
     levelWord: "Level",
     nextLevel: (next: number, days: number) => `Level ${next} in ${days} days`,
@@ -298,6 +310,16 @@ const en: Strings = {
     filmsProfile: "View profile",
     filmLabel: (title: string, year: string, rating: number | null, liked: boolean) =>
       `${title} (${year})${rating ? `, rated ${rating} out of 5` : ''}${liked ? ', liked' : ''}. Open on Letterboxd`,
+    personalTitle: "Personal details",
+    personal: [
+      ["record", "Criminal record", "No"],
+      ["status", "Relationship status", "Single"],
+      ["beliefs", "Beliefs", "Spirituality"],
+      ["smoke", "Smokes", "No"],
+      ["drink", "Drinks", "On weekends"],
+      ["drugs", "Drugs", "No"],
+      ["messages", "Messages", "Replies fast"],
+    ] as [string, string, string][],
     aboutMeTitle: "A little about me",
     aboutMe: [
       "I'm curious by nature. I like learning new things, hearing different perspectives and figuring out how the world works. I'm interested in all sorts of subjects: film, music, history, philosophy, technology and human behavior.",
@@ -328,6 +350,8 @@ const en: Strings = {
     traits: ["Determined", "Disciplined", "Ambitious", "Patient"],
     pairLabel: "Inventory and quests",
     inventory: "Inventory",
+    slots: (used: number, total: number) => `${used}/${total} slots`,
+    rarity: { legendary: "Legendary", epic: "Epic", rare: "Rare" },
     skillsLink: "See the full Skill Tree ›",
     quests: "Active quests",
     libraryLink: "See the projects ›",

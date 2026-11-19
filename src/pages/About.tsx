@@ -9,7 +9,18 @@ import AstroReading from '../components/AstroReading';
 import { useI18n } from '../i18n';
 import { CHART, PLACEMENT_ORDER, formatDegrees } from '../data/astro';
 
-const AVATAR = `${import.meta.env.BASE_URL}assets/character.webp`;
+// Ícones da ficha pessoal, no mesmo traço dos ícones de interesses.
+const PERSONAL_ICONS: Record<string, string> = {
+  record: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4',
+  status: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z',
+  beliefs: 'M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+  smoke: 'M3 15h13v4H3zM19 15v4M21.5 15v4M17 11c0-1.5 1.5-1.8 1.5-3.5S17 5.5 17 4',
+  drink: 'M8 3h8l-1 6a3 3 0 0 1-6 0L8 3zM12 12v8M8 21h8',
+  drugs: 'M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7l7-7zM7 10l7 7',
+  messages: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12zM13 8l-3 4h4l-3 4',
+};
+
+const AVATAR = `${import.meta.env.BASE_URL}assets/character.gif`;
 
 // Nível = idade; a experiência é quanto do ano já passou desde o último aniversário (15 de janeiro de 1996).
 const BIRTH = { year: 1996, month: 0, day: 15 };
@@ -53,7 +64,22 @@ const INTEREST_ICONS: Record<string, string> = {
   impressions: 'M3 4h8v6a4 4 0 0 1-8 0zM5.5 7h.01M8.5 7h.01M5.2 10.5a2 2 0 0 0 3.6 0M13 9h8v6a4 4 0 0 1-8 0zM15.5 12h.01M18.5 12h.01M15.2 16.8a2 2 0 0 1 3.6 0',
 };
 
-const SKILLS = ['Figma', 'React', 'React Native', 'NestJS', 'FastAPI', 'Rust', 'C / C++', 'Qt', 'Tailwind', 'Playwright', 'Pixel art'];
+// Inventário de jogo: cada ferramenta é um item em pixel art (public/assets/inventory/<sprite>.png) com raridade.
+type Rarity = 'legendary' | 'epic' | 'rare';
+const INVENTORY: { name: string; rarity: Rarity; sprite: string }[] = [
+  { name: 'React', rarity: 'legendary', sprite: 'react' },
+  { name: 'React Native', rarity: 'legendary', sprite: 'react-native' },
+  { name: 'NestJS', rarity: 'legendary', sprite: 'nestjs' },
+  { name: 'Figma', rarity: 'legendary', sprite: 'figma' },
+  { name: 'Tailwind', rarity: 'epic', sprite: 'tailwind' },
+  { name: 'FastAPI', rarity: 'epic', sprite: 'fastapi' },
+  { name: 'Playwright', rarity: 'epic', sprite: 'playwright' },
+  { name: 'Pixel art', rarity: 'epic', sprite: 'pixel-art' },
+  { name: 'Rust', rarity: 'rare', sprite: 'rust' },
+  { name: 'C / C++', rarity: 'rare', sprite: 'cpp' },
+  { name: 'Qt', rarity: 'rare', sprite: 'qt' },
+];
+const INVENTORY_SLOTS = 12;
 
 export default function About() {
   const { t, to, projects, books } = useI18n();
@@ -77,7 +103,7 @@ export default function About() {
       <main className="about">
         <section className="about-hero" aria-label={a.heroLabel}>
           <figure className="avatar-card">
-            <img src={AVATAR} width={725} height={1582} alt={a.avatarAlt} />
+            <img src={AVATAR} width={276} height={636} alt={a.avatarAlt} />
             {/* Cartão de jogador em vidro: o anel mostra a experiência até o próximo nível, como os anéis do Atividade */}
             <figcaption className="player">
               <span className="level-ring" role="img" aria-label={a.expLabel(exp, level + 1, daysLeft)}>
@@ -149,12 +175,42 @@ export default function About() {
             {a.aboutMe.map((text) => <p key={text}>{text}</p>)}
           </section>
 
+          <section className="card personal" aria-labelledby="personal">
+            <h2 id="personal">{a.personalTitle}</h2>
+            <dl>
+              {a.personal.map(([id, k, v]) => (
+                <div key={id}>
+                  <dt>
+                    <span className="personal-icon" aria-hidden="true">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={PERSONAL_ICONS[id]} /></svg>
+                    </span>
+                    {k}
+                  </dt>
+                  <dd>{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
           <section className="pair" aria-label={a.pairLabel}>
             <div className="card">
-              <h2>{a.inventory}</h2>
-              <div className="chips">
-                {SKILLS.map((s) => <span key={s} className="chip">{s}</span>)}
+              <div className="inventory-head">
+                <h2>{a.inventory}</h2>
+                <span className="inventory-count">{a.slots(INVENTORY.length, INVENTORY_SLOTS)}</span>
               </div>
+              <ul className="inventory">
+                {INVENTORY.map((item) => (
+                  <li key={item.name} className={`slot is-${item.rarity}`}>
+                    <img src={`${import.meta.env.BASE_URL}assets/inventory/${item.sprite}.png`} width={14} height={14} alt="" />
+                    <span className="slot-name">{item.name}</span>
+                    <span className="sr-only">, {a.rarity[item.rarity]}</span>
+                  </li>
+                ))}
+                {Array.from({ length: INVENTORY_SLOTS - INVENTORY.length }, (_, i) => <li key={i} className="slot is-empty" aria-hidden="true" />)}
+              </ul>
+              <p className="rarity-legend" aria-hidden="true">
+                {(['legendary', 'epic', 'rare'] as const).map((r) => <span key={r} className={`is-${r}`}>{a.rarity[r]}</span>)}
+              </p>
               <Link to={to('skills')}>{a.skillsLink}</Link>
             </div>
             <div className="card">
