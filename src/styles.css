@@ -475,7 +475,7 @@ img { display: block; max-width: 100%; }
   .avatar-card { max-width: none; border-radius: 32px; order: -2; }
 
   .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); align-self: stretch; top: 0; order: -1; box-shadow: 0 0 0 12px var(--bg); margin: 2px 0; }
-  .tab { padding: 0 4px; }
+  .tab { padding: 0 2px; font-size: 13px; letter-spacing: -0.2px; }
   .about-panel { gap: 14px; }
   [data-panel]:not(.is-active) { display: none !important; }
 
@@ -1093,6 +1093,16 @@ img { display: block; max-width: 100%; }
 .glyph-badge.el-earth { background: color-mix(in srgb, #A2845E 20%, transparent); color: #7A5C34; }
 .glyph-badge.el-air { background: color-mix(in srgb, #5AC8FA 22%, transparent); color: #0A7EA8; }
 .glyph-badge.el-water { background: color-mix(in srgb, #5E5CE6 16%, transparent); color: #4B49C9; }
+/* Tons dos ícones das filosofias */
+.glyph-badge.tone-red { background: color-mix(in srgb, #FF3B30 14%, transparent); color: #D70015; }
+.glyph-badge.tone-violet { background: color-mix(in srgb, #AF52DE 16%, transparent); color: #8E3CC0; }
+.glyph-badge.tone-blue { background: color-mix(in srgb, #007AFF 14%, transparent); color: #0062CC; }
+.glyph-badge.tone-orange { background: color-mix(in srgb, #FF9500 18%, transparent); color: #C26A00; }
+.glyph-badge.tone-gray { background: var(--fill); color: var(--text2); }
+:root[data-theme="dark"] .glyph-badge.tone-red { color: #FF6961; }
+:root[data-theme="dark"] .glyph-badge.tone-violet { color: #DA8FFF; }
+:root[data-theme="dark"] .glyph-badge.tone-blue { color: #64B5FF; }
+:root[data-theme="dark"] .glyph-badge.tone-orange { color: #FFB340; }
 .glyph-badge.is-planet { background: var(--fill); color: var(--text); }
 .glyph-badge.is-text { background: var(--fill); color: var(--text2); font-family: inherit; font-size: 11px; font-weight: 800; letter-spacing: 0.4px; }
 :root[data-theme="dark"] .glyph-badge.el-fire { color: #FF9566; }

@@ -1,39 +1,17 @@
 // Leitura extensa do mapa astral (aba Astral da página Sobre), em português.
 // A versão em inglês fica em astro-reading.en.ts, com a mesma estrutura.
 // Os símbolos são chaves (signos, planetas e aspectos) que o componente AstroReading troca pelo glifo.
-// Negrito: **texto**.
+// Negrito: **texto**. A estrutura (blocos e seções) fica em reading.ts.
+import type { Block as BlockOf, Reading as ReadingOf, ReadingSection as ReadingSectionOf } from "./reading";
 
 export type GlyphKey =
   | "aries" | "taurus" | "gemini" | "cancer" | "leo" | "virgo" | "libra" | "scorpio" | "sagittarius" | "capricorn" | "aquarius" | "pisces"
   | "sun" | "moon" | "mercury" | "venus" | "mars" | "jupiter" | "saturn" | "uranus" | "neptune" | "pluto"
   | "conjunction" | "sextile" | "trine" | "mc" | "asc";
 
-export type Block =
-  | { p: string }
-  | { h3: string }
-  | { list: string[] }
-  | { steps: string[] }
-  | { quote: string }
-  | { note: string }
-  | { cards: { glyph: GlyphKey; title: string; label: string; text: string }[] }
-  | { versus: { glyph: GlyphKey; title: string; text: string }[] }
-  | { table: { head: string[]; rows: string[][] } };
-
-export interface ReadingSection {
-  id: string;
-  number: string;
-  glyphs: GlyphKey[];
-  title: string;
-  blocks: Block[];
-}
-
-export interface Reading {
-  eyebrow: string;
-  title: string;
-  tocLabel: string;
-  intro: Block[];
-  sections: ReadingSection[];
-}
+export type Block = BlockOf<GlyphKey>;
+export type ReadingSection = ReadingSectionOf<GlyphKey>;
+export type Reading = ReadingOf<GlyphKey>;
 
 export const READING: Reading = {
   eyebrow: "Leitura do mapa",

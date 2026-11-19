@@ -81,7 +81,7 @@ const pt = {
       ["Elemento", "Terra"],
     ] as [string, string][],
     tabsLabel: "Seções da ficha",
-    tabs: { ficha: "Perfil", gostos: "Interesses", astral: "Astral", humor: "Humor" },
+    tabs: { ficha: "Perfil", gostos: "Interesses", astral: "Astral", humor: "Filosofias" },
     interestsTitle: "Interesses",
     interestsSub: "Curioso por natureza: o que ocupa a cabeça e as horas livres.",
     interests: [
@@ -110,6 +110,7 @@ const pt = {
       ["drink", "Bebe", "Aos fins de semana"],
       ["drugs", "Drogas", "Não"],
       ["messages", "Mensagens", "Responde rápido"],
+      ["exercise", "Atividade física", "Constantemente"],
     ] as [string, string, string][],
     aboutMeTitle: "Um pouco sobre mim",
     aboutMe: [
@@ -290,7 +291,7 @@ const en: Strings = {
       ["Element", "Earth"],
     ],
     tabsLabel: "Sheet sections",
-    tabs: { ficha: "Profile", gostos: "Interests", astral: "Astral", humor: "Humor" },
+    tabs: { ficha: "Profile", gostos: "Interests", astral: "Astral", humor: "Philosophy" },
     interestsTitle: "Interests",
     interestsSub: "Curious by nature: what fills my head and my free time.",
     interests: [
@@ -319,6 +320,7 @@ const en: Strings = {
       ["drink", "Drinks", "On weekends"],
       ["drugs", "Drugs", "No"],
       ["messages", "Messages", "Replies fast"],
+      ["exercise", "Exercise", "Regularly"],
     ] as [string, string, string][],
     aboutMeTitle: "A little about me",
     aboutMe: [

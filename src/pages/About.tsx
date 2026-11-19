@@ -6,6 +6,7 @@ import BirthChart from '../components/BirthChart';
 import TopTracks from '../components/TopTracks';
 import RecentFilms from '../components/RecentFilms';
 import AstroReading from '../components/AstroReading';
+import PhilosophyReading from '../components/PhilosophyReading';
 import { useI18n } from '../i18n';
 import { CHART, PLACEMENT_ORDER, formatDegrees } from '../data/astro';
 
@@ -17,6 +18,7 @@ const PERSONAL_ICONS: Record<string, string> = {
   smoke: 'M3 15h13v4H3zM19 15v4M21.5 15v4M17 11c0-1.5 1.5-1.8 1.5-3.5S17 5.5 17 4',
   drink: 'M8 3h8l-1 6a3 3 0 0 1-6 0L8 3zM12 12v8M8 21h8',
   drugs: 'M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7l7-7zM7 10l7 7',
+  exercise: 'M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11',
   messages: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12zM13 8l-3 4h4l-3 4',
 };
 
@@ -75,6 +77,7 @@ const INVENTORY: { name: string; rarity: Rarity; sprite: string }[] = [
   { name: 'FastAPI', rarity: 'epic', sprite: 'fastapi' },
   { name: 'Playwright', rarity: 'epic', sprite: 'playwright' },
   { name: 'Pixel art', rarity: 'epic', sprite: 'pixel-art' },
+  { name: 'Vibe code', rarity: 'epic', sprite: 'vibe-code' },
   { name: 'Rust', rarity: 'rare', sprite: 'rust' },
   { name: 'C / C++', rarity: 'rare', sprite: 'cpp' },
   { name: 'Qt', rarity: 'rare', sprite: 'qt' },
@@ -306,6 +309,8 @@ export default function About() {
               </div>
             </div>
           </section>
+
+          <PhilosophyReading />
         </div>
       </main>
     </>
