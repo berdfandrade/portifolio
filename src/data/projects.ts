@@ -616,11 +616,23 @@ export const PROJECTS: Project[] = [
         ],
         [
           "Arrastar e soltar",
-          "Os ícones mudam de ordem enquanto os vizinhos abrem espaço. Arrastar um ícone para fora da dock remove o app com um “puf”.",
+          "Os ícones mudam de ordem enquanto os vizinhos abrem espaço, e arrastar um para fora remove o app com um “puf”. Para fixar um app, basta arrastá-lo do Launchpad ou soltar um arquivo .desktop na dock.",
+        ],
+        [
+          "Pilhas",
+          "Uma pasta solta na dock vira uma pilha. Até 9 itens abrem em órbita ao redor do ícone; pastas maiores abrem um painel com subpastas, busca, ordenação, prévia e controle pelo teclado. Um selo vermelho conta os arquivos novos.",
+        ],
+        [
+          "Prévias de janelas",
+          "Com o mouse parado 400 ms sobre um app aberto, aparecem miniaturas ao vivo de cada janela e a área de trabalho onde ela está. Clique para focar, × para fechar, roda do mouse para alternar.",
+        ],
+        [
+          "Soltar arquivos nos apps",
+          "Ao arrastar um arquivo, os apps que sabem abri-lo sobem e os outros somem. Soltar num app abre o arquivo nele; numa pilha, move (com Ctrl, copia); na lixeira, apaga. O menu do app lista os arquivos recentes.",
         ],
         [
           "Launchpad",
-          "Grade em tela cheia com todos os apps sobre uma cópia desfocada da área de trabalho, com páginas que deslizam e busca que ignora acentos.",
+          "Grade em tela cheia com todos os apps sobre uma cópia desfocada da área de trabalho, com páginas que deslizam e busca que ignora acentos. Os quadros vão ao servidor X por memória compartilhada (MIT-SHM) e a animação fica em 60 fps.",
         ],
         [
           "Ocultação inteligente",
@@ -647,6 +659,10 @@ export const PROJECTS: Project[] = [
         [
           "Animações com molas",
           "Todas as animações usam a mesma mola amortecida: a magnificação, a entrada e saída dos ícones, a reordenação no arrastar e os fades. Quando nada se move, o loop de eventos para de desenhar, e por isso a dock fica em 0% de CPU parada.",
+        ],
+        [
+          "Pilhas e prévias sem custo parado",
+          "As pilhas vigiam as pastas com inotify, então o selo de arquivos novos se atualiza sem a dock acordar à toa. As prévias são capturadas numa thread separada e aparecem num popover de vidro sobre uma captura desfocada da tela, mais opaco quando o papel de parede é claro. Para saber quais apps abrem um arquivo, a dock lê o MimeType dos .desktop e o banco do shared-mime-info.",
         ],
       ],
       code: {

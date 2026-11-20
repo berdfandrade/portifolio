@@ -292,8 +292,11 @@ const EN: Record<string, ProjectText> = {
       },
       highlights: [
         ["Fish-eye with springs", "Icons grow along a cosine curve as the pointer gets close, animated with damped springs. An icon keeps bouncing until its app's window appears."],
-        ["Drag and drop", "Icons reorder while their neighbors make room. Dragging an icon out of the dock removes the app with a “poof”."],
-        ["Launchpad", "A full-screen grid of every app over a blurred copy of the desktop, with sliding pages and accent-insensitive search."],
+        ["Drag and drop", "Icons reorder while their neighbors make room, and dragging one out removes the app with a “poof”. To pin an app, drag it from the Launchpad or drop a .desktop file on the dock."],
+        ["Stacks", "Drop a folder on the dock to make it a stack. Up to 9 items open as an orbit around the icon; larger folders open a panel with subfolders, search, sorting, a preview and keyboard control. A red badge counts new files."],
+        ["Window previews", "Rest the pointer on an open app for 400 ms to see live thumbnails of each window and its workspace. Click to focus, × to close, the wheel to cycle."],
+        ["Drop files on apps", "While you drag a file, the apps that can open it rise and the others fade. Drop on an app to open it there, on a stack to move it (Ctrl copies), on the Trash to delete it. The app menu lists recent files."],
+        ["Launchpad", "A full-screen grid of every app over a blurred copy of the desktop, with sliding pages and accent-insensitive search. Frames reach the X server through shared memory (MIT-SHM), so the animation runs at 60 fps."],
         ["Smart hiding", "It can stay visible, hide when the pointer leaves or hide only when the active window touches it. It works at the bottom, left or right of the screen."],
         ["Themes in one PNG", "A theme is a single image of the shelf: the ends stay fixed and the middle tiles as the dock grows. It ships with Glass, Graphite, Ice, Neon, Sunset and Wood."],
         ["0% CPU when idle", "With nothing animating, the dock uses no CPU. An animated frame takes 0.5 to 2 ms, because only the region that changed is redrawn and sent to the X server."],
@@ -302,6 +305,7 @@ const EN: Record<string, ProjectText> = {
         ["Why build a dock", "I wanted the feel of the macOS dock on Linux: the fish-eye, the bounce when an app opens and the Launchpad. The existing docks depend on GTK or Qt, so I decided to write one from scratch in Rust and learn how windows, icons and animations work underneath."],
         ["Drawing without a toolkit", "Everything is drawn on the CPU with tiny-skia and sent to the X server through x11rb. The dock window is transparent, and an X Shape input region lets clicks on empty areas pass through to the windows below. Apps come from the standard XDG .desktop files and icons from the system theme, loaded on background threads."],
         ["Spring animations", "Every animation uses the same damped spring: magnification, icons appearing and leaving, reordering while dragging and fades. When nothing moves, the event loop stops drawing, which is why the dock sits at 0% CPU when idle."],
+        ["Stacks and previews with no idle cost", "Stacks watch their folders with inotify, so the new-files badge stays current without waking the dock for nothing. Previews are captured on a background thread and shown in a glass popover over a blurred capture of the screen, more opaque on bright wallpapers. To know which apps open a file, the dock reads the MimeType of each .desktop file and the shared-mime-info database."],
       ],
       code: { title: "The spring behind every animation" },
       gallery: [
