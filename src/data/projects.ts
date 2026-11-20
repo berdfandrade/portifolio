@@ -620,7 +620,7 @@ export const PROJECTS: Project[] = [
         ],
         [
           "Pilhas",
-          "Uma pasta solta na dock vira uma pilha. Até 9 itens abrem em órbita ao redor do ícone; pastas maiores abrem um painel com subpastas, busca, ordenação, prévia e controle pelo teclado. Um selo vermelho conta os arquivos novos.",
+          "Uma pasta solta na dock vira uma pilha. Até 9 itens abrem em órbita ao redor do ícone; pastas maiores abrem um painel com subpastas, busca, ordenação, prévia e controle pelo teclado. Um selo vermelho conta os arquivos novos, e o botão direito troca o modo e a ordenação.",
         ],
         [
           "Prévias de janelas",
@@ -672,13 +672,43 @@ export const PROJECTS: Project[] = [
       },
       gallery: [
         {
+          src: IMG + "rdock/orbit.webp",
+          alt: "A pilha de Downloads aberta em órbita: oito arquivos em dois arcos acima do ícone, com pontos azuis nos arquivos novos",
+          caption: "Pilha em órbita",
+        },
+        {
+          src: IMG + "rdock/panel.webp",
+          alt: "A pilha Projetos aberta como painel, com abas de ordenação, busca, grade de arquivos e área de prévia",
+          caption: "Pilha em painel",
+        },
+        {
+          src: IMG + "rdock/previews.webp",
+          alt: "Popover de vidro com miniaturas ao vivo das duas janelas do Editor de texto e o botão Nova janela",
+          caption: "Prévias de janelas",
+        },
+        {
+          src: IMG + "rdock/drag.webp",
+          alt: "Arrastando uma imagem sobre a dock: o Pix sobe com a dica “Abrir com Pix” e os apps que não abrem imagens ficam apagados",
+          caption: "Soltar arquivos nos apps",
+        },
+        {
+          src: IMG + "rdock/menu.webp",
+          alt: "Menu do Editor de texto com a seção Recentes listando os últimos arquivos abertos",
+          caption: "Arquivos recentes no menu",
+        },
+        {
+          src: IMG + "rdock/stack-menu.webp",
+          alt: "Menu de uma pilha com Abrir em Arquivos, Exibir como Automático, Órbita ou Painel, e Ordenar por",
+          caption: "Menu da pilha",
+        },
+        {
           src: IMG + "rdock/launchpad.webp",
           alt: "Launchpad com a grade de todos os apps instalados sobre a área de trabalho desfocada",
           caption: "Launchpad",
         },
         {
           src: IMG + "rdock/settings.webp",
-          alt: "Janela de preferências da dock com controles deslizantes e chaves",
+          alt: "Janela de preferências da dock com controles deslizantes, posição, tema, ocultação e chaves para quique, indicadores, prévias, destaque ao arrastar e arquivos recentes",
           caption: "Preferências",
         },
         {
