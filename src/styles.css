@@ -421,7 +421,7 @@ img { display: block; max-width: 100%; }
 .placements dd { margin: 0; font-weight: 600; }
 
 .pair { display: flex; flex-wrap: wrap; gap: 24px; }
-.pair .card { flex: 1 1 320px; display: flex; flex-direction: column; gap: 14px; }
+.pair .card { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
 .pair h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; }
 .pair p { font-size: 15px; line-height: 1.5; color: var(--text2); }
 .pair a { font-size: 15px; font-weight: 500; }
@@ -1028,7 +1028,10 @@ img { display: block; max-width: 100%; }
 /* ---------- Sobre: filmes recentes do Letterboxd ---------- */
 .music-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
 .films-profile { flex: none; font-size: 15px; font-weight: 500; }
-.film-row { list-style: none; margin: 0 -32px; padding: 4px 32px 8px; display: grid; grid-auto-flow: column; grid-auto-columns: 128px; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 32px; scrollbar-width: none; }
+/* A fileira vai de borda a borda do card: --bleed acompanha o padding do .card (32px; 18px no celular). */
+.films { --bleed: 32px; overflow: hidden; }
+@media (max-width: 640px) { .films { --bleed: 18px; } }
+.film-row { list-style: none; margin: 0 calc(var(--bleed) * -1); padding: 4px var(--bleed) 8px; display: grid; grid-auto-flow: column; grid-auto-columns: 128px; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--bleed); scrollbar-width: none; }
 .film-row::-webkit-scrollbar { display: none; }
 .film-row li { scroll-snap-align: start; }
 .film-row a { display: flex; flex-direction: column; gap: 8px; color: var(--text); border-radius: 10px; }
@@ -1259,3 +1262,4 @@ img { display: block; max-width: 100%; }
 .is-done .quest-state { color: #7BE495; }
 @keyframes quest-bob { 50% { translate: 0 -2px; } }
 @media (prefers-reduced-motion: reduce) { .is-active .quest-mark { animation: none; } }
+@media (max-width: 640px) { .quest-meta { white-space: normal; } }
