@@ -240,6 +240,18 @@ export default function About() {
             </ul>
           </section>
 
+          <section className="card club" aria-labelledby="club">
+            <img className="club-badge" src={`${import.meta.env.BASE_URL}assets/galo.png`} width={128} height={168} alt={a.clubBadgeAlt} />
+            <div className="club-text">
+              <p className="eyebrow">{a.clubEyebrow}</p>
+              <h2 id="club">{a.clubName}</h2>
+              <p>{a.clubText}</p>
+              <ul className="club-facts">
+                {a.clubFacts.map((f) => <li key={f}>{f}</li>)}
+              </ul>
+            </div>
+          </section>
+
           <TopTracks />
 
           <RecentFilms />

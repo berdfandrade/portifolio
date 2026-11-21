@@ -1167,3 +1167,36 @@ img { display: block; max-width: 100%; }
 @keyframes panel-in { from { opacity: 0; translate: 0 8px; } }
 @keyframes reveal { from { opacity: 0; translate: 0 28px; } }
 @media (prefers-reduced-motion: reduce) { .tabs::before { transition: none; } }
+
+/* Clube do coração: distintivo em pixel art sobre listras preto e branco bem discretas. */
+.club {
+  display: flex; align-items: center; gap: 28px; color: #F5F5F7;
+  background:
+    linear-gradient(90deg, rgba(18,18,22,0.96) 0%, rgba(18,18,22,0.9) 55%, rgba(18,18,22,0.78) 100%),
+    repeating-linear-gradient(90deg, #121216 0 22px, #2C2C33 22px 44px);
+  border: 1px solid rgba(233,185,73,0.35);
+}
+.club-badge { flex: none; width: 128px; height: 168px; image-rendering: pixelated; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5)); }
+.club-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.club .eyebrow { margin: 0; color: #E9B949; }
+.club h2 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: #FFF; }
+.club p { margin: 0; color: #C7C7CC; }
+.club-facts { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.club-facts li {
+  font-family: 'Pixelify Sans', ui-monospace, monospace; font-size: 13px; font-weight: 500;
+  padding: 4px 10px; color: #F5F5F7; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(233,185,73,0.45); border-radius: 6px;
+}
+@media (max-width: 640px) {
+  .club { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .club-badge { width: 96px; height: 126px; }
+  .club h2 { font-size: 24px; }
+}
+
+/* Ícones da Skill Tree: sprite em pixel art usado como máscara, pintado com a cor do texto. */
+.skill-icon {
+  display: inline-block; flex: none; background: currentColor;
+  mask-size: 100% 100%; -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;
+  image-rendering: pixelated;
+}

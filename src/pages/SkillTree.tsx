@@ -176,12 +176,10 @@ function SkillMap({ group, is3d, onOpen }: { group: Branch['group']; is3d: boole
   );
 }
 
+/** Ícone em pixel art (14×14, salvo a 6×: 28 e 42 px são reduções exatas, sem borrar). O PNG é só a máscara: a cor vem de `currentColor`. */
 function SkillIcon({ skill, size }: { skill: Skill; size: number }) {
-  return (
-    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={size > 40 ? 1.6 : 2} strokeLinecap="round" strokeLinejoin="round">
-      <path d={skill.icon} />
-    </svg>
-  );
+  const url = `url(${import.meta.env.BASE_URL}assets/skills/${skill.id}.png)`;
+  return <span className="skill-icon" aria-hidden="true" style={{ width: size, height: size, maskImage: url, WebkitMaskImage: url }} />;
 }
 
 /** Marca no canto do bloco (onde os jogos mostram o nível): concluída, em treino ou bloqueada. */
@@ -235,7 +233,7 @@ function SkillDrawer({ index, onChange }: { index: number | null; onChange: (ind
       <div className="drawer-body">
         <div className="drawer-hero">
           <div className={`skill-tile big ${skill.status}`}>
-            <SkillIcon skill={skill} size={46} />
+            <SkillIcon skill={skill} size={42} />
           </div>
           <h2 id="skill-drawer-title">{skill.label}</h2>
           <span className={`skill-pill ${skill.status}`}>{st.status[skill.status]}</span>
