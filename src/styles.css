@@ -1139,15 +1139,12 @@ img { display: block; max-width: 100%; }
 :root[data-theme="dark"] .glyph-badge.el-water { color: #A5A3FF; }
 
 .reading-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-.reading-card { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 20px; border-radius: 18px; background: var(--bg); }
+.reading-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 20px; border-radius: 18px; background: var(--bg); }
 .reading-card .glyph-badge { margin-bottom: 6px; }
 .reading-card strong { font-size: 17px; }
 .reading .reading-card p { font-size: 15px; line-height: 1.5; }
-@media (max-width: 640px) {
-  .reading-card { align-items: center; text-align: center; }
-}
 .reading-versus { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 12px; }
-.versus-side { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 20px; border-radius: 18px; background: var(--bg); height: 100%; }
+.versus-side { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 20px; border-radius: 18px; background: var(--bg); height: 100%; }
 .versus-side .glyph-badge { margin-bottom: 6px; }
 .reading .versus-side p { font-size: 15px; line-height: 1.5; }
 .versus-mark { font-size: 22px; color: var(--text3); }
