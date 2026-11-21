@@ -42,6 +42,8 @@ export interface Project {
   meta: string;
   stack: string;
   status: string;
+  /** Ainda em desenvolvimento (aparece como missão em andamento no Sobre). */
+  ongoing?: boolean;
   bg: string;
   fg: string;
   accent?: string;
@@ -60,6 +62,7 @@ export const PROJECTS: Project[] = [
     meta: "App · React Native + NestJS",
     stack: "Figma · Expo · NestJS",
     status: "Em andamento",
+    ongoing: true,
     bg: "#1E3A2B",
     fg: "#E4F3DE",
     accent: "#A8D5A0",
@@ -483,6 +486,7 @@ export const PROJECTS: Project[] = [
     meta: "Automação · LinkedIn, Glassdoor, Indeed",
     stack: "Python · Chrome CDP",
     status: "Em andamento",
+    ongoing: true,
     bg: "#0B1F3A",
     fg: "#A9CBFF",
     accent: "#A9CBFF",

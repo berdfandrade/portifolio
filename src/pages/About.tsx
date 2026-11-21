@@ -75,12 +75,12 @@ const INVENTORY: { name: string; rarity: Rarity; sprite: string }[] = [
   { name: 'Figma', rarity: 'legendary', sprite: 'figma' },
   { name: 'Tailwind', rarity: 'epic', sprite: 'tailwind' },
   { name: 'FastAPI', rarity: 'epic', sprite: 'fastapi' },
-  { name: 'Playwright', rarity: 'epic', sprite: 'playwright' },
+  { name: 'Java', rarity: 'epic', sprite: 'java' },
   { name: 'Pixel art', rarity: 'epic', sprite: 'pixel-art' },
   { name: 'Vibe code', rarity: 'epic', sprite: 'vibe-code' },
   { name: 'Rust', rarity: 'rare', sprite: 'rust' },
   { name: 'C / C++', rarity: 'rare', sprite: 'cpp' },
-  { name: 'Qt', rarity: 'rare', sprite: 'qt' },
+  { name: 'Claude', rarity: 'rare', sprite: 'claude' },
 ];
 const INVENTORY_SLOTS = 12;
 
@@ -217,8 +217,25 @@ export default function About() {
               <Link to={to('skills')}>{a.skillsLink}</Link>
             </div>
             <div className="card">
-              <h2>{a.quests}</h2>
-              <p>{new Intl.ListFormat(t.locale).format(projects.map((p) => p.title))}.</p>
+              <div className="inventory-head">
+                <h2>{a.quests}</h2>
+                <span className="inventory-count">{a.questCount(projects.filter((p) => p.ongoing).length, projects.length)}</span>
+              </div>
+              {/* Registro de missões: em andamento primeiro (!), depois as concluídas (✓). Cada uma abre o projeto. */}
+              <ol className="quest-log">
+                {[...projects].sort((x, y) => Number(!!y.ongoing) - Number(!!x.ongoing)).map((p) => (
+                  <li key={p.slug} className={p.ongoing ? 'is-active' : 'is-done'}>
+                    <Link to={to('project', p.slug)}>
+                      <span className="quest-mark" aria-hidden="true">{p.ongoing ? '!' : '✓'}</span>
+                      <span className="quest-text">
+                        <span className="quest-title">{p.title}</span>
+                        <span className="quest-meta">{p.meta}</span>
+                      </span>
+                      <span className="quest-state">{p.ongoing ? a.questActive : a.questDone}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
               <Link to={to('library')}>{a.libraryLink}</Link>
             </div>
           </section>
@@ -241,7 +258,7 @@ export default function About() {
           </section>
 
           <section className="card club" aria-labelledby="club">
-            <img className="club-badge" src={`${import.meta.env.BASE_URL}assets/galo.png`} width={128} height={168} alt={a.clubBadgeAlt} />
+            <img className="club-badge" src={`${import.meta.env.BASE_URL}assets/galo.png`} width={152} height={168} alt={a.clubBadgeAlt} />
             <div className="club-text">
               <p className="eyebrow">{a.clubEyebrow}</p>
               <h2 id="club">{a.clubName}</h2>
