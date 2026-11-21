@@ -104,7 +104,7 @@ export default function Contact() {
   );
 }
 
-/** Cartão de um canal: ícone no estilo de app, o endereço, o botão principal e, quando faz sentido, copiar. */
+/** Linha de um canal: ícone no estilo de app, nome, endereço e a ação; o cartão todo é o link, e copiar fica à direita. */
 function Channel(props: { kind: keyof typeof ICONS; label: string; value: string; copyValue?: string; href: string; action: ReactNode; external?: boolean }) {
   const { t } = useI18n();
   const c = t.contact;
@@ -127,19 +127,32 @@ function Channel(props: { kind: keyof typeof ICONS; label: string; value: string
 
   return (
     <article className={`channel ${props.kind}`}>
-      <span className="app-icon" aria-hidden="true"><Icon path={ICONS[props.kind]} size={30} /></span>
-      <h3>{props.label}</h3>
-      <p className="channel-value">{props.value}</p>
-      <div className="channel-actions">
-        <a href={props.href} {...(props.external && { target: '_blank', rel: 'noreferrer' })}>{props.action}</a>
-        {props.copyValue && (
-          <button type="button" onClick={copy} aria-label={c.copy(props.label)}>
-            {copied ? c.copied : (
-              <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 9h11v11H9zM5 15H4V4h11v1" /></svg>
-            )}
-          </button>
-        )}
+      <span className="app-icon" aria-hidden="true"><Icon path={ICONS[props.kind]} size={24} /></span>
+      <div className="channel-text">
+        <h3>{props.label}</h3>
+        {/* O link cobre o cartão inteiro (::after): tocar em qualquer lugar abre o canal. */}
+        <a className="channel-link" href={props.href} {...(props.external && { target: '_blank', rel: 'noreferrer' })}>
+          <span className="channel-value">
+            {/* Em telas estreitas o endereço só quebra depois do @, nunca no meio de uma palavra. */}
+            {props.value.split('@').map((part, i) => (i === 0 ? part : <span key={i}>@<wbr />{part}</span>))}
+          </span>
+          <span className="channel-hint">{props.action}</span>
+        </a>
       </div>
+      {props.copyValue && (
+        <button type="button" className={`channel-copy${copied ? ' is-copied' : ''}`} onClick={copy} aria-label={c.copy(props.label)}>
+          {copied ? (
+            <><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>{c.copied}</>
+          ) : (
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 9h11v11H9zM5 15H4V4h11v1" /></svg>
+          )}
+        </button>
+      )}
+      {!props.copyValue && (
+        <svg className="channel-arrow" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M8 16L16 8M9 8h7v7" />
+        </svg>
+      )}
       <span className="sr-only" aria-live="polite">{copied ? c.copiedAnnounce(props.label) : ''}</span>
     </article>
   );
