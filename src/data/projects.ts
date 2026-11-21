@@ -55,6 +55,96 @@ const IMG = `${import.meta.env.BASE_URL}assets/projects/`;
 
 export const PROJECTS: Project[] = [
   {
+    slug: "time-machine",
+    title: "Time Machine Keyboard",
+    coverTitle: "Time\nMachine",
+    kind: "App",
+    meta: "Teclado Android · Kotlin",
+    stack: "Kotlin · Jetpack Compose",
+    status: "Em andamento",
+    ongoing: true,
+    bg: "#111113",
+    fg: "#F4F4F6",
+    accent: "#F5B547",
+    page: {
+      eyebrow: "Teclado Android · 2026",
+      lede: "Um teclado que guarda versões do texto enquanto você digita. Apagou um parágrafo ou mudou de ideia? Abra a linha do tempo, compare e restaure, como um controle de versões dentro do teclado.",
+      links: [{ label: "Ver no GitHub", href: GH + "time-machine-keyboard" }],
+      facts: [
+        ["Papel", "Design e desenvolvimento"],
+        ["Linguagem", "Kotlin · Jetpack Compose"],
+        ["Plataforma", "Android 9 ou superior"],
+        ["Status", "Em andamento"],
+      ],
+      highlights: [
+        [
+          "Versões enquanto digita",
+          "Cada pausa vira uma versão. Antes de apagar, de enviar e de restaurar, o teclado guarda o texto na hora.",
+        ],
+        [
+          "Linha do tempo com ramos",
+          "Um trilho no estilo do git: restaurar uma versão antiga e continuar escrevendo cria um ramo, sem apagar o que ficou para trás.",
+        ],
+        [
+          "Restauração segura",
+          "Antes de trocar o texto, o teclado lê o campo inteiro e guarda como versão. Se não conseguir ler tudo, não altera nada.",
+        ],
+        [
+          "Sugestões e emojis",
+          "Três sugestões de palavras que ignoram acento e aprendem com você, e todos os emojis do Unicode, com tons de pele.",
+        ],
+        [
+          "Do jeito que você quiser",
+          "Modos completo, uma mão e polegar, e uma moldura com alças nas bordas para mudar altura, largura e posição ao vivo.",
+        ],
+        [
+          "Privacidade primeiro",
+          "Sem permissão de Internet, sem telemetria e com histórico só na memória. Senhas e campos privados nunca são gravados.",
+        ],
+      ],
+      chapters: [
+        [
+          "O problema",
+          "Todo mundo já apagou sem querer uma mensagem longa, ou reescreveu um parágrafo e se arrependeu. O desfazer dos apps é curto e some quando você troca de tela. A ideia foi levar o controle de versões para o lugar onde todo texto passa: o teclado. A regra mais importante do projeto é não prometer o que não dá para cumprir. O Android nem sempre deixa um teclado ler o campo inteiro, então as versões incompletas ficam marcadas como parciais e nunca substituem o texto.",
+        ],
+        [
+          "Identidade visual",
+          "O âmbar é a cor do tempo, como um momento preservado. Ele aparece só no que tem a ver com o histórico: a versão atual no trilho, o botão Restaurar e o Desfazer. Todo o resto é grafite, com teclas discretas, para o teclado continuar confortável no dia a dia. A tecla de Enviar usa o contraste invertido, e não o âmbar, para a cor manter um só significado. Todas as combinações de texto passam de 4,5:1 de contraste.",
+          [
+            ["Âmbar do tempo", "#F5B547"],
+            ["Fundo", "#111113"],
+            ["Teclas", "#2B2B30"],
+            ["Teclas de função", "#1E1E22"],
+            ["Texto", "#F4F4F6"],
+            ["Texto secundário", "#A6A6AE"],
+          ],
+        ],
+        [
+          "Design",
+          "Segui os princípios das Human Interface Guidelines da Apple, traduzidos para o Android: as ajudas ficam no app e não dentro do teclado, todo gesto tem um botão equivalente, a vibração sempre quer dizer a mesma coisa e o movimento é contido. Tocar numa tecla é instantâneo; só os painéis deslizam e mudam de opacidade, e tudo segue a escala de animação do sistema. O símbolo do produto é o trilho de versões: pontos ligados como um grafo do git, que crescem na faixa enquanto você digita e se abrem na linha do tempo.",
+        ],
+        [
+          "Desenvolvimento",
+          "O teclado é um InputMethodService em Kotlin. As teclas são desenhadas em Canvas, por desempenho e para funcionar com o TalkBack, e os painéis usam Jetpack Compose dentro do teclado. O histórico é um grafo de versões com deduplicação, limite e expiração. A parte mais difícil foi a restauração: o editor do Compose aplica as edições só no quadro seguinte, então o teclado apaga exatamente o texto que leu e confere o resultado de novo logo depois. São 67 testes de lógica e 10 testes com campos de texto reais do Android.",
+        ],
+      ],
+      code: {
+        title: "Nunca apagar o que não leu",
+        file: "RestorationEngine.kt",
+        body: "val current = read(ic)                 // leitura completa ou nada\nvalidate(session, key, target, current)?.let { return Failed(it) }\n\nval before = history.recordBeforeRestore(current)  // dá para desfazer\nic.beginBatchEdit()\nic.deleteSurroundingText(current.selectionStart,\n    current.text.length - current.selectionEnd)\nic.commitText(target.text, 1)\nic.endBatchEdit()\n\nreturn if (confirm(ic, target)) Restored(target, before.id)\n       else Unconfirmed(target, before.id)  // confere de novo em 300 ms",
+      },
+      phones: [
+        ["keyboard", "Sugestões", "Teclado escuro com três sugestões de palavras na faixa: Beijar, Beijo e Beisebol"],
+        ["timeline", "Linha do tempo", "Linha do tempo com um ramo; a prévia mostra riscado o que sai e sublinhado o que volta"],
+        ["restored", "Restaurado", "Texto restaurado no campo e a faixa mostrando Restaurado e Desfazer"],
+        ["emoji", "Emojis", "Painel de emojis com as abas de categoria e os emojis recentes"],
+        ["settings", "Ajustes", "Ajustes rápidos: vibração, som, privado, tema, modos, tamanho, números e mais"],
+        ["resize", "Tamanho", "Moldura de redimensionar com uma alça em cada borda e os botões Redefinir e OK"],
+        ["app", "App", "Tela inicial do app com o trilho de versões e os passos para ativar o teclado"],
+      ].map(([file, caption, alt]) => ({ src: `${IMG}time-machine/${file}.webp`, caption, alt })),
+    },
+  },
+  {
     slug: "verdant",
     title: "Verdant",
     coverTitle: "Verdant",

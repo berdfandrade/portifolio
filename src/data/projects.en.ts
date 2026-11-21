@@ -26,6 +26,61 @@ interface ProjectText {
 }
 
 const EN: Record<string, ProjectText> = {
+  "time-machine": {
+    meta: "Android keyboard · Kotlin",
+    status: "In progress",
+    page: {
+      eyebrow: "Android keyboard · 2026",
+      lede: "A keyboard that keeps versions of your text while you type. Deleted a paragraph or changed your mind? Open the timeline, compare and restore, like version control inside the keyboard.",
+      links: ["View on GitHub"],
+      facts: [
+        ["Role", "Design and development"],
+        ["Language", "Kotlin · Jetpack Compose"],
+        ["Platform", "Android 9 or newer"],
+        ["Status", "In progress"],
+      ],
+      highlights: [
+        ["Versions while you type", "Every pause becomes a version. Before deleting, sending or restoring, the keyboard saves the text right away."],
+        ["A timeline with branches", "A git-style rail: restoring an old version and typing again creates a branch, without deleting what came after."],
+        ["Safe restore", "Before replacing the text, the keyboard reads the whole field and saves it as a version. If it can't read all of it, it changes nothing."],
+        ["Suggestions and emoji", "Three word suggestions that ignore accents and learn from you, and every Unicode emoji, with skin tones."],
+        ["Your way", "Full, one-handed and thumb modes, and a frame with handles on its edges to change height, width and position live."],
+        ["Privacy first", "No Internet permission, no telemetry and a memory-only history. Passwords and private fields are never recorded."],
+      ],
+      chapters: [
+        [
+          "The problem",
+          "Everyone has lost a long message by accident, or rewritten a paragraph and regretted it. Apps' undo is short and disappears when you switch screens. The idea was to bring version control to the place every piece of text goes through: the keyboard. The project's most important rule is to never promise what it can't deliver. Android doesn't always let a keyboard read the whole field, so incomplete versions are marked partial and never replace the text.",
+        ],
+        [
+          "Visual identity",
+          "Amber is the color of time, like a moment preserved. It shows up only in what relates to history: the current version on the rail, the Restore button and Undo. Everything else is graphite, with quiet keys, so the keyboard stays comfortable for everyday typing. The Send key uses inverted contrast instead of amber, so the color keeps a single meaning. Every text pair passes 4.5:1 contrast.",
+          ["Time amber", "Background", "Keys", "Function keys", "Text", "Secondary text"],
+        ],
+        [
+          "Design",
+          "I followed the principles of Apple's Human Interface Guidelines, translated to Android: help lives in the app and not inside the keyboard, every gesture has a button alternative, vibration always means the same thing and motion is restrained. Key presses are instant; only panels slide and fade, and everything follows the system animation scale. The product's symbol is the version rail: dots linked like a git graph that grow in the strip as you type and open into the timeline.",
+        ],
+        [
+          "Development",
+          "The keyboard is an InputMethodService in Kotlin. Keys are drawn on a Canvas, for performance and to work with TalkBack, and the panels use Jetpack Compose inside the keyboard. History is a version graph with deduplication, limits and expiry. The hardest part was restoring: Compose's editor only applies edits on the next frame, so the keyboard deletes exactly the text it read and checks the result again right after. There are 67 logic tests and 10 tests on real Android text fields.",
+        ],
+      ],
+      code: {
+        title: "Never delete what it didn't read",
+        body: "val current = read(ic)                 // a full read or nothing\nvalidate(session, key, target, current)?.let { return Failed(it) }\n\nval before = history.recordBeforeRestore(current)  // undoable\nic.beginBatchEdit()\nic.deleteSurroundingText(current.selectionStart,\n    current.text.length - current.selectionEnd)\nic.commitText(target.text, 1)\nic.endBatchEdit()\n\nreturn if (confirm(ic, target)) Restored(target, before.id)\n       else Unconfirmed(target, before.id)  // checks again after 300 ms",
+      },
+      phones: [
+        { caption: "Suggestions", alt: "Dark keyboard with three word suggestions in the strip" },
+        { caption: "Timeline", alt: "Timeline with a branch; the preview strikes through what goes and underlines what comes back" },
+        { caption: "Restored", alt: "Restored text in the field and the strip showing Restored and Undo" },
+        { caption: "Emoji", alt: "Emoji panel with category tabs and recent emoji" },
+        { caption: "Quick settings", alt: "Quick settings: vibration, sound, private, theme, modes, size, numbers and more" },
+        { caption: "Size", alt: "Resize frame with a handle on each edge and the Reset and OK buttons" },
+        { caption: "App", alt: "The app's home screen with the version rail and the steps to enable the keyboard" },
+      ],
+    },
+  },
   verdant: {
     meta: "App · React Native + NestJS",
     status: "In progress",
