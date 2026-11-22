@@ -1271,6 +1271,8 @@ img { display: block; max-width: 100%; }
 .tm {
   --win-top: 168px; --win-h: 500px; --lift: 40px; --shrink: 0.06;
   position: relative; height: calc(var(--win-top) + var(--win-h) + 92px); border-radius: 28px; overflow: hidden; isolation: isolate;
+  /* Sai da coluna do texto (1120px) e ocupa até 1440px, centralizado. */
+  margin-inline: calc((100% - min(1440px, 100vw - 64px)) / 2);
   background: radial-gradient(120% 90% at 50% 110%, #3A2A6B 0%, #161233 45%, #07060F 100%);
 }
 .tm-space {
@@ -1291,7 +1293,7 @@ img { display: block; max-width: 100%; }
 }
 .tm-stack { position: absolute; inset: 0; perspective: 1400px; }
 .tm-window {
-  position: absolute; left: 50%; top: var(--win-top); width: min(760px, calc(100% - 200px)); height: var(--win-h);
+  position: absolute; left: 50%; top: var(--win-top); width: min(1000px, calc(100% - 300px)); height: var(--win-h);
   display: flex; flex-direction: column; border-radius: 14px; overflow: hidden;
   background: var(--card); color: var(--text);
   box-shadow: 0 0 0 0.5px rgba(0,0,0,0.4), 0 30px 70px -20px rgba(0,0,0,0.7);
@@ -1373,7 +1375,7 @@ img { display: block; max-width: 100%; }
 @media (max-width: 720px) {
   .exp-page { padding: 24px 16px 64px; gap: 20px; }
   .exp-hero .lede { font-size: 17px; }
-  .tm { --win-top: 140px; --win-h: 560px; --lift: 22px; --shrink: 0.05; border-radius: 22px; height: calc(var(--win-top) + var(--win-h) + 84px); }
+  .tm { --win-top: 140px; --win-h: 560px; --lift: 22px; --shrink: 0.05; border-radius: 22px; margin-inline: 0; height: calc(var(--win-top) + var(--win-h) + 84px); }
   .tm-window { width: calc(100% - 24px); }
   .tm-body { padding: 20px 18px 24px; }
   .tm-body h2 { font-size: 24px; }
