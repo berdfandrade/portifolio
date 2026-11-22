@@ -31,6 +31,7 @@ export default function Library() {
           <Link to={to('library')} className="brand">Bernardo</Link>
           <nav className="lib-nav" aria-label={l.nav.label}>
             <Link to={to('library')} aria-current="page">{l.nav.library}</Link>
+            <Link to={to('experience')}>{l.nav.experience}</Link>
             <Link to={to('skills')}>{l.nav.skills}</Link>
             <Link to={to('books')}>{l.nav.books}</Link>
             <Link to={to('about')}>{l.nav.about}</Link>
