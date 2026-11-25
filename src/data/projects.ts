@@ -62,8 +62,8 @@ export const PROJECTS: Project[] = [
     page: {
       eyebrow: "Ferramenta de linha de comando · 2026",
       lede: "Quando peço mil requisições por segundo, quantas chegam a sair da máquina? Fiz o Siegebreaker para medir o próprio gerador de carga enquanto testo uma API local.",
-      links: [{ label: "Ver no GitHub", href: GH + "siegebreaker" }, { label: "Abrir medição", href: GH + "siegebreaker/blob/main/benchmarks/juggernaut-20261121-110229/1000-1.json" }],
-      facts: [["Linguagem", "C11"], ["Plataforma", "Linux 64-bit"], ["Protocolo", "HTTP/1.1 · GET local"]],
+      links: [{ label: "Ver no GitHub", href: GH + "siegebreaker" }],
+      facts: [["Linguagem", "C11"], ["Plataforma", "Linux 64-bit"], ["Protocolo", "HTTP/1.1 · GET local"], ["Tecnologia", "libcurl · epoll"]],
       description: { title: "Como funciona o teste", body: "Escolho um endereço HTTP local, uma taxa de requisições por segundo e a duração do teste. O Siegebreaker agenda os envios nesse ritmo, mesmo enquanto aguarda respostas anteriores. No fim, o relatório em JSON mostra quantas requisições estavam previstas, quantas saíram da máquina e quantas receberam resposta. Se o cliente perdeu um horário de envio ou ficou sem conexão livre, consigo ver isso nos contadores antes de interpretar a latência da API." },
       chapters: [
         ["As 26 requisições que faltaram", "Num ensaio de dez segundos contra o Juggernaut, programei 10.000 requisições. O gerador perdeu 26 horários de envio. As 9.974 requisições que saíram receberam HTTP 200. Ter esses três números no mesmo relatório me permitiu localizar a diferença no cliente. Esse ensaio usou uma versão temporária com token de autenticação."],
@@ -78,8 +78,8 @@ export const PROJECTS: Project[] = [
     page: {
       eyebrow: "Sistemas transacionais · 2026",
       lede: "Uma transferência foi confirmada no banco, mas a resposta se perdeu no caminho. O que acontece quando o cliente tenta de novo? Construí o Juggernaut para estudar essa pergunta com duas contas, dinheiro contado em centavos e um PostgreSQL de verdade.",
-      links: [{ label: "Ver no GitHub", href: GH + "juggernaut" }, { label: "Ler a revisão técnica", href: GH + "juggernaut/blob/main/REVIEW.md" }],
-      facts: [["Linguagem", "Java 21"], ["Banco", "PostgreSQL 16"], ["Testes", "JUnit · Testcontainers"]],
+      links: [{ label: "Ver no GitHub", href: GH + "juggernaut" }],
+      facts: [["Linguagem", "Java 21"], ["Banco", "PostgreSQL 16"], ["Testes", "JUnit · Testcontainers"], ["Tecnologia", "Spring Boot 4.2"]],
       description: { title: "Como uma transferência é confirmada", body: "Cada pedido informa a conta de origem, a conta de destino, o valor em centavos e uma chave que identifica a tentativa. O Juggernaut verifica se a conta de origem pertence a quem fez o pedido e trava as duas contas em uma ordem fixa. Se houver saldo, o PostgreSQL confirma o débito, o crédito e o comprovante na mesma transação. A chave fica associada ao resultado. Se a resposta se perder, o cliente pode repetir o pedido e recuperar o comprovante original." },
       chapters: [
         ["Por que quis estudar transferências", "Escolhi uma transferência porque consigo conferir o resultado à mão. Se tiro 125 centavos de uma conta com 10.000 e mando para outra vazia, espero encontrar 9.875 de um lado e 125 do outro. A parte que eu queria entender começa quando a resposta some. Para quem apertou o botão, parece que nada aconteceu. Para o banco, o dinheiro já mudou de conta. Quis aprender a reconhecer o mesmo pedido depois de uma falha e devolver o primeiro comprovante, mesmo que a conta já tenha recebido outras transferências."],

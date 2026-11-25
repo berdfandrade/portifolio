@@ -32,8 +32,8 @@ const EN: Record<string, ProjectText> = {
     page: {
       eyebrow: "Command-line tool · 2026",
       lede: "When I ask for a thousand requests per second, how many actually leave the machine? I built Siegebreaker to measure the load generator itself while testing a local API.",
-      links: ["View on GitHub", "Open the recorded run"],
-      facts: [["Language", "C11"], ["Platform", "64-bit Linux"], ["Protocol", "HTTP/1.1 · local GET"]],
+      links: ["View on GitHub"],
+      facts: [["Language", "C11"], ["Platform", "64-bit Linux"], ["Protocol", "HTTP/1.1 · local GET"], ["Technology", "libcurl · epoll"]],
       description: { title: "How a test works", body: "I give Siegebreaker a local HTTP endpoint, a request rate and a duration. It schedules requests at that rate even while earlier responses are still pending. The JSON report shows how many requests were scheduled, how many left the machine and how many received a response. Before interpreting the API latency, I can check whether the client missed a scheduled slot or ran out of available connections." },
       chapters: [
         ["The 26 missing requests", "In a ten-second run against Juggernaut, I scheduled 10,000 requests. The generator missed 26 dispatch slots. All 9,974 requests it sent received HTTP 200. Seeing those three counts together let me trace the gap back to the client. This run used a temporary build with bearer-token support."],
@@ -46,8 +46,8 @@ const EN: Record<string, ProjectText> = {
     page: {
       eyebrow: "Transaction processing · 2026",
       lede: "A transfer commits, but the response gets lost. What happens when the client tries again? I built Juggernaut to study that question with two accounts, integer amounts in cents and a real PostgreSQL database.",
-      links: ["View on GitHub", "Read the engineering review"],
-      facts: [["Language", "Java 21"], ["Database", "PostgreSQL 16"], ["Tests", "JUnit · Testcontainers"]],
+      links: ["View on GitHub"],
+      facts: [["Language", "Java 21"], ["Database", "PostgreSQL 16"], ["Tests", "JUnit · Testcontainers"], ["Technology", "Spring Boot 4.2"]],
       description: { title: "How a transfer is confirmed", body: "Each request specifies a source account, a destination account, an amount in cents and a key that identifies the attempt. Juggernaut checks that the caller owns the source account and locks both accounts in a consistent order. If funds are available, PostgreSQL commits the debit, credit and receipt in one transaction. The key stays linked to that outcome. If the response gets lost, the client can repeat the request and retrieve the original receipt." },
       chapters: [
         ["Why I wanted to study transfers", "I chose a transfer because I can check the arithmetic by hand. If I move 125 cents from an account holding 10,000 into an empty one, I expect to find 9,875 on one side and 125 on the other. What interested me was what happens when the response disappears. To the person who pressed the button, nothing seems to have happened. In the database, the money has already moved. I wanted to learn how to recognize the same request after a failure and return its original receipt, even if other transfers have since changed the balance."],
