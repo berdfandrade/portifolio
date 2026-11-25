@@ -22,6 +22,7 @@ export interface Showcase {
 export interface ProjectPage {
   eyebrow: string;
   lede: string;
+  description?: { title: string; body: string };
   links: { label: string; href: string }[];
   facts: [label: string, value: string][];
   showcase?: Showcase;
@@ -63,7 +64,7 @@ export const PROJECTS: Project[] = [
       lede: "Quando peço mil requisições por segundo, quantas chegam a sair da máquina? Fiz o Siegebreaker para medir o próprio gerador de carga enquanto testo uma API local.",
       links: [{ label: "Ver no GitHub", href: GH + "siegebreaker" }, { label: "Abrir medição", href: GH + "siegebreaker/blob/main/benchmarks/juggernaut-20261121-110229/1000-1.json" }],
       facts: [["Linguagem", "C11"], ["Plataforma", "Linux 64-bit"], ["Protocolo", "HTTP/1.1 · GET local"]],
-      showcase: { src: IMG + "siegebreaker/duck.png", alt: "Pato de borracha com um escorredor como capacete e um cronômetro no bico", caption: "O mascote do Siegebreaker." },
+      description: { title: "Como funciona o teste", body: "Escolho um endereço HTTP local, uma taxa de requisições por segundo e a duração do teste. O Siegebreaker agenda os envios nesse ritmo, mesmo enquanto aguarda respostas anteriores. No fim, o relatório em JSON mostra quantas requisições estavam previstas, quantas saíram da máquina e quantas receberam resposta. Se o cliente perdeu um horário de envio ou ficou sem conexão livre, consigo ver isso nos contadores antes de interpretar a latência da API." },
       chapters: [
         ["As 26 requisições que faltaram", "Num ensaio de dez segundos contra o Juggernaut, programei 10.000 requisições. O gerador perdeu 26 horários de envio. As 9.974 requisições que saíram receberam HTTP 200. Ter esses três números no mesmo relatório me permitiu localizar a diferença no cliente. Esse ensaio usou uma versão temporária com token de autenticação."],
         ["De onde começa o cronômetro?", "Cada worker segue um relógio monotônico. O relatório em JSON mede o tempo desde a admissão até a resposta e também desde o instante em que a requisição deveria ter começado. Comparar as duas medidas mostra quanto da espera aconteceu antes do envio."],

@@ -13,6 +13,7 @@ interface ProjectText {
   page?: {
     eyebrow: string;
     lede: string;
+    description?: { title: string; body: string };
     links: string[];
     facts: [label: string, value: string][];
     showcase?: Caption;
@@ -33,7 +34,7 @@ const EN: Record<string, ProjectText> = {
       lede: "When I ask for a thousand requests per second, how many actually leave the machine? I built Siegebreaker to measure the load generator itself while testing a local API.",
       links: ["View on GitHub", "Open the recorded run"],
       facts: [["Language", "C11"], ["Platform", "64-bit Linux"], ["Protocol", "HTTP/1.1 · local GET"]],
-      showcase: { alt: "A rubber duck wearing a colander helmet and holding a stopwatch in its beak", caption: "The Siegebreaker mascot." },
+      description: { title: "How a test works", body: "I give Siegebreaker a local HTTP endpoint, a request rate and a duration. It schedules requests at that rate even while earlier responses are still pending. The JSON report shows how many requests were scheduled, how many left the machine and how many received a response. Before interpreting the API latency, I can check whether the client missed a scheduled slot or ran out of available connections." },
       chapters: [
         ["The 26 missing requests", "In a ten-second run against Juggernaut, I scheduled 10,000 requests. The generator missed 26 dispatch slots. All 9,974 requests it sent received HTTP 200. Seeing those three counts together let me trace the gap back to the client. This run used a temporary build with bearer-token support."],
         ["When does the clock start?", "Each worker follows a monotonic clock. The JSON report measures the time from admission to response and from the moment the request was due. Comparing the two shows how much waiting happened before dispatch."],
@@ -427,6 +428,7 @@ function translate(p: Project): Project {
             ...d,
             eyebrow: e.eyebrow,
             lede: e.lede,
+            description: e.description,
             links: d.links.map((l, i) => ({ ...l, label: e.links[i] ?? l.label })),
             facts: d.facts.map((f, i) => e.facts[i] ?? f),
             showcase: d.showcase && { ...d.showcase, ...e.showcase },
