@@ -13,7 +13,7 @@ interface ProjectText {
   page?: {
     eyebrow: string;
     lede: string;
-    description?: { title: string; body: string };
+    description?: { title: string; paragraphs: string[] };
     links: string[];
     facts: [label: string, value: string][];
     showcase?: Caption;
@@ -34,7 +34,14 @@ const EN: Record<string, ProjectText> = {
       lede: "When I ask for a thousand requests per second, how many actually leave the machine? I built Siegebreaker to measure the load generator itself while testing a local API.",
       links: ["View on GitHub"],
       facts: [["Language", "C11"], ["Platform", "64-bit Linux"], ["Protocol", "HTTP/1.1 · local GET"], ["Technology", "libcurl · epoll"]],
-      description: { title: "How a test works", body: "I give Siegebreaker a local HTTP endpoint, a request rate and a duration. It schedules requests at that rate even while earlier responses are still pending. The JSON report shows how many requests were scheduled, how many left the machine and how many received a response. Before interpreting the API latency, I can check whether the client missed a scheduled slot or ran out of available connections." },
+      description: {
+        title: "How a test works",
+        paragraphs: [
+          "Siegebreaker is a C11 load generator for local HTTP/1.1 GET endpoints on Linux. I specify a target rate, a duration and a connection limit. Requests follow an open-loop schedule driven by a monotonic clock. If the API starts taking longer to respond, the next request still comes due at its original time. That lets me see what happens as requests accumulate.",
+          "Each worker runs its own epoll loop. A timerfd signals when a request is due, and libcurl’s multi interface advances several transfers as their sockets become ready. Each worker has a fixed number of transfer handles. If all are busy, it counts that slot under pool_full. If the worker wakes up several slots late, it counts the skipped slots under missed_schedule and attempts only the latest one. This keeps a scheduling delay from turning into a burst of catch-up traffic.",
+          "To interpret a run, I follow the JSON counters from planned to admitted, emitted and completed. A request counts as emitted when libcurl reports an outgoing request header. For completed responses, each worker records two latency distributions in HDR histograms. One starts at admission and the other at the scheduled dispatch time. A gap between them exposes delay in the generator. I read p99 alongside the timeout and dropped-slot counts because neither contributes a completed response time.",
+        ],
+      },
       chapters: [
         ["The 26 missing requests", "In a ten-second run against Juggernaut, I scheduled 10,000 requests. The generator missed 26 dispatch slots. All 9,974 requests it sent received HTTP 200. Seeing those three counts together let me trace the gap back to the client. This run used a temporary build with bearer-token support."],
         ["When does the clock start?", "Each worker follows a monotonic clock. The JSON report measures the time from admission to response and from the moment the request was due. Comparing the two shows how much waiting happened before dispatch."],
@@ -48,7 +55,14 @@ const EN: Record<string, ProjectText> = {
       lede: "A transfer commits, but the response gets lost. What happens when the client tries again? I built Juggernaut to study that question with two accounts, integer amounts in cents and a real PostgreSQL database.",
       links: ["View on GitHub"],
       facts: [["Language", "Java 21"], ["Database", "PostgreSQL 16"], ["Tests", "JUnit · Testcontainers"], ["Technology", "Spring Boot 4.2"]],
-      description: { title: "How a transfer is confirmed", body: "Each request specifies a source account, a destination account, an amount in cents and a key that identifies the attempt. Juggernaut checks that the caller owns the source account and locks both accounts in a consistent order. If funds are available, PostgreSQL commits the debit, credit and receipt in one transaction. The key stays linked to that outcome. If the response gets lost, the client can repeat the request and retrieve the original receipt." },
+      description: {
+        title: "How a transfer is confirmed",
+        paragraphs: [
+          "Juggernaut processes single-currency transfers in Java 21 and PostgreSQL. The client supplies two account IDs, an integer amount in minor units and an idempotency key. Spring authenticates the caller before the posting service opens a JDBC transaction at READ COMMITTED. For a new request, the service verifies ownership of the source and locks both account rows with SELECT FOR UPDATE in UUID order. Transfers going in opposite directions therefore acquire their locks in the same sequence.",
+          "While holding the locks, the service checks the available balance and whether the destination can represent the result as a signed 64-bit integer. An approved transfer updates both balances and inserts a receipt and an outbox record in the same commit. A ledger view projects the receipt into equal and opposite entries. The integration tests inject a failure at the outbox insert, after the balance updates, then reconcile both accounts to verify that the entire posting rolled back.",
+          "A unique constraint on the caller and request key settles races between retries. If the first response is lost, repeating the same payload returns the stored receipt. Reusing the key with a different amount or account returns HTTP 409. An insufficient-funds decision also persists, so a later deposit cannot silently turn a replay into a new transfer. To keep a busy account from tying up the whole connection pool, a semaphore admits up to eight posting transactions with the default twelve connections.",
+        ],
+      },
       chapters: [
         ["Why I wanted to study transfers", "I chose a transfer because I can check the arithmetic by hand. If I move 125 cents from an account holding 10,000 into an empty one, I expect to find 9,875 on one side and 125 on the other. What interested me was what happens when the response disappears. To the person who pressed the button, nothing seems to have happened. In the database, the money has already moved. I wanted to learn how to recognize the same request after a failure and return its original receipt, even if other transfers have since changed the balance."],
         ["Who gets the last cent?", "I also wanted to see what happens when several operations read the same balance. I set up 240 attempts to withdraw one cent from an account holding 100. I could spell out the expected result: 100 debits, 100 matching credits and a source balance of zero. The service locks both accounts in a consistent order and checks the balance while holding those locks. After the run, I reconcile each balance against its ledger entries."],

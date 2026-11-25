@@ -74,7 +74,7 @@ function ProjectView({ slug }: { slug: string }) {
         {d.description && (
           <section aria-labelledby="description-title">
             <h2 className="section-title" id="description-title">{d.description.title}</h2>
-            <p>{d.description.body}</p>
+            {d.description.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </section>
         )}
 

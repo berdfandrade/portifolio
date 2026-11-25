@@ -22,7 +22,7 @@ export interface Showcase {
 export interface ProjectPage {
   eyebrow: string;
   lede: string;
-  description?: { title: string; body: string };
+  description?: { title: string; paragraphs: string[] };
   links: { label: string; href: string }[];
   facts: [label: string, value: string][];
   showcase?: Showcase;
@@ -64,7 +64,14 @@ export const PROJECTS: Project[] = [
       lede: "Quando peço mil requisições por segundo, quantas chegam a sair da máquina? Fiz o Siegebreaker para medir o próprio gerador de carga enquanto testo uma API local.",
       links: [{ label: "Ver no GitHub", href: GH + "siegebreaker" }],
       facts: [["Linguagem", "C11"], ["Plataforma", "Linux 64-bit"], ["Protocolo", "HTTP/1.1 · GET local"], ["Tecnologia", "libcurl · epoll"]],
-      description: { title: "Como funciona o teste", body: "Escolho um endereço HTTP local, uma taxa de requisições por segundo e a duração do teste. O Siegebreaker agenda os envios nesse ritmo, mesmo enquanto aguarda respostas anteriores. No fim, o relatório em JSON mostra quantas requisições estavam previstas, quantas saíram da máquina e quantas receberam resposta. Se o cliente perdeu um horário de envio ou ficou sem conexão livre, consigo ver isso nos contadores antes de interpretar a latência da API." },
+      description: {
+        title: "Como funciona o teste",
+        paragraphs: [
+          "O Siegebreaker é um gerador de carga em C11 para testar endpoints GET em HTTP/1.1 na própria máquina Linux. Escolho a taxa de envio, a duração e o limite de conexões. Um relógio monotônico determina quando cada requisição deve começar. Se a API passa a demorar mais para responder, a próxima requisição continua prevista para o horário original. Assim consigo observar o que acontece à medida que os pedidos se acumulam.",
+          "Cada worker tem seu próprio laço de eventos com epoll. Um timerfd sinaliza a hora do próximo envio, e a interface multi da libcurl conduz várias transferências conforme os sockets ficam prontos. O número de transferências simultâneas por worker é fixo. Se todas as vagas estão ocupadas, o contador pool_full registra a oportunidade perdida. Se o worker acorda com vários envios atrasados, registra os horários pulados em missed_schedule e tenta apenas o mais recente. Isso evita que um atraso do gerador vire uma rajada de requisições.",
+          "Para interpretar um ensaio, acompanho no JSON os contadores planned, admitted, emitted e completed. Uma requisição entra em emitted quando a libcurl informa a saída do cabeçalho HTTP. Para cada resposta concluída, o worker registra duas latências em histogramas HDR. Uma começa na admissão e a outra no horário previsto de envio. A diferença revela a espera dentro do gerador. Leio o p99 junto com os timeouts e os envios perdidos, porque esses casos não entram no histograma das respostas concluídas.",
+        ],
+      },
       chapters: [
         ["As 26 requisições que faltaram", "Num ensaio de dez segundos contra o Juggernaut, programei 10.000 requisições. O gerador perdeu 26 horários de envio. As 9.974 requisições que saíram receberam HTTP 200. Ter esses três números no mesmo relatório me permitiu localizar a diferença no cliente. Esse ensaio usou uma versão temporária com token de autenticação."],
         ["De onde começa o cronômetro?", "Cada worker segue um relógio monotônico. O relatório em JSON mede o tempo desde a admissão até a resposta e também desde o instante em que a requisição deveria ter começado. Comparar as duas medidas mostra quanto da espera aconteceu antes do envio."],
@@ -80,7 +87,14 @@ export const PROJECTS: Project[] = [
       lede: "Uma transferência foi confirmada no banco, mas a resposta se perdeu no caminho. O que acontece quando o cliente tenta de novo? Construí o Juggernaut para estudar essa pergunta com duas contas, dinheiro contado em centavos e um PostgreSQL de verdade.",
       links: [{ label: "Ver no GitHub", href: GH + "juggernaut" }],
       facts: [["Linguagem", "Java 21"], ["Banco", "PostgreSQL 16"], ["Testes", "JUnit · Testcontainers"], ["Tecnologia", "Spring Boot 4.2"]],
-      description: { title: "Como uma transferência é confirmada", body: "Cada pedido informa a conta de origem, a conta de destino, o valor em centavos e uma chave que identifica a tentativa. O Juggernaut verifica se a conta de origem pertence a quem fez o pedido e trava as duas contas em uma ordem fixa. Se houver saldo, o PostgreSQL confirma o débito, o crédito e o comprovante na mesma transação. A chave fica associada ao resultado. Se a resposta se perder, o cliente pode repetir o pedido e recuperar o comprovante original." },
+      description: {
+        title: "Como uma transferência é confirmada",
+        paragraphs: [
+          "O Juggernaut processa transferências de uma única moeda em Java 21 e PostgreSQL. O cliente informa as duas contas, o valor inteiro em unidades mínimas da moeda e uma chave de idempotência. O Spring autentica o cliente antes de o serviço abrir uma transação JDBC com isolamento READ COMMITTED. Para um pedido novo, o serviço verifica a titularidade da origem e trava as duas linhas com SELECT FOR UPDATE em ordem de UUID. Assim, até transferências em sentidos opostos adquirem os bloqueios na mesma sequência.",
+          "Com as contas travadas, o serviço confere o saldo disponível e verifica se o crédito cabe em um inteiro de 64 bits com sinal. Se aprovar a operação, atualiza os dois saldos e grava o comprovante e um registro na outbox no mesmo commit. Uma view contábil transforma o comprovante em duas partidas de mesmo valor e sinais opostos. Nos testes de integração, provoco uma falha na gravação da outbox, quando os saldos já foram atualizados dentro da transação. Depois reconcilio as contas para conferir se o rollback desfez o lançamento inteiro.",
+          "Uma restrição de unicidade sobre o cliente e a chave resolve a disputa quando duas tentativas chegam juntas. Se a primeira resposta se perder, repetir o pedido devolve o comprovante já gravado. Trocar o valor ou uma das contas e manter a chave resulta em HTTP 409. A recusa por saldo insuficiente também fica registrada, então um depósito posterior não transforma uma repetição em nova transferência. Para que a disputa por uma conta não ocupe todo o pool, um semáforo admite até oito transações de lançamento entre as doze conexões da configuração padrão.",
+        ],
+      },
       chapters: [
         ["Por que quis estudar transferências", "Escolhi uma transferência porque consigo conferir o resultado à mão. Se tiro 125 centavos de uma conta com 10.000 e mando para outra vazia, espero encontrar 9.875 de um lado e 125 do outro. A parte que eu queria entender começa quando a resposta some. Para quem apertou o botão, parece que nada aconteceu. Para o banco, o dinheiro já mudou de conta. Quis aprender a reconhecer o mesmo pedido depois de uma falha e devolver o primeiro comprovante, mesmo que a conta já tenha recebido outras transferências."],
         ["Quem fica com o último centavo?", "Também queria ver o que acontece quando várias operações leem o mesmo saldo. Montei um teste com 240 tentativas de sacar um centavo de uma conta com saldo de 100. O resultado esperado é bem concreto: 100 débitos, 100 créditos correspondentes e saldo zero na origem. Para chegar lá, o serviço trava as duas contas sempre na mesma ordem e confere o saldo enquanto mantém esses locks. Depois do teste, confiro se cada saldo fecha com os lançamentos."],
