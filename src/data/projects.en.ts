@@ -26,6 +26,35 @@ interface ProjectText {
 }
 
 const EN: Record<string, ProjectText> = {
+  siegebreaker: {
+    meta: "HTTP load testing · Linux", status: "Published",
+    page: {
+      eyebrow: "Command-line tool · 2026",
+      lede: "When I ask for a thousand requests per second, how many actually leave the machine? I built Siegebreaker to measure the load generator itself while testing a local API.",
+      links: ["View on GitHub", "Open the recorded run"],
+      facts: [["Language", "C11"], ["Platform", "64-bit Linux"], ["Protocol", "HTTP/1.1 · local GET"]],
+      showcase: { alt: "A rubber duck wearing a colander helmet and holding a stopwatch in its beak", caption: "The Siegebreaker mascot." },
+      chapters: [
+        ["The 26 missing requests", "In a ten-second run against Juggernaut, I scheduled 10,000 requests. The generator missed 26 dispatch slots. All 9,974 requests it sent received HTTP 200. Seeing those three counts together let me trace the gap back to the client. This run used a temporary build with bearer-token support."],
+        ["When does the clock start?", "Each worker follows a monotonic clock. The JSON report measures the time from admission to response and from the moment the request was due. Comparing the two shows how much waiting happened before dispatch."],
+      ],
+    },
+  },
+  juggernaut: {
+    meta: "Transfer engine · Java", status: "Financial core published",
+    page: {
+      eyebrow: "Transaction processing · 2026",
+      lede: "A transfer commits, but the response gets lost. What happens when the client tries again? I built Juggernaut to study that question with two accounts, integer amounts in cents and a real PostgreSQL database.",
+      links: ["View on GitHub", "Read the engineering review"],
+      facts: [["Language", "Java 21"], ["Database", "PostgreSQL 16"], ["Tests", "JUnit · Testcontainers"]],
+      showcase: { alt: "Letter J formed by two orange bands", caption: "The two bands represent the debit and credit of a single transfer." },
+      chapters: [
+        ["Why I wanted to study transfers", "I chose a transfer because I can check the arithmetic by hand. If I move 125 cents from an account holding 10,000 into an empty one, I expect to find 9,875 on one side and 125 on the other. What interested me was what happens when the response disappears. To the person who pressed the button, nothing seems to have happened. In the database, the money has already moved. I wanted to learn how to recognize the same request after a failure and return its original receipt, even if other transfers have since changed the balance."],
+        ["Who gets the last cent?", "I also wanted to see what happens when several operations read the same balance. I set up 240 attempts to withdraw one cent from an account holding 100. I could spell out the expected result: 100 debits, 100 matching credits and a source balance of zero. The service locks both accounts in a consistent order and checks the balance while holding those locks. After the run, I reconcile each balance against its ledger entries."],
+        ["What the first version missed", "During review, an attempt to transfer 101 from an account holding 100 exposed a detail I had missed. Rolling back the operation also erased the key that identified the request. A second attempt to transfer just 1 went through using that same key. The fix was to keep a record of the decline without posting a debit or a credit. That case is now a test I can rerun whenever the posting logic changes."],
+      ],
+    },
+  },
   "time-machine": {
     meta: "Android keyboard · Kotlin",
     status: "In progress",

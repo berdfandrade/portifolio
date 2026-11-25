@@ -55,6 +55,39 @@ const IMG = `${import.meta.env.BASE_URL}assets/projects/`;
 
 export const PROJECTS: Project[] = [
   {
+    slug: "siegebreaker", title: "Siegebreaker", coverTitle: "Siege\nbreaker", kind: "Sistemas",
+    meta: "Teste de carga HTTP · Linux", stack: "C11 · libcurl · epoll", status: "Publicado",
+    bg: "#302618", fg: "#FFF0CC", accent: "#E8AF45",
+    page: {
+      eyebrow: "Ferramenta de linha de comando · 2026",
+      lede: "Quando peço mil requisições por segundo, quantas chegam a sair da máquina? Fiz o Siegebreaker para medir o próprio gerador de carga enquanto testo uma API local.",
+      links: [{ label: "Ver no GitHub", href: GH + "siegebreaker" }, { label: "Abrir medição", href: GH + "siegebreaker/blob/main/benchmarks/juggernaut-20261121-110229/1000-1.json" }],
+      facts: [["Linguagem", "C11"], ["Plataforma", "Linux 64-bit"], ["Protocolo", "HTTP/1.1 · GET local"]],
+      showcase: { src: IMG + "siegebreaker/duck.png", alt: "Pato de borracha com um escorredor como capacete e um cronômetro no bico", caption: "O mascote do Siegebreaker." },
+      chapters: [
+        ["As 26 requisições que faltaram", "Num ensaio de dez segundos contra o Juggernaut, programei 10.000 requisições. O gerador perdeu 26 horários de envio. As 9.974 requisições que saíram receberam HTTP 200. Ter esses três números no mesmo relatório me permitiu localizar a diferença no cliente. Esse ensaio usou uma versão temporária com token de autenticação."],
+        ["De onde começa o cronômetro?", "Cada worker segue um relógio monotônico. O relatório em JSON mede o tempo desde a admissão até a resposta e também desde o instante em que a requisição deveria ter começado. Comparar as duas medidas mostra quanto da espera aconteceu antes do envio."],
+      ],
+    },
+  },
+  {
+    slug: "juggernaut", title: "Juggernaut", coverTitle: "Juggernaut", kind: "Sistemas",
+    meta: "Motor de transferências · Java", stack: "Java 21 · Spring Boot · PostgreSQL", status: "Núcleo publicado",
+    bg: "#3E201A", fg: "#FFF1E8", accent: "#F08058",
+    page: {
+      eyebrow: "Sistemas transacionais · 2026",
+      lede: "Uma transferência foi confirmada no banco, mas a resposta se perdeu no caminho. O que acontece quando o cliente tenta de novo? Construí o Juggernaut para estudar essa pergunta com duas contas, dinheiro contado em centavos e um PostgreSQL de verdade.",
+      links: [{ label: "Ver no GitHub", href: GH + "juggernaut" }, { label: "Ler a revisão técnica", href: GH + "juggernaut/blob/main/REVIEW.md" }],
+      facts: [["Linguagem", "Java 21"], ["Banco", "PostgreSQL 16"], ["Testes", "JUnit · Testcontainers"]],
+      showcase: { src: IMG + "juggernaut/logo.png", alt: "Letra J desenhada com duas faixas laranjas", caption: "As duas faixas do J representam o débito e o crédito da mesma transferência." },
+      chapters: [
+        ["Por que quis estudar transferências", "Escolhi uma transferência porque consigo conferir o resultado à mão. Se tiro 125 centavos de uma conta com 10.000 e mando para outra vazia, espero encontrar 9.875 de um lado e 125 do outro. A parte que eu queria entender começa quando a resposta some. Para quem apertou o botão, parece que nada aconteceu. Para o banco, o dinheiro já mudou de conta. Quis aprender a reconhecer o mesmo pedido depois de uma falha e devolver o primeiro comprovante, mesmo que a conta já tenha recebido outras transferências."],
+        ["Quem fica com o último centavo?", "Também queria ver o que acontece quando várias operações leem o mesmo saldo. Montei um teste com 240 tentativas de sacar um centavo de uma conta com saldo de 100. O resultado esperado é bem concreto: 100 débitos, 100 créditos correspondentes e saldo zero na origem. Para chegar lá, o serviço trava as duas contas sempre na mesma ordem e confere o saldo enquanto mantém esses locks. Depois do teste, confiro se cada saldo fecha com os lançamentos."],
+        ["O que a primeira versão deixou passar", "Na revisão, uma tentativa de transferir 101 com saldo de 100 revelou um detalhe que eu tinha perdido. O banco desfez a operação e apagou junto a chave que identificava o pedido. Com a mesma chave, uma segunda tentativa de transferir apenas 1 passou. A correção foi guardar a decisão de recusa, sem lançar débito nem crédito. Esse caso virou um teste que posso repetir sempre que mudar o fluxo."],
+      ],
+    },
+  },
+  {
     slug: "time-machine",
     title: "Time Machine Keyboard",
     coverTitle: "Time\nMachine",
