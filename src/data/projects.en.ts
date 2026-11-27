@@ -13,7 +13,6 @@ interface ProjectText {
   page?: {
     eyebrow: string;
     lede: string;
-    description?: { title: string; paragraphs: string[] };
     links: string[];
     facts: [label: string, value: string][];
     showcase?: Caption;
@@ -27,47 +26,72 @@ interface ProjectText {
 }
 
 const EN: Record<string, ProjectText> = {
-  siegebreaker: {
-    meta: "HTTP load testing · Linux", status: "Published",
+  mach: {
+    meta: "API framework · Rust", status: "Open source",
     page: {
-      eyebrow: "Command-line tool · 2026",
-      lede: "When I ask for a thousand requests per second, how many actually leave the machine? I built Siegebreaker to measure the load generator itself while testing a local API.",
+      eyebrow: "Backend framework · 2026",
+      lede: "A Rust framework that turns an entity declaration into an API, SQL and reviewable migrations, with a CLI built for people and coding agents.",
       links: ["View on GitHub"],
-      facts: [["Language", "C11"], ["Platform", "64-bit Linux"], ["Protocol", "HTTP/1.1 · local GET"], ["Technology", "libcurl · epoll"]],
-      description: {
-        title: "How a test works",
-        paragraphs: [
-          "Siegebreaker is a C11 load generator for local HTTP/1.1 GET endpoints on Linux. I specify a target rate, a duration and a connection limit. Requests follow an open-loop schedule driven by a monotonic clock. If the API starts taking longer to respond, the next request still comes due at its original time. That lets me see what happens as requests accumulate.",
-          "Each worker runs its own epoll loop. A timerfd signals when a request is due, and libcurl’s multi interface advances several transfers as their sockets become ready. Each worker has a fixed number of transfer handles. If all are busy, it counts that slot under pool_full. If the worker wakes up several slots late, it counts the skipped slots under missed_schedule and attempts only the latest one. This keeps a scheduling delay from turning into a burst of catch-up traffic.",
-          "To interpret a run, I follow the JSON counters from planned to admitted, emitted and completed. A request counts as emitted when libcurl reports an outgoing request header. For completed responses, each worker records two latency distributions in HDR histograms. One starts at admission and the other at the scheduled dispatch time. A gap between them exposes delay in the generator. I read p99 alongside the timeout and dropped-slot counts because neither contributes a completed response time.",
-        ],
-      },
-      chapters: [
-        ["The 26 missing requests", "In a ten-second run against Juggernaut, I scheduled 10,000 requests. The generator missed 26 dispatch slots. All 9,974 requests it sent received HTTP 200. Seeing those three counts together let me trace the gap back to the client. This run used a temporary build with bearer-token support."],
-        ["When does the clock start?", "Each worker follows a monotonic clock. The JSON report measures the time from admission to response and from the moment the request was due. Comparing the two shows how much waiting happened before dispatch."],
+      facts: [["Role", "Design and development"], ["Language", "Rust · Axum · SQLx"], ["Database", "PostgreSQL"], ["Status", "Open source"]],
+      highlights: [
+        ["Declarative model", "The entity states which fields clients may write and which appear in responses. The generated CRUD follows those rules."],
+        ["Reviewable migrations", "The CLI compares the model with the history and writes numbered SQL. Renaming a field keeps the column's data."],
+        ["Preview before editing", "With --dry-run, every change shows which declarations, queries and HTTP contracts it affects before touching code."],
+        ["Record ownership", "With #[owner], the server sets the author and the SQL filters writes by it. Editing someone else's record returns 404."],
+        ["Edits that roll back", "Every CLI change goes through a journal and a compile check. If anything fails, the files return to their previous state."],
+        ["Built for agents", "The CLI returns a project summary and diagnostics as JSON. An agent can work without guessing the architecture."],
       ],
+      chapters: [
+        ["Why another framework", "Axum handles HTTP and SQLx runs parameterized queries. What remains is keeping the model, the HTTP contract, the queries and the database aligned as things change. Renaming a field looks simple, but it is three problems: the compiler finds the old name in Rust, the column already holds data, and clients may depend on the name in the JSON. MACH turns those recurring decisions into commands I can review before applying."],
+        ["I tested it by building a chat", "To see whether the idea held up beyond CRUD, I generated a chat with WebSocket, sign-up, login and history. It worked, but the test exposed gaps: the generated CRUD let the client choose a message's author, access control did not return who was signed in, and there was no date type. Those gaps became #[owner], Principal and Timestamp. With them, the rebuilt chat uses the generated controller."],
+        ["What stays out", "WebSocket and full authentication stay with Axum. MACH pays off when many resources repeat the same persistence, validation and HTTP exposure decisions. When every operation has very particular rules, generation helps less and the framework steps aside."],
+      ],
+      code: { title: "From model to SQL" },
+    },
+  },
+  siegebreaker: {
+    meta: "HTTP load testing · Linux", status: "Open source",
+    page: {
+      eyebrow: "Load testing · 2026",
+      lede: "A C11 HTTP load generator that measures the client itself: how much traffic was planned, how much left the machine and how much came back.",
+      links: ["View on GitHub"],
+      facts: [["Role", "Design and development"], ["Language", "C11 · libcurl"], ["Architecture", "epoll · timerfd · HdrHistogram"], ["Status", "Open source"]],
+      highlights: [
+        ["Constant rate", "Requests follow a monotonic clock. If the API slows down, the next request is still due at its original time."],
+        ["Counts what was lost", "When a worker wakes up late or runs out of free connections, the lost slot is counted as missed_schedule or pool_full."],
+        ["No bursts", "A late worker attempts only its most recent slot instead of firing everything it fell behind on at once."],
+        ["Two latencies", "Each response is timed from admission and from its scheduled time. The gap shows waiting inside the generator."],
+        ["One loop per worker", "Each worker has its own epoll, timerfd, fixed pool of transfers and histograms, merged at the end."],
+        ["JSON report", "planned, admitted, emitted and completed show the stage where each request stopped."],
+      ],
+      chapters: [
+        ["Why measure the generator", "If I ask for 1,000 requests per second and see 997 responses per second, where did the other three go? The question came up while I was testing Juggernaut. Without separating what the client planned from what it actually sent, the API's p99 is impossible to interpret."],
+        ["What it does not do yet", "The current release implements Barrage mode, with HTTP/1.1 GET on the local machine. HTTPS, scenario files, adaptive capacity search and long stability runs are planned for later releases."],
+      ],
+      code: { title: "The 26 missing requests" },
     },
   },
   juggernaut: {
-    meta: "Transfer engine · Java", status: "Financial core published",
+    meta: "Transfer engine · Java", status: "Open source",
     page: {
       eyebrow: "Transaction processing · 2026",
-      lede: "A transfer commits, but the response gets lost. What happens when the client tries again? I built Juggernaut to study that question with two accounts, integer amounts in cents and a real PostgreSQL database.",
+      lede: "A Java and PostgreSQL transfer engine that moves money exactly once, even when the response is lost and the client tries again.",
       links: ["View on GitHub"],
-      facts: [["Language", "Java 21"], ["Database", "PostgreSQL 16"], ["Tests", "JUnit · Testcontainers"], ["Technology", "Spring Boot 4.2"]],
-      description: {
-        title: "How a transfer is confirmed",
-        paragraphs: [
-          "Juggernaut processes single-currency transfers in Java 21 and PostgreSQL. The client supplies two account IDs, an integer amount in minor units and an idempotency key. Spring authenticates the caller before the posting service opens a JDBC transaction at READ COMMITTED. For a new request, the service verifies ownership of the source and locks both account rows with SELECT FOR UPDATE in UUID order. Transfers going in opposite directions therefore acquire their locks in the same sequence.",
-          "While holding the locks, the service checks the available balance and whether the destination can represent the result as a signed 64-bit integer. An approved transfer updates both balances and inserts a receipt and an outbox record in the same commit. A ledger view projects the receipt into equal and opposite entries. The integration tests inject a failure at the outbox insert, after the balance updates, then reconcile both accounts to verify that the entire posting rolled back.",
-          "A unique constraint on the caller and request key settles races between retries. If the first response is lost, repeating the same payload returns the stored receipt. Reusing the key with a different amount or account returns HTTP 409. An insufficient-funds decision also persists, so a later deposit cannot silently turn a replay into a new transfer. To keep a busy account from tying up the whole connection pool, a semaphore admits up to eight posting transactions with the default twelve connections.",
-        ],
-      },
-      chapters: [
-        ["Why I wanted to study transfers", "I chose a transfer because I can check the arithmetic by hand. If I move 125 cents from an account holding 10,000 into an empty one, I expect to find 9,875 on one side and 125 on the other. What interested me was what happens when the response disappears. To the person who pressed the button, nothing seems to have happened. In the database, the money has already moved. I wanted to learn how to recognize the same request after a failure and return its original receipt, even if other transfers have since changed the balance."],
-        ["Who gets the last cent?", "I also wanted to see what happens when several operations read the same balance. I set up 240 attempts to withdraw one cent from an account holding 100. I could spell out the expected result: 100 debits, 100 matching credits and a source balance of zero. The service locks both accounts in a consistent order and checks the balance while holding those locks. After the run, I reconcile each balance against its ledger entries."],
-        ["What the first version missed", "During review, an attempt to transfer 101 from an account holding 100 exposed a detail I had missed. Rolling back the operation also erased the key that identified the request. A second attempt to transfer just 1 went through using that same key. The fix was to keep a record of the decline without posting a debit or a credit. That case is now a test I can rerun whenever the posting logic changes."],
+      facts: [["Role", "Design and development"], ["Language", "Java 21 · Spring Boot 4.2"], ["Data", "PostgreSQL 16 · Testcontainers"], ["Status", "Open source"]],
+      highlights: [
+        ["Exactly once", "Repeating a request with the same idempotency key returns the original receipt. The money never moves twice."],
+        ["Books that balance", "Amounts are integers in cents. A single commit updates both balances and writes the receipt and the outbox row."],
+        ["Ordered locks", "Both accounts are always locked in UUID order, so transfers in opposite directions never block each other."],
+        ["Recorded declines", "An insufficient-funds decline is stored. A later deposit cannot turn the retry into a new transfer."],
+        ["Keys with owners", "Keys are scoped to the authenticated client. Changing the amount or accounts under the same key returns HTTP 409."],
+        ["Protected pool", "A semaphore admits up to eight postings across twelve connections, leaving room for reads and authentication."],
       ],
+      chapters: [
+        ["Why I wanted to study transfers", "I chose a transfer because I can check the arithmetic by hand. If I move 125 cents from an account holding 10,000 into an empty one, I expect 9,875 on one side and 125 on the other. The hard part starts when the response disappears: to the person who pressed the button nothing happened, but in the database the money has already moved."],
+        ["Who gets the last cent?", "I set up 240 attempts to withdraw one cent from an account holding 100. The expected result is concrete: 100 debits, 100 credits and a source balance of zero. After the run, I reconcile each balance against its ledger entries."],
+        ["What the first version missed", "During review, an attempt to transfer 101 from an account holding 100 exposed a detail. The rollback also erased the request's key, and a second attempt to transfer just 1 went through with the same key. The fix was to keep the decline without posting a debit or a credit. That case became a test."],
+      ],
+      code: { title: "How a repeated transfer is recognized", file: "flow", body: " Client                     Juggernaut                         PostgreSQL\n \u2500\u2500\u2500\u2500\u2500\u2500                     \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500                         \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n POST /api/transfers \u2500\u2500\u2500\u2500\u2500\u25ba 1. Authenticate and read the key\n Idempotency-Key: K         2. Does key K have a decision? \u2500\u2500 yes \u2500\u25ba return the receipt\n                            3. SELECT \u2026 FOR UPDATE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25ba lock both accounts\n                                                                   (always in UUID order)\n                            4. Check the balance under the locks\n                            5. One commit \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25ba balances + receipt + outbox\n        \u25c4\u2500\u2500 receipt \u2500\u2500\u2500\u2500\u2500\u2500\u2500 6. Respond\n (the response is lost)\n POST again with K \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25ba 2. yes \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25ba same receipt,\n                                                                   no new debit" },
     },
   },
   "time-machine": {
@@ -442,7 +466,6 @@ function translate(p: Project): Project {
             ...d,
             eyebrow: e.eyebrow,
             lede: e.lede,
-            description: e.description,
             links: d.links.map((l, i) => ({ ...l, label: e.links[i] ?? l.label })),
             facts: d.facts.map((f, i) => e.facts[i] ?? f),
             showcase: d.showcase && { ...d.showcase, ...e.showcase },

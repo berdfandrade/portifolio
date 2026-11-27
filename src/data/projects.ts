@@ -22,7 +22,6 @@ export interface Showcase {
 export interface ProjectPage {
   eyebrow: string;
   lede: string;
-  description?: { title: string; paragraphs: string[] };
   links: { label: string; href: string }[];
   facts: [label: string, value: string][];
   showcase?: Showcase;
@@ -56,50 +55,89 @@ const IMG = `${import.meta.env.BASE_URL}assets/projects/`;
 
 export const PROJECTS: Project[] = [
   {
-    slug: "siegebreaker", title: "Siegebreaker", coverTitle: "Siege\nbreaker", kind: "Sistemas",
-    meta: "Teste de carga HTTP · Linux", stack: "C11 · libcurl · epoll", status: "Publicado",
-    bg: "#302618", fg: "#FFF0CC", accent: "#E8AF45",
+    slug: "mach", title: "MACH", coverTitle: "MACH", kind: "Sistemas",
+    meta: "Framework de APIs · Rust", stack: "Rust · Axum · SQLx · PostgreSQL", status: "Código aberto",
+    bg: "#E4572E", fg: "#1F2328", accent: "#1F2328",
     page: {
-      eyebrow: "Ferramenta de linha de comando · 2026",
-      lede: "Quando peço mil requisições por segundo, quantas chegam a sair da máquina? Fiz o Siegebreaker para medir o próprio gerador de carga enquanto testo uma API local.",
-      links: [{ label: "Ver no GitHub", href: GH + "siegebreaker" }],
-      facts: [["Linguagem", "C11"], ["Plataforma", "Linux 64-bit"], ["Protocolo", "HTTP/1.1 · GET local"], ["Tecnologia", "libcurl · epoll"]],
-      description: {
-        title: "Como funciona o teste",
-        paragraphs: [
-          "O Siegebreaker é um gerador de carga em C11 para testar endpoints GET em HTTP/1.1 na própria máquina Linux. Escolho a taxa de envio, a duração e o limite de conexões. Um relógio monotônico determina quando cada requisição deve começar. Se a API passa a demorar mais para responder, a próxima requisição continua prevista para o horário original. Assim consigo observar o que acontece à medida que os pedidos se acumulam.",
-          "Cada worker tem seu próprio laço de eventos com epoll. Um timerfd sinaliza a hora do próximo envio, e a interface multi da libcurl conduz várias transferências conforme os sockets ficam prontos. O número de transferências simultâneas por worker é fixo. Se todas as vagas estão ocupadas, o contador pool_full registra a oportunidade perdida. Se o worker acorda com vários envios atrasados, registra os horários pulados em missed_schedule e tenta apenas o mais recente. Isso evita que um atraso do gerador vire uma rajada de requisições.",
-          "Para interpretar um ensaio, acompanho no JSON os contadores planned, admitted, emitted e completed. Uma requisição entra em emitted quando a libcurl informa a saída do cabeçalho HTTP. Para cada resposta concluída, o worker registra duas latências em histogramas HDR. Uma começa na admissão e a outra no horário previsto de envio. A diferença revela a espera dentro do gerador. Leio o p99 junto com os timeouts e os envios perdidos, porque esses casos não entram no histograma das respostas concluídas.",
-        ],
-      },
-      chapters: [
-        ["As 26 requisições que faltaram", "Num ensaio de dez segundos contra o Juggernaut, programei 10.000 requisições. O gerador perdeu 26 horários de envio. As 9.974 requisições que saíram receberam HTTP 200. Ter esses três números no mesmo relatório me permitiu localizar a diferença no cliente. Esse ensaio usou uma versão temporária com token de autenticação."],
-        ["De onde começa o cronômetro?", "Cada worker segue um relógio monotônico. O relatório em JSON mede o tempo desde a admissão até a resposta e também desde o instante em que a requisição deveria ter começado. Comparar as duas medidas mostra quanto da espera aconteceu antes do envio."],
+      eyebrow: "Framework de backend · 2026",
+      lede: "Um framework em Rust que transforma a declaração de uma entidade em API, SQL e migrações revisáveis, com uma CLI feita para pessoas e agentes de programação.",
+      links: [{ label: "Ver no GitHub", href: GH + "mach" }],
+      facts: [["Papel", "Design e desenvolvimento"], ["Linguagem", "Rust · Axum · SQLx"], ["Banco", "PostgreSQL"], ["Status", "Código aberto"]],
+      highlights: [
+        ["Modelo declarativo", "A entidade diz quais campos o cliente pode gravar e quais aparecem na resposta. O CRUD gerado segue essas regras."],
+        ["Migrações revisáveis", "A CLI compara o modelo com o histórico e gera SQL numerado. Renomear um campo preserva os dados da coluna."],
+        ["Prévia antes de editar", "Com --dry-run, cada mudança mostra quais declarações, consultas e contratos HTTP vai afetar antes de tocar no código."],
+        ["Dono do registro", "Com #[owner], o servidor define o autor e o SQL filtra as escritas por ele. Editar o registro de outra pessoa resulta em 404."],
+        ["Edições que voltam atrás", "Toda alteração da CLI passa por um diário e pela compilação. Se algo falha, os arquivos voltam ao estado anterior."],
+        ["Feito para agentes", "A CLI entrega um resumo do projeto e diagnósticos em JSON. Um agente trabalha sem precisar inferir a arquitetura."],
       ],
+      chapters: [
+        ["Por que mais um framework", "O Axum resolve o HTTP e o SQLx executa consultas parametrizadas. O que sobra é manter o modelo, o contrato HTTP, as consultas e o banco alinhados quando algo muda. Renomear um campo parece simples, mas são três problemas: o compilador acha o nome antigo no Rust, a coluna já guarda dados e os clientes podem depender do nome no JSON. O MACH transforma essas decisões recorrentes em comandos que posso revisar antes de aplicar."],
+        ["Testei construindo um chat", "Para ver se a ideia se sustentava fora do CRUD, gerei um chat com WebSocket, cadastro, login e histórico. Funcionou, mas o teste mostrou lacunas: o CRUD gerado deixava o cliente escolher o autor da mensagem, o controle de acesso não devolvia quem estava logado e faltava um tipo de data. Essas lacunas viraram o #[owner], o Principal e o Timestamp. Com eles, o chat refeito passou a usar o controlador gerado."],
+        ["O que fica de fora", "WebSocket e autenticação completa continuam com o Axum. O MACH rende mais quando vários recursos repetem as mesmas decisões de persistência, validação e exposição HTTP. Se cada operação tem regras muito particulares, a geração ajuda menos, e o framework sai do caminho."],
+      ],
+      code: {
+        title: "Do modelo ao SQL",
+        file: "model.rs · terminal",
+        body: "#[entity(table = \"posts\")]\npub struct Post {\n    #[id] #[generated] #[expose]\n    pub id: i64,\n    #[writable] #[expose] #[length(min = 2, max = 100)]\n    pub name: String,\n    #[owner] #[expose] #[references(\"users.id\")]\n    pub user_id: i64,\n    #[generated] #[expose]\n    pub created_at: Timestamp,\n}\n\n$ mach inspect Post --sql\nupdate: UPDATE \"posts\" SET \"name\" = $1 WHERE \"id\" = $2 AND \"user_id\" = $3 RETURNING \u2026\ndelete: DELETE FROM \"posts\" WHERE \"id\" = $1 AND \"user_id\" = $2",
+      },
+    },
+  },
+  {
+    slug: "siegebreaker", title: "Siegebreaker", coverTitle: "Siege\nbreaker", kind: "Sistemas",
+    meta: "Teste de carga HTTP · Linux", stack: "C11 · libcurl · epoll", status: "Código aberto",
+    bg: "#3A0D14", fg: "#FF6B5E", accent: "#FF6B5E",
+    page: {
+      eyebrow: "Teste de carga · 2026",
+      lede: "Um gerador de carga HTTP em C11 que mede o próprio cliente: quanto tráfego foi planejado, quanto saiu da máquina e quanto voltou.",
+      links: [{ label: "Ver no GitHub", href: GH + "siegebreaker" }],
+      facts: [["Papel", "Design e desenvolvimento"], ["Linguagem", "C11 · libcurl"], ["Arquitetura", "epoll · timerfd · HdrHistogram"], ["Status", "Código aberto"]],
+      highlights: [
+        ["Taxa constante", "As requisições seguem um relógio monotônico. Se a API fica lenta, a próxima continua marcada para o horário original."],
+        ["Conta o que se perdeu", "Quando um worker acorda atrasado ou fica sem conexões livres, o envio perdido entra em missed_schedule ou pool_full."],
+        ["Sem rajadas", "Um worker atrasado tenta só o envio mais recente, em vez de disparar de uma vez tudo o que ficou para trás."],
+        ["Duas latências", "Cada resposta é medida desde a admissão e desde o horário previsto. A diferença mostra a espera dentro do gerador."],
+        ["Um laço por worker", "Cada worker tem seu epoll, seu timerfd, um conjunto fixo de transferências e histogramas próprios, somados no fim."],
+        ["Relatório em JSON", "planned, admitted, emitted e completed mostram em que etapa cada requisição parou."],
+      ],
+      chapters: [
+        ["Por que medir o próprio gerador", "Se peço 1.000 requisições por segundo e vejo 997 respostas por segundo, onde foram parar as outras três? A pergunta surgiu enquanto eu testava o Juggernaut. Sem separar o que o cliente planejou do que ele de fato enviou, o p99 da API fica impossível de interpretar."],
+        ["O que ainda não faz", "A versão atual implementa o modo Barrage, com GET em HTTP/1.1 na própria máquina. HTTPS, arquivos de cenário, busca adaptativa de capacidade e ensaios longos de estabilidade ficam para as próximas versões."],
+      ],
+      code: {
+        title: "As 26 requisições que faltaram",
+        file: "terminal",
+        body: "$ ./build/siegebreaker barrage --url \"$JUGGERNAUT\" \\\n    --rps 1000 --duration 10s --workers 2 --connections 32\n{\n  \"planned\": 10000,\n  \"missed_schedule\": 26,\n  \"pool_full\": 0,\n  \"emitted\": 9974,\n  \"completed\": 9974,\n  \"http\": { \"200\": 9974 },\n  \"scheduler_lag_us\": { \"p99\": 518 },\n  \"service_us\":       { \"p99\": 6859 },\n  \"scheduled_us\":     { \"p99\": 7287 }\n}",
+      },
     },
   },
   {
     slug: "juggernaut", title: "Juggernaut", coverTitle: "Juggernaut", kind: "Sistemas",
-    meta: "Motor de transferências · Java", stack: "Java 21 · Spring Boot · PostgreSQL", status: "Núcleo publicado",
-    bg: "#3E201A", fg: "#FFF1E8", accent: "#F08058",
+    meta: "Motor de transferências · Java", stack: "Java 21 · Spring Boot · PostgreSQL", status: "Código aberto",
+    bg: "#E2F0E5", fg: "#0E5A3A", accent: "#0E5A3A",
     page: {
       eyebrow: "Sistemas transacionais · 2026",
-      lede: "Uma transferência foi confirmada no banco, mas a resposta se perdeu no caminho. O que acontece quando o cliente tenta de novo? Construí o Juggernaut para estudar essa pergunta com duas contas, dinheiro contado em centavos e um PostgreSQL de verdade.",
+      lede: "Um motor de transferências em Java e PostgreSQL que move o dinheiro uma única vez, mesmo quando a resposta se perde e o cliente tenta de novo.",
       links: [{ label: "Ver no GitHub", href: GH + "juggernaut" }],
-      facts: [["Linguagem", "Java 21"], ["Banco", "PostgreSQL 16"], ["Testes", "JUnit · Testcontainers"], ["Tecnologia", "Spring Boot 4.2"]],
-      description: {
-        title: "Como uma transferência é confirmada",
-        paragraphs: [
-          "O Juggernaut processa transferências de uma única moeda em Java 21 e PostgreSQL. O cliente informa as duas contas, o valor inteiro em unidades mínimas da moeda e uma chave de idempotência. O Spring autentica o cliente antes de o serviço abrir uma transação JDBC com isolamento READ COMMITTED. Para um pedido novo, o serviço verifica a titularidade da origem e trava as duas linhas com SELECT FOR UPDATE em ordem de UUID. Assim, até transferências em sentidos opostos adquirem os bloqueios na mesma sequência.",
-          "Com as contas travadas, o serviço confere o saldo disponível e verifica se o crédito cabe em um inteiro de 64 bits com sinal. Se aprovar a operação, atualiza os dois saldos e grava o comprovante e um registro na outbox no mesmo commit. Uma view contábil transforma o comprovante em duas partidas de mesmo valor e sinais opostos. Nos testes de integração, provoco uma falha na gravação da outbox, quando os saldos já foram atualizados dentro da transação. Depois reconcilio as contas para conferir se o rollback desfez o lançamento inteiro.",
-          "Uma restrição de unicidade sobre o cliente e a chave resolve a disputa quando duas tentativas chegam juntas. Se a primeira resposta se perder, repetir o pedido devolve o comprovante já gravado. Trocar o valor ou uma das contas e manter a chave resulta em HTTP 409. A recusa por saldo insuficiente também fica registrada, então um depósito posterior não transforma uma repetição em nova transferência. Para que a disputa por uma conta não ocupe todo o pool, um semáforo admite até oito transações de lançamento entre as doze conexões da configuração padrão.",
-        ],
-      },
-      chapters: [
-        ["Por que quis estudar transferências", "Escolhi uma transferência porque consigo conferir o resultado à mão. Se tiro 125 centavos de uma conta com 10.000 e mando para outra vazia, espero encontrar 9.875 de um lado e 125 do outro. A parte que eu queria entender começa quando a resposta some. Para quem apertou o botão, parece que nada aconteceu. Para o banco, o dinheiro já mudou de conta. Quis aprender a reconhecer o mesmo pedido depois de uma falha e devolver o primeiro comprovante, mesmo que a conta já tenha recebido outras transferências."],
-        ["Quem fica com o último centavo?", "Também queria ver o que acontece quando várias operações leem o mesmo saldo. Montei um teste com 240 tentativas de sacar um centavo de uma conta com saldo de 100. O resultado esperado é bem concreto: 100 débitos, 100 créditos correspondentes e saldo zero na origem. Para chegar lá, o serviço trava as duas contas sempre na mesma ordem e confere o saldo enquanto mantém esses locks. Depois do teste, confiro se cada saldo fecha com os lançamentos."],
-        ["O que a primeira versão deixou passar", "Na revisão, uma tentativa de transferir 101 com saldo de 100 revelou um detalhe que eu tinha perdido. O banco desfez a operação e apagou junto a chave que identificava o pedido. Com a mesma chave, uma segunda tentativa de transferir apenas 1 passou. A correção foi guardar a decisão de recusa, sem lançar débito nem crédito. Esse caso virou um teste que posso repetir sempre que mudar o fluxo."],
+      facts: [["Papel", "Design e desenvolvimento"], ["Linguagem", "Java 21 · Spring Boot 4.2"], ["Dados", "PostgreSQL 16 · Testcontainers"], ["Status", "Código aberto"]],
+      highlights: [
+        ["Uma vez só", "Repetir o pedido com a mesma chave de idempotência devolve o comprovante original. O dinheiro não se move duas vezes."],
+        ["Contas que fecham", "Valores são inteiros em centavos. Um único commit atualiza os dois saldos e grava o comprovante e a outbox."],
+        ["Travas em ordem", "As duas contas são travadas sempre na ordem dos UUIDs, então transferências em sentidos opostos não se bloqueiam."],
+        ["Recusa registrada", "Uma recusa por saldo insuficiente fica gravada. Um depósito posterior não transforma a repetição em transferência nova."],
+        ["Chave com dono", "A chave vale por cliente autenticado. Trocar o valor ou as contas mantendo a mesma chave resulta em HTTP 409."],
+        ["Pool protegido", "Um semáforo admite até oito lançamentos entre as doze conexões, deixando espaço para leituras e autenticação."],
       ],
+      chapters: [
+        ["Por que quis estudar transferências", "Escolhi uma transferência porque consigo conferir o resultado à mão. Se tiro 125 centavos de uma conta com 10.000 e mando para outra vazia, espero 9.875 de um lado e 125 do outro. A parte difícil começa quando a resposta some: para quem apertou o botão, nada aconteceu, mas no banco o dinheiro já mudou de conta."],
+        ["Quem fica com o último centavo?", "Montei um teste com 240 tentativas de sacar um centavo de uma conta com saldo de 100. O resultado esperado é concreto: 100 débitos, 100 créditos e saldo zero na origem. Depois do teste, confiro se cada saldo fecha com os lançamentos."],
+        ["O que a primeira versão deixou passar", "Na revisão, uma tentativa de transferir 101 com saldo de 100 revelou um detalhe. O rollback apagou junto a chave do pedido, e uma segunda tentativa de transferir só 1 passou com a mesma chave. A correção foi guardar a recusa sem lançar débito nem crédito. Esse caso virou um teste."],
+      ],
+      code: {
+        title: "Como uma transferência repetida é reconhecida",
+        file: "fluxo",
+        body: " Cliente                    Juggernaut                         PostgreSQL\n \u2500\u2500\u2500\u2500\u2500\u2500\u2500                    \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500                         \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n POST /api/transfers \u2500\u2500\u2500\u2500\u2500\u25ba 1. Autentica e l\u00ea a chave\n Idempotency-Key: K         2. A chave K j\u00e1 tem decis\u00e3o? \u2500\u2500 sim \u2500\u2500\u25ba devolve o comprovante\n                            3. SELECT \u2026 FOR UPDATE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25ba trava as 2 contas\n                                                                   (sempre em ordem de UUID)\n                            4. Confere o saldo com as contas travadas\n                            5. Um s\u00f3 commit \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25ba saldos + comprovante + outbox\n        \u25c4\u2500\u2500 comprovante \u2500\u2500\u2500 6. Responde\n (a resposta se perde)\n POST de novo com K \u2500\u2500\u2500\u2500\u2500\u2500\u25ba 2. sim \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25ba mesmo comprovante,\n                                                                   nenhum d\u00e9bito novo",
+      },
     },
   },
   {
