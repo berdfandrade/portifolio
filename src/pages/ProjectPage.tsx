@@ -4,7 +4,7 @@ import TopBar from '../components/TopBar';
 import Tile from '../components/Tile';
 import Lightbox from '../components/Lightbox';
 import { usePageTitle } from '../components/Layout';
-import type { Shot } from '../data/projects';
+import { coverChars, type Shot } from '../data/projects';
 import { useI18n } from '../i18n';
 import NotFound from './NotFound';
 
@@ -48,7 +48,7 @@ function ProjectView({ slug }: { slug: string }) {
       <TopBar title="Bernardo" contact />
       <main className="project" style={vars}>
         <div className="project-hero">
-          <div className="project-cover" aria-hidden="true">
+          <div className="project-cover" aria-hidden="true" style={{ '--chars': coverChars(p.coverTitle) } as CSSProperties}>
             <span className="kind">{t.kinds[p.kind]}</span>
             <span className="name">{p.coverTitle}</span>
           </div>

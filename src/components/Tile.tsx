@@ -1,17 +1,18 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router';
-import type { Project } from '../data/projects';
+import { coverChars, type Project } from '../data/projects';
 import { useI18n } from '../i18n';
 
 /** Capa de "álbum" de um projeto. Leva à página do projeto quando ela existe. */
 export default function Tile({ project: p, compact = false }: { project: Project; compact?: boolean }) {
   const { t, to } = useI18n();
-  const coverStyle: CSSProperties = { background: p.bg, color: p.fg };
+  const title = compact ? p.title : p.coverTitle;
+  const coverStyle = { background: p.bg, color: p.fg, '--chars': coverChars(title) } as CSSProperties;
   const content = (
     <>
       <div className="cover" style={coverStyle}>
         {!compact && <span className="cover-kind">{t.kinds[p.kind]}</span>}
-        <span className="cover-title">{compact ? p.title : p.coverTitle}</span>
+        <span className="cover-title">{title}</span>
       </div>
       <div className="tile-meta">
         <span className="tile-title">{p.title}</span>

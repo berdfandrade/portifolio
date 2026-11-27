@@ -7,7 +7,7 @@ import { TREE_EN } from '../data/skills.en';
 import { BOOKS } from '../data/books';
 import { BOOKS_EN } from '../data/books.en';
 import { ERAS, CERTIFICATES } from '../data/experience';
-import { ERAS_EN, CERTIFICATES_EN } from '../data/experience.en';
+import { ERAS_EN } from '../data/experience.en';
 
 export type Lang = 'pt' | 'en';
 export type Page = 'library' | 'project' | 'about' | 'skills' | 'books' | 'contact' | 'experience';
@@ -26,7 +26,7 @@ export function pathTo(lang: Lang, page: Page, slug?: string) {
 
 const CONTENT = {
   pt: { t: STRINGS.pt, projects: PROJECTS, tree: TREE, skills: flattenTree(TREE), books: BOOKS, eras: ERAS, certificates: CERTIFICATES },
-  en: { t: STRINGS.en, projects: PROJECTS_EN, tree: TREE_EN, skills: flattenTree(TREE_EN), books: BOOKS_EN, eras: ERAS_EN, certificates: CERTIFICATES_EN },
+  en: { t: STRINGS.en, projects: PROJECTS_EN, tree: TREE_EN, skills: flattenTree(TREE_EN), books: BOOKS_EN, eras: ERAS_EN, certificates: CERTIFICATES },
 };
 
 export const LangContext = createContext<Lang>('pt');

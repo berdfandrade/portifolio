@@ -93,11 +93,3 @@ const EN: Record<string, EraText> = {
 };
 
 export const ERAS_EN: Era[] = ERAS.map((era) => ({ ...era, ...EN[era.id] }));
-
-export const CERTIFICATES_EN: string[] = [
-  "JavaScript Algorithms and Data Structures",
-  "Learning how to learn: techniques for self-development",
-  "Video production: what's behind the audiovisual world",
-  "Filmmaking: foundations for a good shoot",
-  "Comics: developing scripts",
-];

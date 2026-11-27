@@ -34,6 +34,9 @@ export interface ProjectPage {
   phones?: Shot[];
 }
 
+/** Letras da linha mais longa do título da capa: o CSS usa para a fonte nunca passar da largura da capa. */
+export const coverChars = (title: string) => Math.max(...title.split("\n").map((line) => line.length));
+
 export interface Project {
   slug: string;
   title: string;

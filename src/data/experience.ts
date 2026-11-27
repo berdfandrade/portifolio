@@ -142,11 +142,114 @@ export const ERAS: Era[] = [
   },
 ];
 
-/** Certificados listados no LinkedIn (os nomes ficam como foram emitidos). */
-export const CERTIFICATES: string[] = [
-  "JavaScript Algorithms and Data Structures",
-  "Aprender a aprender: técnicas para seu autodesenvolvimento",
-  "Produção de vídeo: o que há por trás do mundo do audiovisual",
-  "Filmografia: bases para uma boa gravação",
-  "História em quadrinhos: desenvolvendo roteiros",
+/** Grupos de certificados; os nomes de cada grupo ficam em src/i18n/strings.ts. */
+export type CertGroup = "fcc" | "js" | "python" | "front" | "back" | "c" | "linux" | "media";
+
+/** Um certificado: o nome como foi emitido e, quando existe, o link público para conferir. */
+export interface Certificate {
+  name: string;
+  url?: string;
+}
+
+/**
+ * Certificados do LinkedIn e do site antigo, agrupados por área, com a plataforma que emitiu (quando se sabe).
+ * Links copiados do site antigo e conferidos: onde ele repetia o mesmo link em cursos diferentes, só o curso
+ * certo ficou com o link.
+ */
+export const CERTIFICATES: { group: CertGroup; issuer?: string; items: Certificate[] }[] = [
+  {
+    group: "fcc",
+    issuer: "freeCodeCamp",
+    items: [
+      { name: "JavaScript Algorithms and Data Structures", url: "https://www.freecodecamp.org/certification/berdfandrade/javascript-algorithms-and-data-structures" },
+      { name: "Scientific Computing with Python", url: "https://www.freecodecamp.org/certification/berdfandrade/scientific-computing-with-python-v7" },
+      { name: "Responsive Web Design", url: "https://www.freecodecamp.org/certification/berdfandrade/responsive-web-design" },
+    ],
+  },
+  {
+    group: "js",
+    issuer: "Alura",
+    items: [
+      { name: "JavaScript: tipos, variáveis e funções" },
+      { name: "JavaScript: explorando a linguagem", url: "https://cursos.alura.com.br/certificate/955f0207-30b6-4525-b01e-b6924adab8c4?lang=pt_BR" },
+      { name: "JavaScript: objetos", url: "https://cursos.alura.com.br/certificate/9a05559a-6542-4013-84bc-c74abfdb5836?lang=pt_BR" },
+      { name: "JavaScript: Arrays", url: "https://cursos.alura.com.br/certificate/291bfec0-ad97-43c6-8b9e-2ca6858dd7d8?lang=pt_BR" },
+      { name: "JavaScript I: algoritmos de ordenação", url: "https://cursos.alura.com.br/certificate/3d8f3f02-16c4-47b3-aaae-47a76e94d96b?lang=pt_BR" },
+      { name: "JavaScript: programação orientada a objetos", url: "https://cursos.alura.com.br/certificate/02311b7d-5ad1-4b99-8f42-4dcb19e79555?lang=pt_BR" },
+      { name: "JavaScript: programando a Orientação a Objetos", url: "https://cursos.alura.com.br/certificate/98a9a654-3547-41dd-9d79-dbcc92cc43c3?lang=pt_BR" },
+      { name: "JavaScript: classes e heranças no desenvolvimento de aplicações com orientação a objetos", url: "https://cursos.alura.com.br/certificate/c6a62b62-b62a-4f89-86fa-85955e74c1c7?lang=pt_BR" },
+      { name: "JavaScript: interfaces e Herança em Orientação a Objetos", url: "https://cursos.alura.com.br/certificate/d34aecce-e873-4264-991c-d989531cacd0?lang=pt_BR" },
+      { name: "JavaScript: manipulando o DOM", url: "https://cursos.alura.com.br/certificate/a9fbe142-54b3-4ee8-8ce0-b49837d72c9c?lang=pt_BR" },
+      { name: "JavaScript para Web: Crie páginas dinâmicas", url: "https://cursos.alura.com.br/certificate/00465614-72d3-406e-98ba-74a7bde99e6f?lang=pt_BR" },
+      { name: "JavaScript e HTML: desenvolva um jogo e pratique lógica de programação", url: "https://cursos.alura.com.br/certificate/11ccbdf8-38d0-4f2b-82c8-653aa03bbc10?lang=pt_BR" },
+      { name: "Lógica de programação: comece em lógica com o jogo Pong e JavaScript", url: "https://cursos.alura.com.br/certificate/7b19bf6f-4dd0-4d15-ae25-6742708fd498?lang=pt_BR" },
+      { name: "Lógica de programação: laços e listas com JavaScript", url: "https://cursos.alura.com.br/certificate/93cdd54a-69fb-461b-9d80-d84e369b4131?lang=pt_BR" },
+    ],
+  },
+  {
+    group: "python",
+    issuer: "Alura",
+    items: [
+      { name: "Python: começando com a linguagem", url: "https://cursos.alura.com.br/certificate/a2ef0806-959e-4a07-b059-ee7c3ff70747?lang=pt_BR" },
+      { name: "Python: avançando na linguagem" },
+      { name: "Python: entendendo a Orientação a Objetos", url: "https://cursos.alura.com.br/certificate/224f150d-6705-4632-8443-d2fcfdfa170f?lang=pt_BR" },
+      { name: "Python: avançando na orientação a objetos" },
+      { name: "Flask: crie uma webapp com Python", url: "https://cursos.alura.com.br/certificate/7e67fcd7-b7e1-419d-b57a-1d7ccd17d1d4?lang=pt_BR" },
+      { name: "Expressões regulares: capturando textos de forma mágica", url: "https://cursos.alura.com.br/certificate/e352d413-01bc-402a-8e25-22c5fc42e67f?lang=pt_BR" },
+    ],
+  },
+  {
+    group: "front",
+    issuer: "Alura",
+    items: [
+      { name: "HTML5 e CSS3 parte 1: crie uma página da Web", url: "https://cursos.alura.com.br/certificate/869ee0f0-ed91-437b-9107-579ddb607fdf?lang=pt_BR" },
+      { name: "HTML5 e CSS3 parte 2: Listas e navegação", url: "https://cursos.alura.com.br/certificate/18ab35a1-b516-4022-a3aa-a979bbbca30f?lang=pt_BR" },
+      { name: "HTML5 e CSS3 parte 3: formulários e tabelas", url: "https://cursos.alura.com.br/certificate/52f3e146-2b19-4f64-9f06-be6f81b1b285?lang=pt_BR" },
+      { name: "HTML5 e CSS3 parte 4: avançando no CSS", url: "https://cursos.alura.com.br/certificate/5ddf5bf8-31ff-468f-a60a-a6938e365ab7?lang=pt_BR" },
+      { name: "Flexbox: posicione elementos na tela", url: "https://cursos.alura.com.br/certificate/13c595dc-56ad-4686-8540-3cac72b2f695?lang=pt_BR" },
+      { name: "Layouts Responsivos: trabalhando com layouts mobile", url: "https://cursos.alura.com.br/certificate/f1f29b6d-6002-4f0f-a419-c63c2e59671c?lang=pt_BR" },
+      { name: "Arquitetura CSS: lidando com problemas", url: "https://cursos.alura.com.br/certificate/fb6a2bfc-951a-4ee3-b360-ea3370fc3063?lang=pt_BR" },
+      { name: "React: desenvolvendo com JavaScript", url: "https://cursos.alura.com.br/certificate/b5e2af73-6854-4829-95fe-233614011d7e?lang=pt_BR" },
+      { name: "React: comece seu projeto full stack", url: "https://cursos.alura.com.br/certificate/93b093f4-3a6c-4f7c-8175-05670a63d23a?lang=pt_BR" },
+      { name: "React e Node.js: consumindo APIs no React no projeto full stack", url: "https://cursos.alura.com.br/certificate/7add293e-cc5a-4742-af6e-1afb4e372bdb?lang=pt_BR" },
+    ],
+  },
+  {
+    group: "back",
+    issuer: "Alura",
+    items: [
+      { name: "Node.js: API Rest com Express e MongoDB" },
+      { name: "Node.js: criando sua primeira biblioteca", url: "https://cursos.alura.com.br/certificate/ae21031b-0c0c-4cc9-963a-9880b8b3644b?lang=pt_BR" },
+      { name: "HTTP: entendendo a web por baixo dos panos", url: "https://cursos.alura.com.br/certificate/cf825777-8b6c-470a-b5a0-ba7c873e6e25?lang=pt_BR" },
+    ],
+  },
+  {
+    group: "c",
+    issuer: "Alura",
+    items: [
+      { name: "C: conhecendo a Linguagem", url: "https://cursos.alura.com.br/certificate/065ca160-b353-4414-8af8-05772acaf2c1?lang=pt_BR" },
+      { name: "C: avançando na linguagem", url: "https://cursos.alura.com.br/certificate/3332cbb3-e00f-4d8d-a52d-84edd2ca1fc3?lang=pt_BR" },
+      { name: "C: recursos avançados da linguagem", url: "https://cursos.alura.com.br/certificate/0474a449-f5dd-4d1f-8af7-5b3a0a34177c?lang=pt_BR" },
+      { name: "Introdução à Arquitetura de computadores", url: "https://cursos.alura.com.br/certificate/f404fe73-7573-4988-8daa-d2814a99f7a0?lang=pt_BR" },
+    ],
+  },
+  {
+    group: "linux",
+    issuer: "Alura",
+    items: [
+      { name: "Linux I: conhecendo e utilizando o terminal", url: "https://cursos.alura.com.br/certificate/8f2b7a1c-b7f0-483f-82af-275e5c37c9af?lang=pt_BR" },
+      { name: "Linux II: programas, processos e pacotes" },
+      { name: "Linux Onboarding: usando a CLI de uma forma rápida e prática", url: "https://cursos.alura.com.br/certificate/c97ecd59-beb5-4d47-a031-7d9e4eac5061?lang=pt_BR" },
+      { name: "Git e GitHub: repositório, commit e versões", url: "https://cursos.alura.com.br/certificate/64691dcc-7ff4-4efa-b703-65a628b0cb60?lang=pt_BR" },
+    ],
+  },
+  {
+    group: "media",
+    items: [
+      { name: "Aprender a aprender: técnicas para seu autodesenvolvimento" },
+      { name: "Produção de vídeo: o que há por trás do mundo do audiovisual" },
+      { name: "Filmografia: bases para uma boa gravação" },
+      { name: "História em quadrinhos: desenvolvendo roteiros" },
+    ],
+  },
 ];
